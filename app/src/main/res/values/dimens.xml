@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="activity_margin_half">8dp</dimen>
+    <dimen name="column_separate_margin">48dp</dimen>
+    <dimen name="column_separate_small_margin">10dp</dimen>
+
+    <!-- font size -->
+    <dimen name="font_banner">32sp</dimen>
+    <dimen name="font_biggest">24sp</dimen>
+    <dimen name="font_bigger">22sp</dimen>
+    <dimen name="font_big">18sp</dimen>
+    <dimen name="font_normal">14sp</dimen>
+    <dimen name="font_small">12sp</dimen>
+    <dimen name="font_16">16sp</dimen>
+
+    <!-- dimens -->
+    <dimen name="element_size">5dp</dimen>
+    <dimen name="element_spacing_size">8dp</dimen>
+    <dimen name="fab_size">56dp</dimen>
+    <dimen name="fab_resting">1dp</dimen>
+    <dimen name="button_height">48dp</dimen>
+    <dimen name="refresher_start">96dp</dimen>
+    <dimen name="refresher_end">48dp</dimen>
+
+
+    <!-- placeholder -->
+    <dimen name="placeholder_text_height">30dp</dimen>
+    <dimen name="placeholder_text_height_normal">25dp</dimen>
+    <dimen name="placeholder_text_height_small">18dp</dimen>
+</resources>

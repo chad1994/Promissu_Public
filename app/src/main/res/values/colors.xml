@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#5151e0</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#AEAEAE</color>
+
+
+    <color name="grey">#747474</color>
+    <color name="grey_placeholder">#C7C7CD</color>
+    <color name="grey72">#C2747474</color>
+    <color name="statusBarColor">#ffffff</color>
+</resources>
