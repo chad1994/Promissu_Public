@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_my_points"
+            android:icon="@drawable/ic_point"
+            android:title="@string/my_points" />
+        <item
+            android:id="@+id/nav_promise_credit"
+            android:icon="@drawable/ic_credit"
+            android:title="@string/my_promise_credit" />
+        <item
+            android:id="@+id/nav_history_room"
+            android:icon="@drawable/ic_history"
+            android:title="@string/past_promise" />
+        <item
+            android:id="@+id/nav_enter_room"
+            android:icon="@drawable/ic_search"
+            android:title="@string/enter_room" />
+    </group>
+</menu>

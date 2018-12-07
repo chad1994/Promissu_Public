@@ -2,4 +2,10 @@
     tools:ignore="MissingTranslation">
     <string name="app_name" >Promissu</string>
     <string name="kakao_app_key">d88d1806085dfba3a3d329db2755f8e7</string>
+
+    <string name="my_points">내 포인트</string>
+    <string name="my_promise_credit">내 신용등급</string>
+    <string name="past_promise">내 지난 약속</string>
+    <string name="enter_room">약속 참여하기</string>
+
 </resources>

@@ -4,16 +4,28 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.navigation.NavigationView;
 import com.simsimhan.promissu.util.NavigationUtil;
 
+import java.time.Instant;
+
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private FrameLayout frameView;
     private FragmentManager fragmentManager;
+    private DrawerLayout drawerLayout;
+    private ImageView profileImage;
+    private TextView userName;
 
 
     @Override
@@ -30,12 +45,51 @@ public class MainActivity extends AppCompatActivity {
         }
 
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionbar = getSupportActionBar();
+        if (actionbar != null) {
+            actionbar.setDisplayHomeAsUpEnabled(true);
+            actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        }
+
         changeStatusBarColor();
         frameView = findViewById(R.id.frame);
+        drawerLayout = findViewById(R.id.drawer_layout);
+
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(
+                menuItem -> {
+                    menuItem.setChecked(true);
+                    drawerLayout.closeDrawers();
+                    // swap UI fragments here
+
+                    return true;
+                });
+        profileImage = navigationView.getHeaderView(0).findViewById(R.id.profile_image);
+        userName = navigationView.getHeaderView(0).findViewById(R.id.profile_username);
+
+        Glide.with(this)
+                .load(PromissuApplication.getDiskCache().getProfileThumbnail())
+                .apply(RequestOptions.circleCropTransform())
+                .into(profileImage);
+
+        userName.setText(PromissuApplication.getDiskCache().getUserName());
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
