@@ -1,9 +1,17 @@
 package com.simsimhan.promissu;
 
+import android.content.Context;
+
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.kakao.auth.ApprovalType;
+import com.kakao.auth.AuthType;
+import com.kakao.auth.IApplicationConfig;
+import com.kakao.auth.ISessionConfig;
+import com.kakao.auth.KakaoAdapter;
+import com.kakao.auth.KakaoSDK;
 import com.simsimhan.promissu.cache.DiskCache;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -11,13 +19,7 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 import io.palaima.debugdrawer.timber.data.LumberYard;
-import io.requery.Persistable;
-import io.requery.android.sqlite.DatabaseSource;
-import io.requery.reactivex.ReactiveEntityStore;
-import io.requery.reactivex.ReactiveSupport;
-import io.requery.sql.Configuration;
 import io.requery.sql.EntityDataStore;
-import io.requery.sql.TableCreationMode;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -28,12 +30,29 @@ import timber.log.Timber;
 public class PromissuApplication extends MultiDexApplication {
     private static Retrofit retrofit;
     private static DiskCache diskCache;
+    private static PromissuApplication instance;
+
 //    private static ReactiveEntityStore<Persistable> dataStore;
+
+    private static Context getGlobalApplicationContext() {
+            if (instance == null) {
+
+                throw new IllegalStateException("This Application does not inherit com.kakao.GlobalApplication");
+
+            }
+
+
+
+            return instance;
+
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
         MultiDex.install(this);
+        instance = this;
+        KakaoSDK.init(new KakaoSDKAdapter());
         Stetho.initializeWithDefaults(this);
         JodaTimeAndroid.init(this);
         LumberYard lumberYard = LumberYard.getInstance(this);
@@ -89,5 +108,52 @@ public class PromissuApplication extends MultiDexApplication {
                 .build();
     }
 
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        instance = null;
+    }
+
+    private static class KakaoSDKAdapter extends KakaoAdapter {
+        /**
+         * Session Config에 대해서는 default값들이 존재한다.
+         * 필요한 상황에서만 override해서 사용하면 됨.
+         * @return Session의 설정값.
+         */
+        @Override
+        public ISessionConfig getSessionConfig() {
+            return new ISessionConfig() {
+                @Override
+                public AuthType[] getAuthTypes() {
+                    return new AuthType[] {AuthType.KAKAO_TALK};
+                }
+
+                @Override
+                public boolean isUsingWebviewTimer() {
+                    return false;
+                }
+
+                @Override
+                public boolean isSecureMode() {
+                    return false;
+                }
+
+                @Override
+                public ApprovalType getApprovalType() {
+                    return ApprovalType.INDIVIDUAL;
+                }
+
+                @Override
+                public boolean isSaveFormData() {
+                    return true;
+                }
+            };
+        }
+
+        @Override
+        public IApplicationConfig getApplicationConfig() {
+            return () -> PromissuApplication.getGlobalApplicationContext();
+        }
+    }
 
 }

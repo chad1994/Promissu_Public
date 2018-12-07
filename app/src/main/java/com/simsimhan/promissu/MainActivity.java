@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (TextUtils.isEmpty(PromissuApplication.getDiskCache().getUserToken())) {
+        if (TextUtils.isEmpty(PromissuApplication.getDiskCache().getUserToken()) && TextUtils.isEmpty(PromissuApplication.getDiskCache().getUserName())) {
             NavigationUtil.replaceWithLoginView(this);
         }
 
@@ -58,4 +58,6 @@ public class MainActivity extends AppCompatActivity {
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.statusBarColor));
         }
     }
+
+
 }

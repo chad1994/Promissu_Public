@@ -1,5 +1,9 @@
 package com.simsimhan.promissu.util;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -7,16 +11,21 @@ import android.os.Build;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Base64;
+import android.util.Log;
 
 import com.simsimhan.promissu.BuildConfig;
 
 import java.io.ByteArrayOutputStream;
+import java.security.MessageDigest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import androidx.annotation.Nullable;
+import timber.log.Timber;
 
-public class MediBlocStringUtil {
-    private static final String TAG = "MediBlocStringUtil";
+
+public class StringUtil {
+    private static final String TAG = "StringUtil";
     private static final boolean DEBUG = BuildConfig.DEBUG;
 
     public static boolean isStringEmpty(String source) {
@@ -75,6 +84,31 @@ public class MediBlocStringUtil {
             return matcher.find();
         } else {
             return false;
+        }
+    }
+
+    @Nullable
+    public static String getHashKey(Context context) {
+        final String TAG = "KeyHash";
+        String keyHash = null;
+
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md;
+                md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                keyHash = new String(Base64.encode(md.digest(), 0));
+                Timber.d(keyHash);
+            }
+        } catch (Exception e) {
+            Timber.e(e.toString());
+        }
+
+        if (keyHash != null) {
+            return keyHash;
+        } else {
+            return null;
         }
     }
 }

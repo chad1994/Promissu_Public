@@ -30,8 +30,8 @@ import java.io.OutputStream;
 
 import timber.log.Timber;
 
-public class MediBlocFileUtils {
-    private final static String TAG = "MediBlocFileUtils";
+public class FileUtils {
+    private final static String TAG = "FileUtils";
     private final static boolean DEBUG = BuildConfig.DEBUG;
     private final static int INVALID_SIZE = -1;
 
