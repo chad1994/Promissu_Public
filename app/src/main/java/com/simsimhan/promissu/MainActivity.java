@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -17,6 +18,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.navigation.NavigationView;
 import com.simsimhan.promissu.util.NavigationUtil;
 
+import org.json.JSONObject;
+
 import java.time.Instant;
 
 import androidx.annotation.Nullable;
@@ -27,6 +30,9 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
+import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
     private static final boolean DEBUG = BuildConfig.DEBUG;
@@ -111,6 +117,32 @@ public class MainActivity extends AppCompatActivity {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.statusBarColor));
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Branch branch = Branch.getInstance();
+
+        // Branch init
+        branch.initSession(new Branch.BranchReferralInitListener() {
+            @Override
+            public void onInitFinished(JSONObject referringParams, BranchError error) {
+                if (error == null) {
+                    // params are the deep linked params associated with the link that the user clicked -> was re-directed to this app
+                    // params will be empty if no data found
+                    // ... insert custom logic here ...
+                    Timber.i(referringParams.toString());
+                } else {
+                    Timber.i(error.getMessage());
+                }
+            }
+        }, this.getIntent().getData(), this);
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        this.setIntent(intent);
     }
 
 

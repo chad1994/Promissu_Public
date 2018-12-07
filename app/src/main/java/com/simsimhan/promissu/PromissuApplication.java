@@ -18,6 +18,9 @@ import net.danlew.android.joda.JodaTimeAndroid;
 
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
+import io.branch.referral.Branch;
+import io.branch.referral.BranchApp;
+import io.branch.referral.BranchUtil;
 import io.palaima.debugdrawer.timber.data.LumberYard;
 import io.requery.sql.EntityDataStore;
 import okhttp3.OkHttpClient;
@@ -35,16 +38,9 @@ public class PromissuApplication extends MultiDexApplication {
 //    private static ReactiveEntityStore<Persistable> dataStore;
 
     private static Context getGlobalApplicationContext() {
-            if (instance == null) {
-
-                throw new IllegalStateException("This Application does not inherit com.kakao.GlobalApplication");
-
-            }
-
-
-
-            return instance;
-
+        if (instance == null)
+            throw new IllegalStateException("This Application does not inherit com.kakao.GlobalApplication");
+        return instance;
     }
 
     @Override
@@ -53,6 +49,13 @@ public class PromissuApplication extends MultiDexApplication {
         MultiDex.install(this);
         instance = this;
         KakaoSDK.init(new KakaoSDKAdapter());
+
+        if (BranchUtil.isTestModeEnabled(this)) {
+            Branch.getTestInstance(this);
+        } else {
+            Branch.getInstance(this);
+        }
+
         Stetho.initializeWithDefaults(this);
         JodaTimeAndroid.init(this);
         LumberYard lumberYard = LumberYard.getInstance(this);
@@ -89,7 +92,6 @@ public class PromissuApplication extends MultiDexApplication {
 //    public static ReactiveEntityStore<Persistable> getData() {
 //        return dataStore;
 //    }
-
     public static Retrofit getRetrofit() {
         return retrofit;
     }
@@ -118,6 +120,7 @@ public class PromissuApplication extends MultiDexApplication {
         /**
          * Session Config에 대해서는 default값들이 존재한다.
          * 필요한 상황에서만 override해서 사용하면 됨.
+         *
          * @return Session의 설정값.
          */
         @Override
@@ -125,7 +128,7 @@ public class PromissuApplication extends MultiDexApplication {
             return new ISessionConfig() {
                 @Override
                 public AuthType[] getAuthTypes() {
-                    return new AuthType[] {AuthType.KAKAO_TALK};
+                    return new AuthType[]{AuthType.KAKAO_TALK};
                 }
 
                 @Override

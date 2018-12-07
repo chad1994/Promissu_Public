@@ -57,7 +57,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    implementation 'io.branch.sdk.android:library:2.+'
     implementation "androidx.appcompat:appcompat:${rootProject.ext.supportLibVersion}"
     implementation "com.google.android.material:material:${rootProject.ext.supportLibVersion}"
 
