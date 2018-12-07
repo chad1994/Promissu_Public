@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -16,7 +17,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.navigation.NavigationView;
+import com.simsimhan.promissu.promise.PromiseFragment;
 import com.simsimhan.promissu.util.NavigationUtil;
+
+import net.daum.mf.map.api.MapPOIItem;
+import net.daum.mf.map.api.MapPoint;
+import net.daum.mf.map.api.MapView;
 
 import org.json.JSONObject;
 
@@ -29,12 +35,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 import timber.log.Timber;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
     private static final boolean DEBUG = BuildConfig.DEBUG;
     private static final String TAG = "MainActivity";
     private FrameLayout frameView;
@@ -58,8 +65,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         if (actionbar != null) {
-            actionbar.setDisplayHomeAsUpEnabled(true);
-            actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+            actionbar.setTitle("");
         }
 
         changeStatusBarColor();
@@ -85,6 +91,15 @@ public class MainActivity extends AppCompatActivity {
                 .into(profileImage);
 
         userName.setText(PromissuApplication.getDiskCache().getUserName());
+
+        Fragment cachedFragment = fragmentManager.findFragmentByTag(PromiseFragment.TAG);
+        if (cachedFragment == null) {
+            cachedFragment = PromiseFragment.newInstance();
+        }
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.frame, cachedFragment)
+                .commit();
     }
 
 
@@ -144,6 +159,5 @@ public class MainActivity extends AppCompatActivity {
     public void onNewIntent(Intent intent) {
         this.setIntent(intent);
     }
-
 
 }

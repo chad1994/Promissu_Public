@@ -32,14 +32,14 @@
 
     <style name="Divider">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">1dp</item>
-        <item name="android:background">@color/grey72</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:background">@color/black</item>
     </style>
 
     <style name="DividerLight">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
-        <item name="android:background">@color/grey_placeholder</item>
+        <item name="android:background">@color/white_1</item>
     </style>
 
 </resources>

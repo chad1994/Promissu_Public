@@ -3,10 +3,14 @@
     <color name="colorPrimary">#5151e0</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#AEAEAE</color>
+    <color name="statusBarColor">@color/white</color>
+    <color name="colorStrong">#5f6ccc</color>
 
-
-    <color name="grey">#747474</color>
-    <color name="grey_placeholder">#C7C7CD</color>
-    <color name="grey72">#C2747474</color>
-    <color name="statusBarColor">#ffffff</color>
+    <!-- white & black -->
+    <color name="white">#FFFFFF</color>
+    <color name="white_1">#dcdcdc</color>
+    <color name="white_2">#aaaaaa</color>
+    <color name="black_2">#969696</color>
+    <color name="black_1">#666666</color>
+    <color name="black">#333333</color>
 </resources>
