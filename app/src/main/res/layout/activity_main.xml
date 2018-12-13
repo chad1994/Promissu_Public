@@ -30,11 +30,12 @@
                     android:clipChildren="false"
                     android:background="@color/white"
                     app:contentScrim="@android:color/transparent"
-                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                    app:expandedTitleTextAppearance="@style/CollapsedAppBar">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="220dp"
+                        android:layout_height="200dp"
                         android:gravity="center_vertical"
                         android:paddingLeft="24dp"
                         android:paddingRight="24dp"
@@ -58,8 +59,6 @@
                             android:layout_width="60dp"
                             tools:src="@drawable/ic_search"
                             android:layout_height="60dp" />
-
-
                     </LinearLayout>
 
                     <androidx.appcompat.widget.Toolbar
