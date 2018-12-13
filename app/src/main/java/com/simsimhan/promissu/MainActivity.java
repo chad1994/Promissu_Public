@@ -3,30 +3,24 @@ package com.simsimhan.promissu;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.navigation.NavigationView;
-import com.simsimhan.promissu.promise.PromiseFragment;
+import com.google.android.material.tabs.TabLayout;
 import com.simsimhan.promissu.util.NavigationUtil;
 
-import net.daum.mf.map.api.MapPOIItem;
-import net.daum.mf.map.api.MapPoint;
-import net.daum.mf.map.api.MapView;
-
 import org.json.JSONObject;
-
-import java.time.Instant;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -35,8 +29,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.ViewPager;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 import timber.log.Timber;
@@ -45,10 +38,13 @@ public class MainActivity extends AppCompatActivity  {
     private static final boolean DEBUG = BuildConfig.DEBUG;
     private static final String TAG = "MainActivity";
     private FrameLayout frameView;
-    private FragmentManager fragmentManager;
+//    private FragmentManager fragmentManager;
     private DrawerLayout drawerLayout;
     private ImageView profileImage;
     private TextView userName;
+    private ImageView profileMainImage;
+    private TextView mainText;
+    private MainFragmentPagerAdapter adapterViewPager;
 
 
     @Override
@@ -59,19 +55,24 @@ public class MainActivity extends AppCompatActivity  {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        fragmentManager = getSupportFragmentManager();
+
+        ViewPager vpPager = findViewById(R.id.vpPager);
+        mainText = findViewById(R.id.main_intro);
+
+        profileMainImage = findViewById(R.id.profile_image_main);
+        adapterViewPager = new MainFragmentPagerAdapter(getSupportFragmentManager());
+        vpPager.setAdapter(adapterViewPager);
+
+        TabLayout tabLayout = findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(vpPager);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.black));
         setSupportActionBar(toolbar);
-        ActionBar actionbar = getSupportActionBar();
-        if (actionbar != null) {
-            actionbar.setTitle("");
-        }
 
         changeStatusBarColor();
         frameView = findViewById(R.id.frame);
         drawerLayout = findViewById(R.id.drawer_layout);
-
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
@@ -90,16 +91,44 @@ public class MainActivity extends AppCompatActivity  {
                 .apply(RequestOptions.circleCropTransform())
                 .into(profileImage);
 
-        userName.setText(PromissuApplication.getDiskCache().getUserName());
+        Glide.with(this)
+                .load(PromissuApplication.getDiskCache().getProfileThumbnail())
+                .apply(RequestOptions.circleCropTransform())
+                .into(profileMainImage);
 
-        Fragment cachedFragment = fragmentManager.findFragmentByTag(PromiseFragment.TAG);
-        if (cachedFragment == null) {
-            cachedFragment = PromiseFragment.newInstance();
+        String userNameText = PromissuApplication.getDiskCache().getUserName();
+        mainText.setText(Html.fromHtml(getString(R.string.main_dummy, userNameText)));
+        userName.setText(userNameText);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setTitle(userNameText);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
 
-        fragmentManager.beginTransaction()
-                .replace(R.id.frame, cachedFragment)
-                .commit();
+        vpPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            // This method will be invoked when a new page becomes selected.
+            @Override
+            public void onPageSelected(int position) {
+                Toast.makeText(MainActivity.this, "Selected page position: " + position, Toast.LENGTH_SHORT).show();
+            }
+
+            // This method will be invoked when the current page is scrolled
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                // Code goes here
+            }
+
+            // Called when the scroll state changes:
+            // SCROLL_STATE_IDLE, SCROLL_STATE_DRAGGING, SCROLL_STATE_SETTLING
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                // Code goes here
+            }
+        });
+
     }
 
 

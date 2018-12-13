@@ -11,7 +11,6 @@
         android:id="@+id/item_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:includeFontPadding="false"
         android:paddingTop="16dp"
         android:textColor="@color/colorStrong"
         android:textSize="40sp"
@@ -30,7 +29,7 @@
         app:layout_constraintLeft_toLeftOf="@id/item_time"
         app:layout_constraintRight_toRightOf="@id/item_time"
         app:layout_constraintTop_toBottomOf="@id/item_time"
-        tools:text="시간전" />
+        android:text="시간전" />
 
 
     <TextView

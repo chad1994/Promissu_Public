@@ -3,6 +3,7 @@ package com.simsimhan.promissu.promise;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.simsimhan.promissu.R;
 import com.simsimhan.promissu.network.model.Promise;
@@ -38,31 +39,51 @@ public class PromiseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof ItemViewHolder) {
+            ((ItemViewHolder )holder).setItem(items.get(position));
+        }
 
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (items.size() == 0) {
-            return VIEW_TYPE_PROFILE;
-        } else {
-            if (position == 0) {
-                return VIEW_TYPE_PROFILE;
-            } else {
-                return VIEW_TYPE_ITEM;
-            }
-        }
+        return VIEW_TYPE_ITEM;
+//        if (items.size() == 0) {
+//            return VIEW_TYPE_PROFILE;
+//        } else {
+//            if (position == 0) {
+//                return VIEW_TYPE_PROFILE;
+//            } else {
+//
+//            }
+//        }
     }
 
     @Override
     public int getItemCount() {
-        return items.size() == 0 ? 1 : items.size();
+//        return items.size() == 0 ? 1 : items.size();
+        return items.size();
+    }
+
+    public void reset(List<Promise.Response> onNext) {
+        items.clear();
+        items.addAll(onNext);
+        notifyDataSetChanged();
     }
 
 
     static class ItemViewHolder extends RecyclerView.ViewHolder {
-        public ItemViewHolder(@NonNull View itemView) {
+        private TextView dateLeft, title;
+        ItemViewHolder(@NonNull View itemView) {
             super(itemView);
+            dateLeft = itemView.findViewById(R.id.item_time);
+            title = itemView.findViewById(R.id.item_name);
+        }
+
+        void setItem(Promise.Response response) {
+            title.setText(response.getName());
+            dateLeft.setText("" + response.getTime().getDay());
+
         }
     }
 

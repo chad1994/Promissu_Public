@@ -12,7 +12,6 @@ import net.daum.mf.map.api.MapView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 
 public class PromiseDetailActivity extends AppCompatActivity implements MapView.MapViewEventListener, MapView.POIItemEventListener {
     private static final boolean DEBUG = BuildConfig.DEBUG;

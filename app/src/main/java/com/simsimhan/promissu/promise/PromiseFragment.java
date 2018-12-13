@@ -1,6 +1,5 @@
 package com.simsimhan.promissu.promise;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,20 +8,27 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.simsimhan.promissu.R;
+import com.simsimhan.promissu.network.model.Promise;
+
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class PromiseFragment extends Fragment  implements SwipeRefreshLayout.OnRefreshListener {
@@ -34,9 +40,11 @@ public class PromiseFragment extends Fragment  implements SwipeRefreshLayout.OnR
     private RecyclerView recyclerView;
     private Toolbar toolbar;
 
-    public static PromiseFragment newInstance() {
+    public static PromiseFragment newInstance(int position, String title) {
         PromiseFragment fragment = new PromiseFragment();
         Bundle args = new Bundle();
+        args.putInt("Page_key", position);
+        args.putString("Title_key", title);
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,19 +66,6 @@ public class PromiseFragment extends Fragment  implements SwipeRefreshLayout.OnR
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_promise_list, container, false);
 
-        Activity currentActivity = getActivity();
-        if (currentActivity instanceof AppCompatActivity) {
-            toolbar = view.findViewById(R.id.toolbar);
-            ((AppCompatActivity) currentActivity).setSupportActionBar(toolbar);
-            ActionBar actionBar = ((AppCompatActivity) currentActivity).getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.setDisplayShowTitleEnabled(false);
-                actionBar.setTitle("");
-                actionBar.setDisplayHomeAsUpEnabled(true);
-                actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
-            }
-        }
-
         recyclerView = view.findViewById(R.id.promise_recycler_view);
         swipeContainer = view.findViewById(R.id.swipe_container);
         swipeContainer.setOnRefreshListener(this);
@@ -78,7 +73,7 @@ public class PromiseFragment extends Fragment  implements SwipeRefreshLayout.OnR
         swipeContainer.setProgressViewOffset(false, 0, getResources().getDimensionPixelSize(R.dimen.refresher_start));
         swipeContainer.post(() -> {
             swipeContainer.setRefreshing(true);
-            fetch(false);
+            fetch();
         });
 
         recyclerView.setAdapter(adapter);
@@ -112,26 +107,33 @@ public class PromiseFragment extends Fragment  implements SwipeRefreshLayout.OnR
         disposables.clear();
     }
 
-    private void fetch(boolean shouldIndicateNew) {
-//        disposables.add(
+    private void fetch() {
+        disposables.add(
 //                api.getMyPrescriptions(token)
-//                        .subscribeOn(Schedulers.io())
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .subscribe(onNext -> {
-//                            swipeContainer.setRefreshing(false);
-//                            adapter.reset(onNext, shouldIndicateNew);
-//                        }, onError -> {
-//                            swipeContainer.setRefreshing(false);
-//                            NavigationUtil.replaceWithLoginView((AppCompatActivity) getActivity());
-//
-//                            Timber.e(onError);
-//                            if (DEBUG)
-//                                Toast.makeText(getContext(), "[DEV] " + onError.getMessage(), Toast.LENGTH_SHORT).show();
-//                        }));
+                getDummyData()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(onNext -> {
+                            swipeContainer.setRefreshing(false);
+                            adapter.reset(onNext);
+                        }, onError -> {
+                            swipeContainer.setRefreshing(false);
+                            Timber.e(onError);
+                        }));
+    }
+
+    private Observable<List<Promise.Response>> getDummyData() {
+        List<Promise.Response> list = new ArrayList<>();
+        for (int i = 0 ; i < 20; i++) {
+            list.add(new Promise.Response(DateTime.now().toDate(), "asjdiof " + i));
+        }
+
+        return Observable.just(list);
+
     }
 
     @Override
     public void onRefresh() {
-        fetch(false);
+        fetch();
     }
 }
