@@ -82,6 +82,8 @@
                     android:fillViewport="false"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
+                    app:tabGravity="center"
+                    app:tabIndicator="@null"
                     app:tabMode="fixed" />
             </com.google.android.material.appbar.AppBarLayout>
 

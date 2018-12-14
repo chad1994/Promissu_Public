@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -34,7 +35,7 @@ import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 import timber.log.Timber;
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnTabSelectedListener {
     private static final boolean DEBUG = BuildConfig.DEBUG;
     private static final String TAG = "MainActivity";
     private FrameLayout frameView;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity  {
     private ImageView profileMainImage;
     private TextView mainText;
     private MainFragmentPagerAdapter adapterViewPager;
+    private TabLayout tabLayout;
 
 
     @Override
@@ -63,8 +65,18 @@ public class MainActivity extends AppCompatActivity  {
         adapterViewPager = new MainFragmentPagerAdapter(getSupportFragmentManager());
         vpPager.setAdapter(adapterViewPager);
 
-        TabLayout tabLayout = findViewById(R.id.sliding_tabs);
+        tabLayout = findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(vpPager);
+        tabLayout.addOnTabSelectedListener(this);
+
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            if (tab != null) {
+                tab.setCustomView(getCustomTabView(i));
+            }
+        }
+
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.black));
@@ -128,9 +140,13 @@ public class MainActivity extends AppCompatActivity  {
                 // Code goes here
             }
         });
-
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        tabLayout.removeOnTabSelectedListener(this);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -189,4 +205,42 @@ public class MainActivity extends AppCompatActivity  {
         this.setIntent(intent);
     }
 
+
+    public View getCustomTabView(int index) {
+        View customView = LayoutInflater.from(MainActivity.this).inflate(R.layout.view_custom_tab, null);
+        TextView text = customView.findViewById(R.id.custom_tab_textView);
+
+        if (index == 0) {
+            text.setText("약속");
+            text.setTextColor(ContextCompat.getColor(this, R.color.white));
+        } else {
+            text.setText("지난 약속");
+            text.setTextColor(ContextCompat.getColor(this, R.color.grey_02));
+        }
+
+        return customView;
+    }
+
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        View view = tab.getCustomView();
+        if (view != null) {
+            TextView text = view.findViewById(R.id.custom_tab_textView);
+            text.setTextColor(ContextCompat.getColor(this, R.color.white));
+        }
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+        View view = tab.getCustomView();
+        if (view != null) {
+            TextView text = view.findViewById(R.id.custom_tab_textView);
+            text.setTextColor(ContextCompat.getColor(this, R.color.grey_02));
+        }
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
+    }
 }

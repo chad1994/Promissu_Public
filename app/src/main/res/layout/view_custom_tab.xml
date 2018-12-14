@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="126dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/round_background"
+    android:paddingTop="@dimen/activity_margin_half"
+    android:paddingBottom="@dimen/activity_margin_half"
+    tools:background="@drawable/round_background_selected">
+
+    <TextView
+        android:id="@+id/custom_tab_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="약속" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

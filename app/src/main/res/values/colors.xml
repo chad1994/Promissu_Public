@@ -9,7 +9,8 @@
     <!-- white & black -->
     <color name="white">#FFFFFF</color>
     <color name="white_1">#dcdcdc</color>
-    <color name="white_2">#aaaaaa</color>
+    <color name="white_2">#f7f7f7</color>
+    <color name="grey_02">#aaaaaa</color>
     <color name="black_2">#969696</color>
     <color name="black_1">#666666</color>
     <color name="black">#333333</color>
