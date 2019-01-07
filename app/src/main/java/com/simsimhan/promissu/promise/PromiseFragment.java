@@ -39,12 +39,14 @@ public class PromiseFragment extends Fragment  implements SwipeRefreshLayout.OnR
     private PromiseAdapter adapter;
     private RecyclerView recyclerView;
     private Toolbar toolbar;
+    private boolean isPastPromise;
 
-    public static PromiseFragment newInstance(int position, String title) {
+    public static PromiseFragment newInstance(int position, String title, boolean isPastPromise) {
         PromiseFragment fragment = new PromiseFragment();
         Bundle args = new Bundle();
         args.putInt("Page_key", position);
         args.putString("Title_key", title);
+        args.putBoolean("is_past_key", isPastPromise);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,9 +58,10 @@ public class PromiseFragment extends Fragment  implements SwipeRefreshLayout.OnR
 
         if (getArguments() != null) {
             // get arguments and set here
+            isPastPromise = getArguments().getBoolean("is_past_key");
         }
 
-        adapter = new PromiseAdapter((AppCompatActivity) getActivity(), new ArrayList<>());
+        adapter = new PromiseAdapter((AppCompatActivity) getActivity(), new ArrayList<>(), isPastPromise);
         disposables = new CompositeDisposable();
     }
 
@@ -125,7 +128,7 @@ public class PromiseFragment extends Fragment  implements SwipeRefreshLayout.OnR
     private Observable<List<Promise.Response>> getDummyData() {
         List<Promise.Response> list = new ArrayList<>();
         for (int i = 0 ; i < 20; i++) {
-            list.add(new Promise.Response(DateTime.now().toDate(), "asjdiof " + i));
+            list.add(new Promise.Response(DateTime.now().plusDays((int) (Math.random() * 20)).toDate(), "asjdiof " + i));
         }
 
         return Observable.just(list);

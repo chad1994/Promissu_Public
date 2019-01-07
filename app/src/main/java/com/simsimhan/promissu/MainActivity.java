@@ -27,6 +27,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -209,13 +210,16 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
     public View getCustomTabView(int index) {
         View customView = LayoutInflater.from(MainActivity.this).inflate(R.layout.view_custom_tab, null);
         TextView text = customView.findViewById(R.id.custom_tab_textView);
+        ConstraintLayout container = customView.findViewById(R.id.container);
 
         if (index == 0) {
             text.setText("약속");
             text.setTextColor(ContextCompat.getColor(this, R.color.white));
+            container.setBackground(ContextCompat.getDrawable(this, R.drawable.round_background));
         } else {
             text.setText("지난 약속");
             text.setTextColor(ContextCompat.getColor(this, R.color.grey_02));
+            container.setBackground(ContextCompat.getDrawable(this, R.drawable.round_red_background));
         }
 
         return customView;

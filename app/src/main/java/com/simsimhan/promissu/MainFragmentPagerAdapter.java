@@ -19,8 +19,9 @@ public class MainFragmentPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
+                return PromiseFragment.newInstance(position, "약속", false);
             case 1:
-                return PromiseFragment.newInstance(position, position == 0 ? "약속": "지난 약속");
+                return PromiseFragment.newInstance(position, "지난 약속", true);
             default:
                 return null;
         }

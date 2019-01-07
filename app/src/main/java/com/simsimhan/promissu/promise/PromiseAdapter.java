@@ -12,17 +12,21 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class PromiseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Promise.Response> items;
     private AppCompatActivity appCompatActivity;
+    private boolean isPastPromise;
     private static final int VIEW_TYPE_PROFILE = 1;
     private static final int VIEW_TYPE_ITEM = 2;
 
-    public PromiseAdapter(AppCompatActivity appCompatActivity, List<Promise.Response> items) {
+    public PromiseAdapter(AppCompatActivity appCompatActivity, List<Promise.Response> items, boolean isPastPromise) {
         this.appCompatActivity = appCompatActivity;
         this.items = items;
+        this.isPastPromise = isPastPromise;
     }
 
     @NonNull
@@ -40,7 +44,7 @@ public class PromiseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolder) {
-            ((ItemViewHolder )holder).setItem(items.get(position));
+            ((ItemViewHolder )holder).setItem(items.get(position), isPastPromise);
         }
 
     }
@@ -73,16 +77,31 @@ public class PromiseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
     static class ItemViewHolder extends RecyclerView.ViewHolder {
-        private TextView dateLeft, title;
+        private ConstraintLayout container;
+        private TextView dateLeft, title, dateLeftLabel;
         ItemViewHolder(@NonNull View itemView) {
             super(itemView);
+            container = itemView.findViewById(R.id.container);
             dateLeft = itemView.findViewById(R.id.item_time);
             title = itemView.findViewById(R.id.item_name);
+            dateLeftLabel = itemView.findViewById(R.id.item_time_label);
         }
 
-        void setItem(Promise.Response response) {
+        void setItem(Promise.Response response, boolean isPastPromise) {
             title.setText(response.getName());
-            dateLeft.setText("" + response.getTime().getDay());
+
+            if (isPastPromise) {
+                container.setBackgroundColor(ContextCompat.getColor(container.getContext(), R.color.past_background_color));
+                dateLeft.setVisibility(View.GONE);
+
+                //TODO: should use sonething else
+                dateLeftLabel.setText("" + (response.getTime().getMonth() + 1) + "." + (response.getTime().getDay() + 1));
+            } else {
+                container.setBackgroundColor(ContextCompat.getColor(container.getContext(), R.color.background_grey));
+                dateLeft.setVisibility(View.VISIBLE);
+                dateLeft.setText("" + response.getTime().getDay());
+                dateLeftLabel.setText("일 남음");
+            }
 
         }
     }
