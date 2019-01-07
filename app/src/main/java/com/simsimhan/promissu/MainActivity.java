@@ -23,6 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.simsimhan.promissu.util.NavigationUtil;
+import com.simsimhan.promissu.view.DummyTutorialActivity;
 
 import org.json.JSONObject;
 
@@ -90,8 +91,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
                 tab.setCustomView(getCustomTabView(i));
             }
         }
-
-
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.black));

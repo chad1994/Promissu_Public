@@ -13,6 +13,7 @@ public class DiskCache {
     private String USER_NAME_TAG = TAG = ".userName";
     private String USER_NAME_LONG_ID = TAG = ".id";
     private String USER_PROFILE_THUMBNAIL = TAG = ".userProfileThumbnail";
+    private String USER_IS_UPLOADED_BEFORE_TAG = TAG = ".isUploadedBefore";
     private SharedPreferences pref;
 
 
@@ -38,8 +39,20 @@ public class DiskCache {
                 .remove(USER_NAME_TAG)
                 .remove(USER_NAME_LONG_ID)
                 .remove(USER_PROFILE_THUMBNAIL)
+                .remove(USER_IS_UPLOADED_BEFORE_TAG)
                 .commit();
     }
+
+    public boolean isUploadedPromiseBefore() {
+        return this.pref.getBoolean(USER_IS_UPLOADED_BEFORE_TAG, false);
+    }
+
+    public boolean setUploadedPromiseBefore(boolean isUploadedPromise) {
+        return this.pref.edit()
+                .putBoolean(USER_IS_UPLOADED_BEFORE_TAG, isUploadedPromise)
+                .commit();
+    }
+
 
     @NonNull
     public long getUserId() {

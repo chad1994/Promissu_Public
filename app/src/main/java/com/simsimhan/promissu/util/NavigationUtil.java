@@ -7,6 +7,8 @@ import android.util.DisplayMetrics;
 
 import com.simsimhan.promissu.MainActivity;
 import com.simsimhan.promissu.login.LoginActivity;
+import com.simsimhan.promissu.promise.create.CreatePromiseActivity;
+import com.simsimhan.promissu.view.DummyTutorialActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,8 +22,9 @@ public class NavigationUtil {
         activity.finish();
     }
 
-    public static void openAddPromiseScreen(AppCompatActivity appCompatActivity) {
-
+    public static void openAddPromiseScreen(AppCompatActivity activity) {
+        Intent intent = new Intent(activity, CreatePromiseActivity.class);
+        activity.startActivity(intent);
     }
 
     public static void openEmailQuery(AppCompatActivity appCompatActivity, DisplayMetrics displayMetrics, String userId, String title) {
