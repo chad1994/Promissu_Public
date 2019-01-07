@@ -20,6 +20,10 @@ public class NavigationUtil {
         activity.finish();
     }
 
+    public static void openAddPromiseScreen(AppCompatActivity appCompatActivity) {
+
+    }
+
     public static void openEmailQuery(AppCompatActivity appCompatActivity, DisplayMetrics displayMetrics, String userId, String title) {
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:yol-support@medibloc.org"));
 

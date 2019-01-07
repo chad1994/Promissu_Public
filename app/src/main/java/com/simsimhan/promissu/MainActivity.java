@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.simsimhan.promissu.util.NavigationUtil;
@@ -41,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
     private static final String TAG = "MainActivity";
     private FrameLayout frameView;
 //    private FragmentManager fragmentManager;
+    private Animation fabOpen, fabClose;
     private DrawerLayout drawerLayout;
     private ImageView profileImage;
     private TextView userName;
@@ -48,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
     private TextView mainText;
     private MainFragmentPagerAdapter adapterViewPager;
     private TabLayout tabLayout;
+    private FloatingActionButton floatingActionButton;
 
 
     @Override
@@ -59,8 +64,17 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        fabOpen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+        fabClose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+
         ViewPager vpPager = findViewById(R.id.vpPager);
         mainText = findViewById(R.id.main_intro);
+        floatingActionButton = findViewById(R.id.floating_action_button);
+
+        floatingActionButton.setOnClickListener(v -> {
+            // do something here
+            NavigationUtil.openAddPromiseScreen(MainActivity.this);
+        });
 
         profileMainImage = findViewById(R.id.profile_image_main);
         adapterViewPager = new MainFragmentPagerAdapter(getSupportFragmentManager());
@@ -142,6 +156,16 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
             }
         });
     }
+
+//    public void anim() {
+//        if (floatingActionButton.isExpanded()) {
+//            floatingActionButton.startAnimation(fabClose);
+//            floatingActionButton.setClickable(false);
+//        } else {
+//            floatingActionButton.startAnimation(fabOpen);
+//            floatingActionButton.setClickable(true);
+//        }
+//    }
 
     @Override
     protected void onDestroy() {

@@ -93,7 +93,22 @@
                 android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/floating_action_button"
+                android:src="@drawable/ic_add_white"
+                android:layout_gravity="bottom|end"
+                android:layout_marginBottom="24dp"
+                android:layout_marginRight="24sp"
+                app:backgroundTint="@color/colorPrimary"
+                app:elevation="6dp"
+                app:pressedTranslationZ="12dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp" />
+
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
     </FrameLayout>
 
     <!-- Container for contents of drawer - use NavigationView to make configuration easier -->
