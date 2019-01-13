@@ -9,4 +9,11 @@
     <string name="enter_room">약속 참여하기</string>
 
     <string name="main_dummy"><![CDATA[<b>%1$s</b>]]> 님 \n약속을 꼭 지켜주세요</string>
+    <string name="create_question_1"><![CDATA[<b>%1$s</b>]]> 님 \n어떤 약속을 만들까요?</string>
+    <string name="create_question_2">언제\n어디서 만날까요?</string>
+    <string name="create_question_3">대기시간을 정해주세요!</string>
+    <string name="promise_title">방제목을 입력해주세요</string>
+    <string name="promise_date">날짜 - 2018. 12.25. 화요일</string>
+    <string name="promise_time">시간 - 13:00</string>
+    <string name="promise_location">약속 장소검색</string>
 </resources>

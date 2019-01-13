@@ -1,16 +1,14 @@
 package com.simsimhan.promissu.promise.create;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.simsimhan.promissu.PromissuApplication;
 import com.simsimhan.promissu.R;
-import com.simsimhan.promissu.view.DummyTutorialActivity;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -22,20 +20,24 @@ import androidx.viewpager.widget.ViewPager;
 public class CreatePromiseActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ViewPager viewPager;
+    private CreatePromiseFragmentPagerAdapter adapterViewPager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_promise);
 
+        if (!PromissuApplication.getDiskCache().isUploadedPromiseBefore()) {
+//            Intent intent = new Intent(this, DummyTutorialActivity.class);
+//            startActivity(intent);
+            Toast.makeText(this, "좌우로 미세요.", Toast.LENGTH_LONG).show();
+        }
+
+
+        adapterViewPager = new CreatePromiseFragmentPagerAdapter(getSupportFragmentManager());
         toolbar = findViewById(R.id.toolbar);
         viewPager = findViewById(R.id.vpPager);
-
-
-        if (!PromissuApplication.getDiskCache().isUploadedPromiseBefore()) {
-            Intent intent = new Intent(this, DummyTutorialActivity.class);
-            startActivity(intent);
-        }
+        viewPager.setAdapter(adapterViewPager);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.black));

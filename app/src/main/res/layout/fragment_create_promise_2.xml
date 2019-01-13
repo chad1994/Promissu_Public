@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/create_question_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black_1"
+        android:layout_marginTop="20dp"
+        android:textSize="22sp"
+        tools:text="@string/create_question_2" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_marginTop="58dp"
+        android:id="@+id/promise_date_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/promise_date">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/promise_date"
+            android:textSize="14sp"
+            android:textColor="@color/black_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_marginTop="16dp"
+        android:id="@+id/promise_time_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/promise_time">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/promise_time_edit_text"
+            android:textSize="14sp"
+            android:textColor="@color/black_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_marginTop="16dp"
+        android:id="@+id/promise_location_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/promise_location">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/promise_location_edit_text"
+            android:textSize="14sp"
+            android:textColor="@color/black_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+</LinearLayout>

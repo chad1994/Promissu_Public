@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/create_question_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/black_1"
+        android:textSize="22sp"
+        tools:text="@string/create_question_1" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rg_btn1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/round_background_radio"
+            android:button="@android:color/transparent"
+            android:gravity="center"
+            android:text="1시간뒤" />
+
+        <RadioButton
+            android:id="@+id/rg_btn2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/round_background_radio"
+            android:button="@android:color/transparent"
+            android:gravity="center"
+            android:text="2시간뒤" />
+
+        <RadioButton
+            android:id="@+id/rg_btn3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/round_background_radio"
+            android:button="@android:color/transparent"
+            android:gravity="center"
+            android:text="24시간뒤" />
+    </RadioGroup>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="약속 만들기"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/colorPrimary" />
+</LinearLayout>

@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:attrs="http://schemas.android.com/tools">
 
     <FrameLayout
         android:id="@+id/frame"
@@ -32,15 +33,26 @@
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/vpPager"
+            android:paddingTop="?attr/actionBarSize"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="This is sparta"
-            android:textSize="22sp" />
     </FrameLayout>
+
+    <com.rd.PageIndicatorView
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/pageIndicatorView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="72dp"
+        app:piv_animationType="scale"
+        app:piv_dynamicCount="true"
+        app:piv_interactiveAnimation="true"
+        app:piv_selectedColor="@color/colorPrimary"
+        app:piv_unselectedColor="@color/colorAccent"
+        app:piv_viewPager="@id/vpPager"
+        attrs:piv_padding="100dp"
+        attrs:piv_radius="14dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
