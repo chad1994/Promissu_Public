@@ -37,14 +37,14 @@ android {
 //            buildConfigField 'String', 'SERVER_URL', '"http://13.209.137.202:3333"'
 
             debuggable true
-            buildConfigField 'String', 'SERVER_URL', '"http://10.193.2.222:3333"'
+            buildConfigField 'String', 'SERVER_URL', '"http://ec2-54-180-109-96.ap-northeast-2.compute.amazonaws.com:3000"'
         }
 
         staging {
             debuggable true
             minifyEnabled false
             signingConfig signingConfigs.release
-            buildConfigField 'String', 'SERVER_URL', '"http://54.180.18.162:3000"'
+            buildConfigField 'String', 'SERVER_URL', '"http://ec2-54-180-109-96.ap-northeast-2.compute.amazonaws.com:3000"'
             matchingFallbacks = ['release', 'debug']
         }
     }

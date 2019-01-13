@@ -5,8 +5,7 @@
 
     <string name="my_points">내 포인트</string>
     <string name="my_promise_credit">내 신용등급</string>
-    <string name="past_promise">내 지난 약속</string>
-    <string name="enter_room">약속 참여하기</string>
+    <string name="logout">로그아웃</string>
 
     <string name="main_dummy"><![CDATA[<b>%1$s</b>]]> 님 \n약속을 꼭 지켜주세요</string>
     <string name="create_question_1"><![CDATA[<b>%1$s</b>]]> 님 \n어떤 약속을 만들까요?</string>

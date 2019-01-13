@@ -58,7 +58,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (TextUtils.isEmpty(PromissuApplication.getDiskCache().getUserToken()) && TextUtils.isEmpty(PromissuApplication.getDiskCache().getUserName())) {
+        if (TextUtils.isEmpty(PromissuApplication.getDiskCache().getUserToken())
+                && TextUtils.isEmpty(PromissuApplication.getDiskCache().getUserName())) {
             NavigationUtil.replaceWithLoginView(this);
         }
 
@@ -106,8 +107,18 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
                     menuItem.setChecked(true);
                     drawerLayout.closeDrawers();
                     // swap UI fragments here
-
-                    return true;
+                    switch (menuItem.getItemId()) {
+                        case R.id.nav_logout:
+                            PromissuApplication.getDiskCache().clearUserData();
+                            NavigationUtil.replaceWithLoginView(MainActivity.this);
+                            return true;
+                        case R.id.nav_my_points:
+                        case R.id.nav_promise_credit:
+                            Toast.makeText(MainActivity.this, "개발중인 기능입니다.", Toast.LENGTH_SHORT).show();
+                            return true;
+                        default:
+                            return false;
+                    }
                 });
         profileImage = navigationView.getHeaderView(0).findViewById(R.id.profile_image);
         userName = navigationView.getHeaderView(0).findViewById(R.id.profile_username);

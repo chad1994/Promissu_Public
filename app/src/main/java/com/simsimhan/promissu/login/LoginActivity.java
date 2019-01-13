@@ -2,11 +2,14 @@ package com.simsimhan.promissu.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.kakao.auth.AuthType;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
+import com.kakao.auth.api.AuthApi;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.LoginButton;
 import com.kakao.usermgmt.UserManagement;
@@ -16,12 +19,17 @@ import com.kakao.util.exception.KakaoException;
 import com.simsimhan.promissu.BuildConfig;
 import com.simsimhan.promissu.PromissuApplication;
 import com.simsimhan.promissu.R;
+import com.simsimhan.promissu.network.AuthAPI;
+import com.simsimhan.promissu.network.Login;
+import com.simsimhan.promissu.network.model.Promise;
 import com.simsimhan.promissu.util.NavigationUtil;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class LoginActivity extends AppCompatActivity implements ISessionCallback {
@@ -39,10 +47,8 @@ public class LoginActivity extends AppCompatActivity implements ISessionCallback
         }
 
         disposables = new CompositeDisposable();
-
-        Session.getCurrentSession().addCallback(this);
-        Session.getCurrentSession().checkAndImplicitOpen();
         loginButton = findViewById(R.id.btn_kakao_login);
+//        Session.getCurrentSession().open(AuthType.KAKAO_LOGIN_ALL, LoginActivity.this);
 //        StringUtil.getHashKey(this);  Kakao key hash
     }
 
@@ -55,10 +61,16 @@ public class LoginActivity extends AppCompatActivity implements ISessionCallback
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Session.getCurrentSession().addCallback(LoginActivity.this);
+//        Session.getCurrentSession().checkAndImplicitOpen();
+    }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
         Session.getCurrentSession().removeCallback(this);
         disposables.clear();
     }
@@ -68,9 +80,32 @@ public class LoginActivity extends AppCompatActivity implements ISessionCallback
         UserManagement.getInstance().me(new MeV2ResponseCallback() {
             @Override
             public void onSuccess(MeV2Response result) {
-                // TODO: go to main screen
                 PromissuApplication.getDiskCache().setUserData(result.getNickname(), result.getId(), result.getThumbnailImagePath());
-                NavigationUtil.replaceWithMainView(LoginActivity.this);
+                String userSessionToken = Session.getCurrentSession().getTokenInfo().getAccessToken();
+                if (BuildConfig.DEBUG) {
+                    Toast.makeText(LoginActivity.this, "[DEV] onSuccess() user token: " + userSessionToken, Toast.LENGTH_SHORT).show();
+                }
+
+                disposables.add(
+                        PromissuApplication.getRetrofit()
+                                .create(AuthAPI.class)
+                                .loginKakao(new Login.Request(userSessionToken))
+                                .doOnNext(next -> {
+                                    PromissuApplication.getDiskCache().setUserData(result.getNickname(), result.getId(), result.getThumbnailImagePath());
+                                    PromissuApplication.getDiskCache().setUserToken(next.getToken());
+                                })
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(onNext -> {
+                                    // save token
+                                    NavigationUtil.replaceWithMainView(LoginActivity.this);
+                                }, onError -> {
+                                    if (BuildConfig.DEBUG) {
+                                        Toast.makeText(LoginActivity.this, "[DEV] onSessionClosed() check log", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    Timber.e("onSessionClosed(): %s", onError.toString());
+                                }));
             }
 
             @Override
@@ -81,6 +116,8 @@ public class LoginActivity extends AppCompatActivity implements ISessionCallback
 
                 Timber.e("onSessionClosed(): %s", errorResult.toString());
             }
+
+
         });
     }
 

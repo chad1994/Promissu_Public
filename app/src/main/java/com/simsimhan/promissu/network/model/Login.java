@@ -1,4 +1,4 @@
-package com.simsimhan.promissu.network;
+package com.simsimhan.promissu.network.model;
 
 public class Login {
     public static class Response {

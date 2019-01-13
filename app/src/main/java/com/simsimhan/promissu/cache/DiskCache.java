@@ -65,7 +65,7 @@ public class DiskCache {
 
     @NonNull
     public String getUserName() {
-        return this.pref.getString(USER_NAME_TAG, "비등록 사용자");
+        return this.pref.getString(USER_NAME_TAG, "");
     }
 
     @NonNull
