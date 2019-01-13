@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.simsimhan.promissu.R;
 import com.simsimhan.promissu.network.model.Promise;
+import com.simsimhan.promissu.util.NavigationUtil;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class PromiseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolder) {
-            ((ItemViewHolder )holder).setItem(items.get(position), isPastPromise);
+            ((ItemViewHolder )holder).setItem(items.get(position), isPastPromise, appCompatActivity);
         }
 
     }
@@ -87,7 +88,7 @@ public class PromiseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             dateLeftLabel = itemView.findViewById(R.id.item_time_label);
         }
 
-        void setItem(Promise.Response response, boolean isPastPromise) {
+        void setItem(Promise.Response response, boolean isPastPromise, AppCompatActivity appCompatActivity) {
             title.setText(response.getName());
 
             if (isPastPromise) {
@@ -96,11 +97,23 @@ public class PromiseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                 //TODO: should use sonething else
                 dateLeftLabel.setText("" + (response.getTime().getMonth() + 1) + "." + (response.getTime().getDay() + 1));
+                container.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        NavigationUtil.openPromiseDetilScreen(appCompatActivity);
+                    }
+                });
             } else {
                 container.setBackgroundColor(ContextCompat.getColor(container.getContext(), R.color.background_grey));
                 dateLeft.setVisibility(View.VISIBLE);
                 dateLeft.setText("" + response.getTime().getDay());
                 dateLeftLabel.setText("일 남음");
+                container.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        NavigationUtil.openPromiseDetilScreen(appCompatActivity);
+                    }
+                });
             }
 
         }

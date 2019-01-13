@@ -14,8 +14,13 @@
     <color name="black_2">#969696</color>
     <color name="black_1">#666666</color>
     <color name="black">#333333</color>
+    <color name="grey10">#C2FFFFFF</color>
 
     <color name="background_grey">#f2f3fb</color>
     <color name="past_background_color">#f1edee</color>
     <color name="past_background_dark">#b37687</color>
+
+    <color name="sunday_color">#fd7e7b</color>
+    <color name="saturday_color">@color/grey_02</color>
+    <color name="purple">#636a9a</color>
 </resources>

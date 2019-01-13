@@ -16,4 +16,5 @@
     <string name="promise_date">날짜 - 2018. 12.25. 화요일</string>
     <string name="promise_time">시간 - 13:00</string>
     <string name="promise_location">약속 장소검색</string>
+    <string name="my_promise_name">내 약속 이름</string>
 </resources>

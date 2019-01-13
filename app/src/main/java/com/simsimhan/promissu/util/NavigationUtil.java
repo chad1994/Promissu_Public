@@ -6,6 +6,7 @@ import android.os.Build;
 import android.util.DisplayMetrics;
 
 import com.simsimhan.promissu.MainActivity;
+import com.simsimhan.promissu.detail.PromiseDetailActivity;
 import com.simsimhan.promissu.login.LoginActivity;
 import com.simsimhan.promissu.promise.create.CreatePromiseActivity;
 import com.simsimhan.promissu.view.DummyTutorialActivity;
@@ -66,5 +67,10 @@ public class NavigationUtil {
 
     private static String truncateAt(String string, int length) {
         return string.length() > length ? string.substring(0, length) : string;
+    }
+
+    public static void openPromiseDetilScreen(AppCompatActivity appCompatActivity) {
+        Intent intent = new Intent(appCompatActivity, PromiseDetailActivity.class);
+        appCompatActivity.startActivity(intent);
     }
 }
