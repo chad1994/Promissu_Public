@@ -24,7 +24,7 @@
     <color name="saturday_color">@color/grey_02</color>
     <color name="purple">#636a9a</color>
 
-    <color name="main_01">#8b8ddc</color>
+    <color name="main_01">#989ADE</color>
     <color name="main_02">#7d7ed2</color>
     <color name="main_03">#5f6ccc</color>
 </resources>

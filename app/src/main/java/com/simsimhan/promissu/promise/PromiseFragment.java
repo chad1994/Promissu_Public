@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.simsimhan.promissu.PromissuApplication;
 import com.simsimhan.promissu.R;
+import com.simsimhan.promissu.network.AuthAPI;
 import com.simsimhan.promissu.network.model.Promise;
 
 import org.joda.time.DateTime;
@@ -31,7 +33,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
-public class PromiseFragment extends Fragment  implements SwipeRefreshLayout.OnRefreshListener {
+public class PromiseFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     public static final String TAG = "PromiseFragment";
     private CompositeDisposable disposables;
     private String token;
@@ -112,8 +114,9 @@ public class PromiseFragment extends Fragment  implements SwipeRefreshLayout.OnR
 
     private void fetch() {
         disposables.add(
-//                api.getMyPrescriptions(token)
-                getDummyData()
+                PromissuApplication.getRetrofit()
+                        .create(AuthAPI.class)
+                        .getMyPromise(token, 0, 9)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(onNext -> {
@@ -127,7 +130,7 @@ public class PromiseFragment extends Fragment  implements SwipeRefreshLayout.OnR
 
     private Observable<List<Promise.Response>> getDummyData() {
         List<Promise.Response> list = new ArrayList<>();
-        for (int i = 0 ; i < 20; i++) {
+        for (int i = 0; i < 20; i++) {
             list.add(new Promise.Response(DateTime.now().plusDays((int) (Math.random() * 20)).toDate(), "asjdiof " + i));
         }
 

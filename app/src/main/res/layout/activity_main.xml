@@ -118,8 +118,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        android:layout_marginEnd="-65dp"
-        android:layout_marginRight="-65dp"
+        android:layout_marginEnd="-16dp"
+        android:layout_marginRight="-16dp"
         app:headerLayout="@layout/view_navigation_header"
         app:menu="@menu/drawer_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>

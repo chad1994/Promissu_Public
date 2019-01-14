@@ -3,17 +3,86 @@ package com.simsimhan.promissu.network.model;
 import java.util.Date;
 
 public class Promise {
-    public static class Response {
-        private final Date time;
-        private final String name;
+//    {
+//        "id":2,
+//        "title": "테스트 모임3",
+//        "description": "안녕하세요",
+//        "deposit":null,
+//        "date":"2018-01-11T04:00:00.000Z",
+//        "participants":5,
+//        "location_x":"37.499385",
+//        "location_y":"127.029204",
+//        "admin_id":"996635036",
+//        "status":0,
+//        "createdAt": "2019-01-13T11:52:59.000Z",
+//        "updatedAt":"2019-01-13T11:52:59.000Z"
+//    }
 
-        public Response(Date time, String name) {
-            this.time = time;
+    public static class Response {
+        private final int id;
+        private final String title;
+        private final Date date;
+        private final String name;
+        private final float location_x;
+        private final float location_y;
+        private final int status;
+        private final Date createAt;
+        private final Date updatedAt;
+
+        public Response(Date date, String name) {
+            this.id = -1;
+            this.title = "";
+            this.date = date;
             this.name = name;
+            this.location_x = 0f;
+            this.location_y = 0f;
+            this.status = 0;
+            this.createAt = null;
+            this.updatedAt = null;
         }
 
-        public Date getTime() {
-            return time;
+        public Response(int id, String title, Date date, String name, float location_x, float location_y, int status, Date createAt, Date updatedAt) {
+            this.id = id;
+            this.title = title;
+            this.date = date;
+            this.name = name;
+            this.location_x = location_x;
+            this.location_y = location_y;
+            this.status = status;
+            this.createAt = createAt;
+            this.updatedAt = updatedAt;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public float getLocation_x() {
+            return location_x;
+        }
+
+        public float getLocation_y() {
+            return location_y;
+        }
+
+        public int getStatus() {
+            return status;
+        }
+
+        public Date getCreateAt() {
+            return createAt;
+        }
+
+        public Date getUpdatedAt() {
+            return updatedAt;
+        }
+
+        public Date getDate() {
+            return date;
         }
 
         public String getName() {

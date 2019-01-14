@@ -96,7 +96,7 @@ public class PromiseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 dateLeft.setVisibility(View.GONE);
 
                 //TODO: should use sonething else
-                dateLeftLabel.setText("" + (response.getTime().getMonth() + 1) + "." + (response.getTime().getDay() + 1));
+                dateLeftLabel.setText("" + (response.getDate().getMonth() + 1) + "." + (response.getDate().getDay() + 1));
                 container.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -106,7 +106,7 @@ public class PromiseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             } else {
                 container.setBackgroundColor(ContextCompat.getColor(container.getContext(), R.color.background_grey));
                 dateLeft.setVisibility(View.VISIBLE);
-                dateLeft.setText("" + response.getTime().getDay());
+                dateLeft.setText("" + response.getDate().getDay());
                 dateLeftLabel.setText("일 남음");
                 container.setOnClickListener(new View.OnClickListener() {
                     @Override
