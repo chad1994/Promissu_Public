@@ -35,10 +35,10 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/font_16"
                 android:textStyle="bold" />
-
         </androidx.appcompat.widget.Toolbar>
 
         <com.miguelcatalan.materialsearchview.MaterialSearchView
+            style="@style/MaterialSearchViewStyle"
             android:id="@+id/search_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

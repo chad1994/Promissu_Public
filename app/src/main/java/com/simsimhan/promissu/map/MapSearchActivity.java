@@ -13,6 +13,7 @@ import com.simsimhan.promissu.BuildConfig;
 import com.simsimhan.promissu.PromissuApplication;
 import com.simsimhan.promissu.R;
 import com.simsimhan.promissu.map.search.DaumAPI;
+import com.simsimhan.promissu.map.search.FullListAdapter;
 import com.simsimhan.promissu.map.search.Item;
 import com.simsimhan.promissu.util.ScreenUtil;
 
@@ -21,6 +22,9 @@ import net.daum.mf.map.api.CameraUpdateFactory;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -39,6 +43,7 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
     private MaterialSearchView searchView;
     private MapView mapView;
     private CompositeDisposable disposables;
+    private FullListAdapter suggestionAdapter;
 
 
     @Override
@@ -47,20 +52,37 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
         setContentView(R.layout.activity_map_search);
         disposables = new CompositeDisposable();
 
-        ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.container);
+        ViewGroup mapViewContainer = findViewById(R.id.container);
+
+        suggestionAdapter = new FullListAdapter(new ArrayList<>(), item -> {
+            if (searchView == null || mapView == null || item == null) return;
+
+            searchView.dismissSuggestions();
+
+            MapPOIItem marker = new MapPOIItem();
+            marker.setItemName(item.getPlace_name());
+            marker.setTag(item.getId());
+            marker.setMapPoint(MapPoint.mapPointWithGeoCoord(item.getY(), item.getX()));
+            marker.setMarkerType(MapPOIItem.MarkerType.BluePin);
+            marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
+
+            mapView.addPOIItem(marker);
+            mapView.moveCamera(CameraUpdateFactory.newMapPoint(MapPoint.mapPointWithGeoCoord(item.getY(), item.getX())));
+        });
 
         searchView = findViewById(R.id.search_view);
+        searchView.setAdapter(suggestionAdapter);
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                //Do some magic
                 hideSoftKeyboard();
 
                 MapPoint.GeoCoordinate geoCoordinate = mapView.getMapCenterPoint().getMapPointGeoCoord();
                 double latitude = geoCoordinate.latitude;
                 double longitude = geoCoordinate.longitude;
 //                int radius = 10000;
-                int page = 1;
+//                int page = 1;
+                mapView.removeAllPOIItems();
 
                 disposables.add(
                         PromissuApplication.getDaumRetrofit()
@@ -69,31 +91,12 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(onNext -> {
-                                    Item firstResult = null;
                                     if (onNext != null && onNext.getDocuments() != null) {
-                                        for (int i = 0; i < onNext.getDocuments().size(); i++) {
-                                            Item item = onNext.getDocuments().get(i);
-
-                                            if (i == 0) {
-                                                firstResult = item;
-                                            }
-
-                                            Timber.d(item.toString());
-
-                                            MapPOIItem marker = new MapPOIItem();
-                                            marker.setItemName(item.getPlace_name());
-                                            marker.setTag(item.getId());
-                                            marker.setMapPoint(MapPoint.mapPointWithGeoCoord(item.getY(), item.getX()));
-                                            marker.setMarkerType(MapPOIItem.MarkerType.BluePin);
-                                            marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
-
-                                            mapView.addPOIItem(marker);
-                                        }
+                                        suggestionAdapter.replaceAll(onNext.getDocuments());
+                                        searchView.showSuggestions();
+                                    } else {
+                                        Toast.makeText(MapSearchActivity.this, "결과가 없습니다. 다시 검색해주세요.", Toast.LENGTH_SHORT).show();
                                     }
-
-//                                    if (firstResult != null) {
-//                                        mapView.moveCamera(CameraUpdateFactory.newMapPoint(MapPoint.mapPointWithGeoCoord(firstResult.getY(), firstResult.getX())));
-//                                    }
                                 }, onError -> {
                                     if (BuildConfig.DEBUG) {
                                         Toast.makeText(MapSearchActivity.this, "[DEV] onQueryTextSubmit() check log", Toast.LENGTH_SHORT).show();
@@ -101,13 +104,17 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
 
                                     Timber.e("onQueryTextSubmit(): %s", onError.toString());
                                 }));
-
-                return false;
+                return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 //Do some magic
+                if (suggestionAdapter.getCount() > 0) {
+                    suggestionAdapter.replaceAll(new ArrayList<>());
+                    return true;
+                }
+
                 return false;
             }
         });
@@ -120,7 +127,9 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
 
             @Override
             public void onSearchViewClosed() {
-                //Do some magic
+                suggestionAdapter.replaceAll(new ArrayList<>());
+                mapView.removeAllPOIItems();
+
             }
         });
         toolbar = findViewById(R.id.toolbar);
@@ -215,6 +224,7 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
 
     @Override
     public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
+        Timber.e("onPOIItemSelected(): mapPOIItem " + mapPOIItem.getItemName());
 
     }
 

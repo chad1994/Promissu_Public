@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="24dp"
+    android:paddingTop="16dp"
+    android:paddingRight="24dp"
+    android:paddingBottom="16dp">
+
+    <TextView
+        android:id="@+id/place_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="4dp"
+        android:textSize="@dimen/font_normal"
+        android:textStyle="bold"
+        tools:text="강남면역 냉면" />
+
+    <TextView
+        android:id="@+id/place_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="4dp"
+        android:textSize="@dimen/font_normal"
+        tools:text="서울특별시 서초구" />
+</LinearLayout>
