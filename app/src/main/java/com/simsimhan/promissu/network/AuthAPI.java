@@ -33,6 +33,6 @@ public interface AuthAPI {
             "Accept: application/json",
             "Content-Type: application/json"
     })
-    @GET("appointments?offset=0&limit=3")
+    @GET("appointments/past?offset=0&limit=3")
     Observable<List<Promise.Response>> getMyPromise(@Header("Authorization") String token, @Query("offset") int offset, @Query("limit") int limit);
 }

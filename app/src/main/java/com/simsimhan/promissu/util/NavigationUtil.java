@@ -8,6 +8,7 @@ import android.util.DisplayMetrics;
 import com.simsimhan.promissu.MainActivity;
 import com.simsimhan.promissu.detail.PromiseDetailActivity;
 import com.simsimhan.promissu.login.LoginActivity;
+import com.simsimhan.promissu.map.MapSearchActivity;
 import com.simsimhan.promissu.promise.create.CreatePromiseActivity;
 import com.simsimhan.promissu.view.DummyTutorialActivity;
 
@@ -27,6 +28,12 @@ public class NavigationUtil {
         Intent intent = new Intent(activity, CreatePromiseActivity.class);
         activity.startActivity(intent);
     }
+
+    public static void openMapScreen(AppCompatActivity activity) {
+        Intent intent = new Intent(activity, MapSearchActivity.class);
+        activity.startActivity(intent);
+    }
+
 
     public static void openEmailQuery(AppCompatActivity appCompatActivity, DisplayMetrics displayMetrics, String userId, String title) {
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:yol-support@medibloc.org"));

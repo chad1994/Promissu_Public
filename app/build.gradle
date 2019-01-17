@@ -98,6 +98,7 @@ dependencies {
     implementation 'io.requery:requery:1.5.1'
     implementation 'io.requery:requery-android:1.5.1'
     implementation 'com.romandanylyk:pageindicatorview:1.0.0@aar'
+    implementation 'com.miguelcatalan:materialsearchview:1.4.0'
 
     // for android
     annotationProcessor 'io.requery:requery-processor:1.5.1'

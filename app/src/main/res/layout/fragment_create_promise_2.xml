@@ -23,6 +23,8 @@
         android:hint="@string/promise_date">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:clickable="true"
+            android:focusable="false"
             android:id="@+id/promise_date"
             android:textSize="14sp"
             android:textColor="@color/black_1"
@@ -39,6 +41,8 @@
         android:hint="@string/promise_time">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:clickable="true"
+            android:focusable="false"
             android:id="@+id/promise_time_edit_text"
             android:textSize="14sp"
             android:textColor="@color/black_1"
@@ -57,6 +61,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/promise_location_edit_text"
             android:textSize="14sp"
+            android:clickable="true"
+            android:focusable="false"
             android:textColor="@color/black_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

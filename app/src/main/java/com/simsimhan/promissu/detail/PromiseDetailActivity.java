@@ -84,6 +84,7 @@ public class PromiseDetailActivity extends AppCompatActivity implements MapView.
         MapView mapView = new MapView(this);
         mapView.setMapViewEventListener(this);
         mapView.setPOIItemEventListener(this);
+
         ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.frame);
         mapViewContainer.addView(mapView);
 

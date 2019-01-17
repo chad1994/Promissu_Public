@@ -32,8 +32,10 @@ import timber.log.Timber;
 
 public class PromissuApplication extends MultiDexApplication {
     private static Retrofit retrofit;
+    private static Retrofit daumRetrofit;
     private static DiskCache diskCache;
     private static PromissuApplication instance;
+    private static final String DAUM_API_URL = "https://dapi.kakao.com/v2/";
 
 //    private static ReactiveEntityStore<Persistable> dataStore;
 
@@ -80,6 +82,13 @@ public class PromissuApplication extends MultiDexApplication {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
 
+        daumRetrofit = new Retrofit.Builder()
+                .client(getHttpClient())
+                .baseUrl(DAUM_API_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build();
+
         diskCache = new DiskCache(getSharedPreferences("USER_DISK_CACHE", MODE_PRIVATE));
     }
 
@@ -94,6 +103,10 @@ public class PromissuApplication extends MultiDexApplication {
 //    }
     public static Retrofit getRetrofit() {
         return retrofit;
+    }
+
+    public static Retrofit getDaumRetrofit() {
+        return daumRetrofit;
     }
 
     public static DiskCache getDiskCache() {

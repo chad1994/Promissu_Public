@@ -3,6 +3,9 @@ package com.simsimhan.promissu.util;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.inputmethod.InputMethod;
+import android.view.inputmethod.InputMethodManager;
 
 public class ScreenUtil {
     /**
@@ -27,5 +30,11 @@ public class ScreenUtil {
      */
     public static float convertPixelsToDp(float px, Context context){
         return px / ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+    }
+
+    public static void closeKeyboard(View focusedView, InputMethodManager imm) {
+        if (focusedView != null) {
+            imm.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
+        }
     }
 }

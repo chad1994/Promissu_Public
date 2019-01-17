@@ -114,9 +114,10 @@ public class PromiseFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     private void fetch() {
         disposables.add(
-                PromissuApplication.getRetrofit()
-                        .create(AuthAPI.class)
-                        .getMyPromise(token, 0, 9)
+//                PromissuApplication.getRetrofit()
+//                        .create(AuthAPI.class)
+//                        .getMyPromise(token, 0, 9)
+                getDummyData()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(onNext -> {

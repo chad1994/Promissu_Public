@@ -2,18 +2,24 @@
     tools:ignore="MissingTranslation">
     <string name="app_name" >Promissu</string>
     <string name="kakao_app_key">d88d1806085dfba3a3d329db2755f8e7</string>
+    <string name="rest_key">KakaoAK 22522353ecef5814da720a0f597d15c5</string>
 
     <string name="my_points">내 포인트</string>
     <string name="my_promise_credit">내 신용등급</string>
     <string name="logout">로그아웃</string>
+
+    <string name="will_you_logout">진짜 로그인 </string>
+    <string name="okay">확인</string>
+    <string name="cancel">취소</string>
 
     <string name="main_dummy"><![CDATA[<b>%1$s</b>]]> 님 \n약속을 꼭 지켜주세요</string>
     <string name="create_question_1"><![CDATA[<b>%1$s</b>]]> 님 \n어떤 약속을 만들까요?</string>
     <string name="create_question_2">언제\n어디서 만날까요?</string>
     <string name="create_question_3">대기시간을 정해주세요!</string>
     <string name="promise_title">방제목을 입력해주세요</string>
-    <string name="promise_date">날짜 - 2018. 12.25. 화요일</string>
-    <string name="promise_time">시간 - 13:00</string>
+    <string name="promise_date">약속 날짜</string>
+    <string name="promise_time">약속 시간</string>
     <string name="promise_location">약속 장소검색</string>
     <string name="my_promise_name">내 약속 이름</string>
+    <string name="go_search">장소를 검색하세요</string>
 </resources>

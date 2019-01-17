@@ -22,6 +22,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.simsimhan.promissu.util.DialogUtil;
 import com.simsimhan.promissu.util.NavigationUtil;
 import com.simsimhan.promissu.view.DummyTutorialActivity;
 
@@ -75,7 +76,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
 
         floatingActionButton.setOnClickListener(v -> {
             // do something here
-            NavigationUtil.openAddPromiseScreen(MainActivity.this);
+//            NavigationUtil.openAddPromiseScreen(MainActivity.this);
+            // TODO: remove this, for testing only
+            NavigationUtil.openMapScreen(MainActivity.this);
         });
 
         profileMainImage = findViewById(R.id.profile_image_main);
@@ -104,17 +107,20 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
-                    menuItem.setChecked(true);
-                    drawerLayout.closeDrawers();
                     // swap UI fragments here
                     switch (menuItem.getItemId()) {
                         case R.id.nav_logout:
-                            PromissuApplication.getDiskCache().clearUserData();
-                            NavigationUtil.replaceWithLoginView(MainActivity.this);
+                            DialogUtil.showSimpleDialog(MainActivity.this, R.string.logout, R.string.okay, R.string.cancel, "정말 로그아웃 하시겠습니까?", (dialog, which) -> {
+                                PromissuApplication.getDiskCache().clearUserData();
+                                NavigationUtil.replaceWithLoginView(MainActivity.this);
+                                drawerLayout.closeDrawers();
+                            });
+
                             return true;
                         case R.id.nav_my_points:
                         case R.id.nav_promise_credit:
                             Toast.makeText(MainActivity.this, "개발중인 기능입니다.", Toast.LENGTH_SHORT).show();
+                            drawerLayout.closeDrawers();
                             return true;
                         default:
                             return false;

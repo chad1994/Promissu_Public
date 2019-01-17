@@ -1,8 +1,7 @@
-<!-- Use DrawerLayout as root container for activity -->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
+    android:id="@+id/root_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,10 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
         <TextView
             android:id="@+id/toolbar_title"
@@ -28,112 +24,124 @@
     </androidx.appcompat.widget.Toolbar>
 
 
-    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-        android:id="@+id/calendarView"
+    <ScrollView
+        android:id="@+id/scrollview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingBottom="@dimen/activity_horizontal_margin"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:mcv_calendarMode="week"
-        app:mcv_dateTextAppearance="@style/CustomCalendarTextAppearance"
-        app:mcv_selectionMode="single"
-        app:mcv_showOtherDates="all"
-        app:mcv_weekDayTextAppearance="@style/CustomCalendarTextAppearance_White"
-        tools:visibility="gone" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:paddingBottom="86dp"
+        android:clipToPadding="false">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                android:id="@+id/calendarView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingBottom="@dimen/activity_horizontal_margin"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:mcv_calendarMode="week"
+                app:mcv_dateTextAppearance="@style/CustomCalendarTextAppearance"
+                app:mcv_selectionMode="single"
+                app:mcv_showOtherDates="all"
+                app:mcv_weekDayTextAppearance="@style/CustomCalendarTextAppearance_White"
+                tools:visibility="gone" />
 
 
-    <TextView
-        android:id="@+id/promise_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:padding="24dp"
-        android:text="32일 남았어요!"
-        android:textColor="@color/black"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/calendarView" />
+            <TextView
+                android:id="@+id/promise_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:padding="24dp"
+                android:text="32일 남았어요!"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/calendarView" />
 
-    <FrameLayout
-        android:id="@+id/frame"
-        android:layout_width="match_parent"
-        android:layout_height="320dp"
-        android:padding="24dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/promise_title" />
+            <FrameLayout
+                android:id="@+id/frame"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/promise_title" />
 
-    <TextView
-        android:id="@+id/promise_time"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:drawableLeft="@drawable/icon_time_mini"
-        android:drawablePadding="10dp"
-        android:paddingLeft="24dp"
-        android:paddingTop="4dp"
-        android:paddingRight="24dp"
-        android:paddingBottom="4dp"
-        android:text="9:00"
-        android:textColor="@color/black"
-        android:textSize="14sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/frame" />
-
-
-    <TextView
-
-        android:id="@+id/promise_location"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/icon_location_mini"
-        android:drawablePadding="10dp"
-        android:paddingLeft="24dp"
-        android:paddingTop="4dp"
-        android:paddingRight="24dp"
-        android:paddingBottom="4dp"
-        android:text="강남 마이캠퍼스"
-        android:textColor="@color/black"
-        android:textSize="14sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/promise_time" />
+            <TextView
+                android:id="@+id/promise_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:drawableLeft="@drawable/icon_time_mini"
+                android:drawablePadding="10dp"
+                android:paddingLeft="24dp"
+                android:paddingTop="4dp"
+                android:paddingRight="24dp"
+                android:paddingBottom="4dp"
+                android:text="9:00"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/frame" />
 
 
-    <TextView
-        android:id="@+id/promise_user"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/icon_user_mini"
-        android:drawablePadding="10dp"
-        android:paddingLeft="24dp"
-        android:paddingTop="4dp"
-        android:paddingRight="24dp"
-        android:paddingBottom="4dp"
-        android:text="56 "
-        android:textColor="@color/black"
-        android:textSize="14sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/promise_location" />
+            <TextView
+                android:id="@+id/promise_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/icon_location_mini"
+                android:drawablePadding="10dp"
+                android:paddingLeft="24dp"
+                android:paddingTop="4dp"
+                android:paddingRight="24dp"
+                android:paddingBottom="4dp"
+                android:text="강남 마이캠퍼스"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/promise_time" />
 
+
+            <TextView
+                android:id="@+id/promise_user"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/icon_user_mini"
+                android:drawablePadding="10dp"
+                android:paddingLeft="24dp"
+                android:paddingTop="4dp"
+                android:paddingRight="24dp"
+                android:text="56 "
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/promise_location" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="출석완료"
         android:textColor="@color/white"
-        app:backgroundTint="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_gravity="bottom"
+        android:layout_margin="24dp"
+        app:backgroundTint="@color/colorPrimary"/>
+</FrameLayout>
