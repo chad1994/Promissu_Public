@@ -1,5 +1,6 @@
 package com.simsimhan.promissu.util;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -13,9 +14,11 @@ import com.simsimhan.promissu.promise.create.CreatePromiseActivity;
 import com.simsimhan.promissu.view.DummyTutorialActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
 public class NavigationUtil {
     public static final int REQEUSET_LOGIN = 101;
+    public static final int REQUEST_MAP_SEARCH = 102;
 
     public static void replaceWithLoginView(AppCompatActivity activity) {
         Intent intent = new Intent(activity, LoginActivity.class);
@@ -29,9 +32,9 @@ public class NavigationUtil {
         activity.startActivity(intent);
     }
 
-    public static void openMapScreen(AppCompatActivity activity) {
+    public static void openMapScreen(Activity activity) {
         Intent intent = new Intent(activity, MapSearchActivity.class);
-        activity.startActivity(intent);
+        activity.startActivityForResult(intent, REQUEST_MAP_SEARCH);
     }
 
 

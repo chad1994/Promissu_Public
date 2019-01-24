@@ -58,7 +58,11 @@ public class PromissuApplication extends MultiDexApplication {
             Branch.getInstance(this);
         }
 
-        Stetho.initializeWithDefaults(this);
+
+        if (BuildConfig.DEBUG) {
+            Stetho.initializeWithDefaults(this);
+        }
+
         JodaTimeAndroid.init(this);
         LumberYard lumberYard = LumberYard.getInstance(this);
         lumberYard.cleanUp();

@@ -21,36 +21,42 @@ public class Promise {
     public static class Response {
         private final int id;
         private final String title;
+        private final int participants;
+        private final int waiting_time;
         private final Date date;
-        private final String name;
+        private final String description;
         private final float location_x;
         private final float location_y;
         private final int status;
-        private final Date createAt;
-        private final Date updatedAt;
+        private final Date start_datetime;
+        private final Date end_datetime;
 
-        public Response(Date date, String name) {
+        public Response(Date date, String description) {
             this.id = -1;
             this.title = "";
             this.date = date;
-            this.name = name;
+            this.description = description;
             this.location_x = 0f;
             this.location_y = 0f;
             this.status = 0;
-            this.createAt = null;
-            this.updatedAt = null;
+            this.start_datetime = null;
+            this.end_datetime = null;
+            this.waiting_time = 30;
+            this.participants = 4;
         }
 
-        public Response(int id, String title, Date date, String name, float location_x, float location_y, int status, Date createAt, Date updatedAt) {
+        public Response(int id, String title, int participants, Date date, String description, float location_x, float location_y, int status, Date createAt, Date updatedAt, int waiting_time) {
             this.id = id;
             this.title = title;
+            this.participants = participants;
             this.date = date;
-            this.name = name;
+            this.description = description;
             this.location_x = location_x;
             this.location_y = location_y;
             this.status = status;
-            this.createAt = createAt;
-            this.updatedAt = updatedAt;
+            this.start_datetime = createAt;
+            this.end_datetime = updatedAt;
+            this.waiting_time = waiting_time;
         }
 
         public int getId() {
@@ -73,20 +79,20 @@ public class Promise {
             return status;
         }
 
-        public Date getCreateAt() {
-            return createAt;
+        public Date getStartTime() {
+            return start_datetime;
         }
 
-        public Date getUpdatedAt() {
-            return updatedAt;
+        public Date getEndTime() {
+            return end_datetime;
         }
 
-        public Date getDate() {
-            return date;
+        public int getWaitTime() {
+            return waiting_time;
         }
 
-        public String getName() {
-            return name;
+        public String getDescription() {
+            return description;
         }
     }
 

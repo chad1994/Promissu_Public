@@ -1,5 +1,6 @@
 package com.simsimhan.promissu.promise.create;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +17,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
+import timber.log.Timber;
+
+import static com.simsimhan.promissu.util.NavigationUtil.REQUEST_MAP_SEARCH;
 
 public class CreatePromiseActivity extends AppCompatActivity {
     private Toolbar toolbar;
@@ -50,9 +54,30 @@ public class CreatePromiseActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowTitleEnabled(false);
         }
-
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_MAP_SEARCH) {
+            if (resultCode == RESULT_OK && data != null) {
+                String name = data.getStringExtra("selected_name");
+                String address = data.getStringExtra("selected_address");
+
+                Timber.d("onActivityResult(): " + name + " " + address);
+
+                for (int i = 0; i < adapterViewPager.getCount(); i++) {
+                    CreatePromiseFragment placeFragment = ((CreatePromiseFragment) adapterViewPager.getItem(i));
+                    if (placeFragment != null) {
+                        placeFragment.setPromisePlace(address + "(" + name + ")");
+                    }
+                }
+
+            } else {
+                Toast.makeText(this, "위치 선택 실수 캬캬캬", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
     private void changeStatusBarColor() {
         Window window = getWindow();

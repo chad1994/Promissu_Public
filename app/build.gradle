@@ -26,8 +26,9 @@ android {
     buildTypes {
         release {
             debuggable false
-            minifyEnabled true
-            signingConfig signingConfigs.release
+            minifyEnabled false
+
+//            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'SERVER_URL', '"http://123.123.123.123:3000"'
         }
@@ -35,7 +36,7 @@ android {
         debug {
 //            for test server
 //            buildConfigField 'String', 'SERVER_URL', '"http://13.209.137.202:3333"'
-
+            minifyEnabled false
             debuggable true
             buildConfigField 'String', 'SERVER_URL', '"http://ec2-54-180-109-96.ap-northeast-2.compute.amazonaws.com:3000"'
         }
@@ -43,7 +44,7 @@ android {
         staging {
             debuggable true
             minifyEnabled false
-            signingConfig signingConfigs.release
+//            signingConfig signingConfigs.release
             buildConfigField 'String', 'SERVER_URL', '"http://ec2-54-180-109-96.ap-northeast-2.compute.amazonaws.com:3000"'
             matchingFallbacks = ['release', 'debug']
         }

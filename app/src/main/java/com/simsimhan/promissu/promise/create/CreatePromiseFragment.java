@@ -12,6 +12,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.simsimhan.promissu.PromissuApplication;
 import com.simsimhan.promissu.R;
 import com.simsimhan.promissu.cache.DiskCache;
+import com.simsimhan.promissu.util.NavigationUtil;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -21,6 +22,7 @@ import java.util.Calendar;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import timber.log.Timber;
 
 public class CreatePromiseFragment extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     private int pageKey;
@@ -53,6 +55,7 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
     private TextInputEditText dateEditText;
     private TextInputEditText timeEditText;
     private TextInputEditText promisePlace;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = null;
@@ -69,43 +72,32 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
             question.setText(Html.fromHtml(getString(R.string.create_question_2)));
 
             dateEditText = view.findViewById(R.id.promise_date);
-            dateEditText.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Calendar now = Calendar.getInstance();
-                    DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
-                            CreatePromiseFragment.this,
-                            now.get(Calendar.YEAR),
-                            now.get(Calendar.MONTH),
-                            now.get(Calendar.DAY_OF_MONTH));
+            dateEditText.setOnClickListener(v -> {
+                Calendar now = Calendar.getInstance();
+                DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
+                        CreatePromiseFragment.this,
+                        now.get(Calendar.YEAR),
+                        now.get(Calendar.MONTH),
+                        now.get(Calendar.DAY_OF_MONTH));
 
 
-                    datePickerDialog.showYearPickerFirst(true);
-                    datePickerDialog.show(getFragmentManager(), "DatePickerDialog");
-                }
+                datePickerDialog.showYearPickerFirst(true);
+                datePickerDialog.show(getFragmentManager(), "DatePickerDialog");
             });
 
             timeEditText = view.findViewById(R.id.promise_time_edit_text);
-            timeEditText.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(CreatePromiseFragment.this,
-                            now.getHourOfDay(),
-                            now.getMinuteOfHour(),
-                            true
-                    );
+            timeEditText.setOnClickListener(v -> {
+                TimePickerDialog timePickerDialog = TimePickerDialog.newInstance(CreatePromiseFragment.this,
+                        now.getHourOfDay(),
+                        now.getMinuteOfHour(),
+                        true
+                );
 
-                    timePickerDialog.show(getFragmentManager(), "TimePickerDialog");
-                }
+                timePickerDialog.show(getFragmentManager(), "TimePickerDialog");
             });
 
             promisePlace = view.findViewById(R.id.promise_location_edit_text);
-            promisePlace.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
+            promisePlace.setOnClickListener(v -> NavigationUtil.openMapScreen(getActivity()));
         } else {
             view = inflater.inflate(R.layout.fragment_create_promise_3, container, false);
             TextView question = view.findViewById(R.id.create_question_text);
@@ -115,6 +107,14 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
             EditText editText = view.findViewById(R.id.promise_title_edit_text);
         }
         return view;
+    }
+
+    public void setPromisePlace(String placeText) {
+        Timber.d("setPromisePlace(): " + placeText + " " + promisePlace);
+
+        if (promisePlace != null) {
+            promisePlace.setText(placeText);
+        }
     }
 
     @Override

@@ -27,12 +27,10 @@ public interface AuthAPI {
     @POST("appointment")
     Observable<Promise.Request> createPromise(@Header("Authorization") String token, @Body Promise.Request promiseRequest);
 
-
-
     @Headers({
             "Accept: application/json",
             "Content-Type: application/json"
     })
-    @GET("appointments/past?offset=0&limit=3")
-    Observable<List<Promise.Response>> getMyPromise(@Header("Authorization") String token, @Query("offset") int offset, @Query("limit") int limit);
+    @GET("appointments")
+    Observable<List<Promise.Response>> getMyPromise(@Header("Authorization") String token, @Query("offset") int offset, @Query("limit") int limit, @Query("type") String type);
 }

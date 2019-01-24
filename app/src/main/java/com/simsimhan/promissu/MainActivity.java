@@ -24,7 +24,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.simsimhan.promissu.util.DialogUtil;
 import com.simsimhan.promissu.util.NavigationUtil;
-import com.simsimhan.promissu.view.DummyTutorialActivity;
 
 import org.json.JSONObject;
 
@@ -44,8 +43,9 @@ import timber.log.Timber;
 public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnTabSelectedListener {
     private static final boolean DEBUG = BuildConfig.DEBUG;
     private static final String TAG = "MainActivity";
-    private FrameLayout frameView;
+
 //    private FragmentManager fragmentManager;
+    private FrameLayout frameView;
     private Animation fabOpen, fabClose;
     private DrawerLayout drawerLayout;
     private ImageView profileImage;
@@ -76,9 +76,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
 
         floatingActionButton.setOnClickListener(v -> {
             // do something here
-//            NavigationUtil.openAddPromiseScreen(MainActivity.this);
+            NavigationUtil.openAddPromiseScreen(MainActivity.this);
             // TODO: remove this, for testing only
-            NavigationUtil.openMapScreen(MainActivity.this);
+//            NavigationUtil.openMapScreen(MainActivity.this);
         });
 
         profileMainImage = findViewById(R.id.profile_image_main);

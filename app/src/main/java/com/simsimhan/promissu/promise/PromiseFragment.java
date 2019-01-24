@@ -23,6 +23,8 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,7 +43,9 @@ public class PromiseFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private PromiseAdapter adapter;
     private RecyclerView recyclerView;
     private Toolbar toolbar;
+    private ImageView emptyImageView;
     private boolean isPastPromise;
+    private ConstraintLayout emptyHolder;
 
     public static PromiseFragment newInstance(int position, String title, boolean isPastPromise) {
         PromiseFragment fragment = new PromiseFragment();
@@ -63,6 +67,7 @@ public class PromiseFragment extends Fragment implements SwipeRefreshLayout.OnRe
             isPastPromise = getArguments().getBoolean("is_past_key");
         }
 
+        token = PromissuApplication.getDiskCache().getUserToken();
         adapter = new PromiseAdapter((AppCompatActivity) getActivity(), new ArrayList<>(), isPastPromise);
         disposables = new CompositeDisposable();
     }
@@ -73,6 +78,10 @@ public class PromiseFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
         recyclerView = view.findViewById(R.id.promise_recycler_view);
         swipeContainer = view.findViewById(R.id.swipe_container);
+        emptyHolder = view.findViewById(R.id.empty_view_holder);
+        emptyImageView = view.findViewById(R.id.empty_view_image);
+
+        emptyHolder.setVisibility(View.GONE);
         swipeContainer.setOnRefreshListener(this);
         swipeContainer.setColorSchemeResources(R.color.colorPrimary, android.R.color.holo_green_dark, android.R.color.holo_orange_dark, android.R.color.holo_blue_dark);
         swipeContainer.setProgressViewOffset(false, 0, getResources().getDimensionPixelSize(R.dimen.refresher_start));
@@ -90,6 +99,7 @@ public class PromiseFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 }
             });
         }
+
         return view;
     }
 
@@ -114,19 +124,31 @@ public class PromiseFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     private void fetch() {
         disposables.add(
-//                PromissuApplication.getRetrofit()
-//                        .create(AuthAPI.class)
-//                        .getMyPromise(token, 0, 9)
-                getDummyData()
+                PromissuApplication.getRetrofit()
+                        .create(AuthAPI.class)
+                        .getMyPromise("Bearer " + token, 0, 9, isPastPromise ? "past" : "future")
+//                getDummyData()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(onNext -> {
                             swipeContainer.setRefreshing(false);
                             adapter.reset(onNext);
+                            setEmptyViewVisible(onNext.size() <= 0);
                         }, onError -> {
                             swipeContainer.setRefreshing(false);
                             Timber.e(onError);
+                            setEmptyViewVisible(true);
                         }));
+    }
+
+    private void setEmptyViewVisible(boolean setVisible) {
+        if (emptyHolder != null && recyclerView != null && emptyImageView != null) {
+//            if (setVisible) recyclerView.scrollTo(0, 0);
+            emptyHolder.setVisibility(setVisible ? View.VISIBLE : View.INVISIBLE);
+//            recyclerView.setVisibility(setVisible ? View.INVISIBLE : View.VISIBLE);
+            emptyImageView.setImageDrawable(ContextCompat.getDrawable(emptyImageView.getContext(), isPastPromise ? R.drawable.no_appointment_red : R.drawable.no_appointment_blue));
+
+        }
     }
 
     private Observable<List<Promise.Response>> getDummyData() {
@@ -136,7 +158,6 @@ public class PromiseFragment extends Fragment implements SwipeRefreshLayout.OnRe
         }
 
         return Observable.just(list);
-
     }
 
     @Override

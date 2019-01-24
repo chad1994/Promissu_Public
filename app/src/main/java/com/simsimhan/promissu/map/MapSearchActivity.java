@@ -1,7 +1,9 @@
 package com.simsimhan.promissu.map;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -17,14 +19,14 @@ import com.simsimhan.promissu.map.search.FullListAdapter;
 import com.simsimhan.promissu.map.search.Item;
 import com.simsimhan.promissu.util.ScreenUtil;
 
-import net.daum.mf.map.api.CameraUpdate;
 import net.daum.mf.map.api.CameraUpdateFactory;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -44,6 +46,8 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
     private MapView mapView;
     private CompositeDisposable disposables;
     private FullListAdapter suggestionAdapter;
+    private String selectedPromiseLocationName = "";
+    private String selectedPromiseLocationAddress = "";
 
 
     @Override
@@ -65,6 +69,9 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
             marker.setMapPoint(MapPoint.mapPointWithGeoCoord(item.getY(), item.getX()));
             marker.setMarkerType(MapPOIItem.MarkerType.BluePin);
             marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
+
+            selectedPromiseLocationName = item.getPlace_name();
+            selectedPromiseLocationAddress = item.getAddress_name();
 
             mapView.addPOIItem(marker);
             mapView.moveCamera(CameraUpdateFactory.newMapPoint(MapPoint.mapPointWithGeoCoord(item.getY(), item.getX())));
@@ -224,13 +231,20 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
 
     @Override
     public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
-        Timber.e("onPOIItemSelected(): mapPOIItem " + mapPOIItem.getItemName());
 
     }
 
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
-
+        if (!TextUtils.isEmpty(selectedPromiseLocationAddress) && !TextUtils.isEmpty(selectedPromiseLocationName)) {
+            Intent data = new Intent();
+            data.putExtra("selected_name", selectedPromiseLocationName);
+            data.putExtra("selected_address", selectedPromiseLocationAddress);
+            setResult(RESULT_OK, data);
+            finish();
+        } else {
+            Timber.e("onPOIItemSelected(): mapPOIItem " + mapPOIItem.getItemName());
+        }
     }
 
     @Override
