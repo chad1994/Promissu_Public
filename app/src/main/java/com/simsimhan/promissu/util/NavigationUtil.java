@@ -10,6 +10,8 @@ import com.simsimhan.promissu.MainActivity;
 import com.simsimhan.promissu.detail.PromiseDetailActivity;
 import com.simsimhan.promissu.login.LoginActivity;
 import com.simsimhan.promissu.map.MapSearchActivity;
+import com.simsimhan.promissu.network.model.Promise;
+import com.simsimhan.promissu.promise.PendingPromiseActivity;
 import com.simsimhan.promissu.promise.create.CreatePromiseActivity;
 import com.simsimhan.promissu.view.DummyTutorialActivity;
 
@@ -82,6 +84,12 @@ public class NavigationUtil {
 
     public static void openPromiseDetilScreen(AppCompatActivity appCompatActivity) {
         Intent intent = new Intent(appCompatActivity, PromiseDetailActivity.class);
+        appCompatActivity.startActivity(intent);
+    }
+
+    public static void openPendingScreen(AppCompatActivity appCompatActivity, Promise.Response promise) {
+        Intent intent = new Intent(appCompatActivity, PendingPromiseActivity.class);
+        intent.putExtra("promise", promise);
         appCompatActivity.startActivity(intent);
     }
 }

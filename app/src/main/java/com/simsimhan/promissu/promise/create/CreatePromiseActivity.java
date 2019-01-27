@@ -13,6 +13,7 @@ import com.simsimhan.promissu.PromissuApplication;
 import com.simsimhan.promissu.R;
 import com.simsimhan.promissu.network.AuthAPI;
 import com.simsimhan.promissu.network.model.Promise;
+import com.simsimhan.promissu.util.NavigationUtil;
 
 import org.joda.time.DateTime;
 
@@ -173,6 +174,8 @@ public class CreatePromiseActivity extends AppCompatActivity {
                             // TODO: do something here
 
                             setResult(RESULT_OK);
+
+                            NavigationUtil.openPendingScreen(CreatePromiseActivity.this, onNext);
                             finish();
                         }, onError -> {
                             Timber.e(onError);

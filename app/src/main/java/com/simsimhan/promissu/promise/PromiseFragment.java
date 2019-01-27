@@ -150,15 +150,6 @@ public class PromiseFragment extends Fragment implements SwipeRefreshLayout.OnRe
         }
     }
 
-    private Observable<List<Promise.Response>> getDummyData() {
-        List<Promise.Response> list = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            list.add(new Promise.Response(DateTime.now().plusDays((int) (Math.random() * 20)).toDate(), "asjdiof " + i));
-        }
-
-        return Observable.just(list);
-    }
-
     @Override
     public void onRefresh() {
         fetch();

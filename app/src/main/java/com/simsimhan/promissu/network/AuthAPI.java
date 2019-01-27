@@ -25,7 +25,7 @@ public interface AuthAPI {
             "Content-Type: application/json"
     })
     @POST("appointment")
-    Observable<Promise.Request> createPromise(@Header("Authorization") String token, @Body Promise.Request promiseRequest);
+    Observable<Promise.Response> createPromise(@Header("Authorization") String token, @Body Promise.Request promiseRequest);
 
     @Headers({
             "Accept: application/json",

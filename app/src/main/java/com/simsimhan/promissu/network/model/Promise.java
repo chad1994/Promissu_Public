@@ -1,5 +1,8 @@
 package com.simsimhan.promissu.network.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Date;
 
 public class Promise {
@@ -18,38 +21,23 @@ public class Promise {
 //        "updatedAt":"2019-01-13T11:52:59.000Z"
 //    }
 
-    public static class Response {
+    public static class Response implements Parcelable {
         private final int id;
         private final String title;
         private final int participants;
         private final int waiting_time;
-        private final Date date;
         private final String description;
         private final float location_x;
         private final float location_y;
         private final int status;
         private final Date start_datetime;
         private final Date end_datetime;
+        private final Date createdAt;
 
-        public Response(Date date, String description) {
-            this.id = -1;
-            this.title = "";
-            this.date = date;
-            this.description = description;
-            this.location_x = 0f;
-            this.location_y = 0f;
-            this.status = 0;
-            this.start_datetime = null;
-            this.end_datetime = null;
-            this.waiting_time = 30;
-            this.participants = 4;
-        }
-
-        public Response(int id, String title, int participants, Date date, String description, float location_x, float location_y, int status, Date createAt, Date updatedAt, int waiting_time) {
+        public Response(int id, String title, int participants, Date date, String description, float location_x, float location_y, int status, Date createAt, Date updatedAt, int waiting_time, Date createdAt) {
             this.id = id;
             this.title = title;
             this.participants = participants;
-            this.date = date;
             this.description = description;
             this.location_x = location_x;
             this.location_y = location_y;
@@ -57,7 +45,54 @@ public class Promise {
             this.start_datetime = createAt;
             this.end_datetime = updatedAt;
             this.waiting_time = waiting_time;
+            this.createdAt = createdAt;
         }
+
+        protected Response(Parcel in) {
+            id = in.readInt();
+            title = in.readString();
+            participants = in.readInt();
+            waiting_time = in.readInt();
+            description = in.readString();
+            location_x = in.readFloat();
+            location_y = in.readFloat();
+            status = in.readInt();
+            end_datetime = new Date(in.readLong());
+            start_datetime = new Date(in.readLong());
+            createdAt = new Date(in.readLong());
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(id);
+            dest.writeString(title);
+            dest.writeInt(participants);
+            dest.writeInt(waiting_time);
+            dest.writeString(description);
+            dest.writeFloat(location_x);
+            dest.writeFloat(location_y);
+            dest.writeInt(status);
+            dest.writeLong(end_datetime.getTime());
+            dest.writeLong(start_datetime.getTime());
+            dest.writeLong(createdAt.getTime());
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public static final Creator<Response> CREATOR = new Creator<Response>() {
+            @Override
+            public Response createFromParcel(Parcel in) {
+                return new Response(in);
+            }
+
+            @Override
+            public Response[] newArray(int size) {
+                return new Response[size];
+            }
+        };
 
         public int getId() {
             return id;
@@ -93,6 +128,14 @@ public class Promise {
 
         public String getDescription() {
             return description;
+        }
+
+        public int getParticipants() {
+            return participants;
+        }
+
+        public Date getCreatedAt() {
+            return createdAt;
         }
     }
 

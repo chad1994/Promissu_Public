@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_date"
+            android:title="날짜 시간" />
+        <item
+            android:id="@+id/nav_promise_credit"
+            android:title="장소" />
+        <item
+            android:id="@+id/nav_logout"
+            android:title="친구보기" />
+    </group>
+</menu>

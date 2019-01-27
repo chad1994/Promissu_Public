@@ -22,4 +22,5 @@
     <string name="promise_location">약속 장소검색</string>
     <string name="my_promise_name">내 약속 이름</string>
     <string name="go_search">장소를 검색하세요</string>
+    <string name="user_list">친구목록</string>
 </resources>

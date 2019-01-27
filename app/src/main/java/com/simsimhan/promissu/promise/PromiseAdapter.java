@@ -110,7 +110,11 @@ public class PromiseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 container.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        NavigationUtil.openPromiseDetilScreen(appCompatActivity);
+                        if (response.getStatus() == 0) {
+                            NavigationUtil.openPendingScreen(appCompatActivity, response);
+                        } else {
+                            NavigationUtil.openPromiseDetilScreen(appCompatActivity);
+                        }
                     }
                 });
             }

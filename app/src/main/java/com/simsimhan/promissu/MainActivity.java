@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         String userNameText = PromissuApplication.getDiskCache().getUserName();
         mainText.setText(Html.fromHtml(getString(R.string.main_dummy, userNameText)));
         userName.setText(userNameText);
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(true);
