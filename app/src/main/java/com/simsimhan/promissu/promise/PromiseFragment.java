@@ -127,7 +127,6 @@ public class PromiseFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 PromissuApplication.getRetrofit()
                         .create(AuthAPI.class)
                         .getMyPromise("Bearer " + token, 0, 9, isPastPromise ? "past" : "future")
-//                getDummyData()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(onNext -> {
@@ -145,9 +144,9 @@ public class PromiseFragment extends Fragment implements SwipeRefreshLayout.OnRe
         if (emptyHolder != null && recyclerView != null && emptyImageView != null) {
 //            if (setVisible) recyclerView.scrollTo(0, 0);
             emptyHolder.setVisibility(setVisible ? View.VISIBLE : View.INVISIBLE);
-//            recyclerView.setVisibility(setVisible ? View.INVISIBLE : View.VISIBLE);
+            recyclerView.setBackgroundColor(ContextCompat.getColor(recyclerView.getContext(), isPastPromise ? R.color.past_background_color : R.color.background_grey));
             emptyImageView.setImageDrawable(ContextCompat.getDrawable(emptyImageView.getContext(), isPastPromise ? R.drawable.no_appointment_red : R.drawable.no_appointment_blue));
-
+            emptyHolder.setBackgroundColor(ContextCompat.getColor(emptyHolder.getContext(), isPastPromise ? R.color.past_background_color : R.color.background_grey));
         }
     }
 

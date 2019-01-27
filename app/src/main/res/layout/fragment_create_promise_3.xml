@@ -14,53 +14,81 @@
         android:layout_marginTop="20dp"
         android:textColor="@color/black_1"
         android:textSize="22sp"
-        tools:text="@string/create_question_1" />
+        tools:text="@string/create_question_3" />
 
     <RadioGroup
+        android:id="@+id/radio_group"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layout_weight="1"
         android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/rg_btn1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
             android:layout_weight="1"
             android:background="@drawable/round_background_radio"
             android:button="@android:color/transparent"
             android:gravity="center"
-            android:text="1시간뒤" />
+            android:text="1시간뒤"
+            android:textColor="@color/colorPrimary" />
 
         <RadioButton
             android:id="@+id/rg_btn2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
             android:layout_weight="1"
             android:background="@drawable/round_background_radio"
             android:button="@android:color/transparent"
             android:gravity="center"
-            android:text="2시간뒤" />
+            android:text="2시간뒤"
+            android:textColor="@color/colorPrimary" />
 
         <RadioButton
             android:id="@+id/rg_btn3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
             android:layout_weight="1"
             android:background="@drawable/round_background_radio"
             android:button="@android:color/transparent"
             android:gravity="center"
-            android:text="24시간뒤" />
+            android:text="8시간뒤"
+            android:textColor="@color/colorPrimary" />
     </RadioGroup>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+
+        <TextView
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/create_question_timer"
+            android:layout_width="185dp"
+            android:layout_height="185dp"
+            android:text="7:00"
+            android:textSize="45sp"
+            android:textColor="@color/colorPrimary"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:background="@drawable/rounded_line_circle" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/create_promise_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="약속 만들기"
         android:textColor="@color/white"
-        app:backgroundTint="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:backgroundTint="@color/colorPrimary" />
 </LinearLayout>

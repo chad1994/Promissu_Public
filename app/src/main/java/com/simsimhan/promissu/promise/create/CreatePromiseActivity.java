@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -11,20 +12,28 @@ import android.widget.Toast;
 import com.simsimhan.promissu.PromissuApplication;
 import com.simsimhan.promissu.R;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import timber.log.Timber;
 
 import static com.simsimhan.promissu.util.NavigationUtil.REQUEST_MAP_SEARCH;
 
 public class CreatePromiseActivity extends AppCompatActivity {
+    private static final int NUM_ITEMS = 3;
     private Toolbar toolbar;
     private ViewPager viewPager;
     private CreatePromiseFragmentPagerAdapter adapterViewPager;
+    private CreatePromiseFragment firstFragment;
+    private CreatePromiseFragment secondFragment;
+    private CreatePromiseFragment thirdFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,7 +45,6 @@ public class CreatePromiseActivity extends AppCompatActivity {
 //            startActivity(intent);
             Toast.makeText(this, "좌우로 미세요.", Toast.LENGTH_LONG).show();
         }
-
 
         adapterViewPager = new CreatePromiseFragmentPagerAdapter(getSupportFragmentManager());
         toolbar = findViewById(R.id.toolbar);
@@ -56,29 +64,6 @@ public class CreatePromiseActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_MAP_SEARCH) {
-            if (resultCode == RESULT_OK && data != null) {
-                String name = data.getStringExtra("selected_name");
-                String address = data.getStringExtra("selected_address");
-
-                Timber.d("onActivityResult(): " + name + " " + address);
-
-                for (int i = 0; i < adapterViewPager.getCount(); i++) {
-                    CreatePromiseFragment placeFragment = ((CreatePromiseFragment) adapterViewPager.getItem(i));
-                    if (placeFragment != null) {
-                        placeFragment.setPromisePlace(address + "(" + name + ")");
-                    }
-                }
-
-            } else {
-                Toast.makeText(this, "위치 선택 실수 캬캬캬", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
     private void changeStatusBarColor() {
         Window window = getWindow();
 
@@ -91,4 +76,67 @@ public class CreatePromiseActivity extends AppCompatActivity {
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.statusBarColor));
         }
     }
+
+    public void createPromise() {
+        String title = "";
+        if (firstFragment != null) {
+            title = firstFragment.getTitle();
+        }
+
+        if (secondFragment != null) {
+            
+        }
+    }
+
+
+    public class CreatePromiseFragmentPagerAdapter extends FragmentPagerAdapter {
+        CreatePromiseFragmentPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        @Nullable
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                case 1:
+                case 2:
+                    return CreatePromiseFragment.newInstance(position, (String) getPageTitle(position));
+                default:
+                    return null;
+            }
+        }
+
+        @NonNull
+        @Override
+        public Object instantiateItem(@NonNull ViewGroup container, int position) {
+            Fragment createdFragment = (Fragment) super.instantiateItem(container, position);
+
+            switch (position) {
+                case 0:
+                    firstFragment = (CreatePromiseFragment) createdFragment;
+                    break;
+                case 1:
+                    secondFragment = (CreatePromiseFragment) createdFragment;
+                    break;
+                case 2:
+                    thirdFragment = (CreatePromiseFragment) createdFragment;
+                    break;
+            }
+
+            return createdFragment;
+        }
+
+        @Override
+        public int getCount() {
+            return NUM_ITEMS;
+        }
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return (position + 1) + " 단계";
+        }
+    }
+
 }

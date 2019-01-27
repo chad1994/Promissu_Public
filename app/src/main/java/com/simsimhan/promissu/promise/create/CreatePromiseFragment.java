@@ -1,17 +1,24 @@
 package com.simsimhan.promissu.promise.create;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.simsimhan.promissu.PromissuApplication;
 import com.simsimhan.promissu.R;
 import com.simsimhan.promissu.cache.DiskCache;
+import com.simsimhan.promissu.map.MapSearchActivity;
 import com.simsimhan.promissu.util.NavigationUtil;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -21,13 +28,28 @@ import org.joda.time.DateTime;
 import java.util.Calendar;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import timber.log.Timber;
+
+import static android.app.Activity.RESULT_OK;
+import static com.simsimhan.promissu.util.NavigationUtil.REQUEST_MAP_SEARCH;
 
 public class CreatePromiseFragment extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     private int pageKey;
     private String username;
     private DateTime now;
+
+    private TextInputEditText dateEditText;
+    private TextInputEditText timeEditText;
+    private TextInputEditText promisePlace;
+    private RadioButton radioButtonFirst;
+    private RadioButton radioButtonSecond;
+    private RadioButton radioButtonThird;
+    private TextView creatPromiseTimer;
+    private TextInputEditText promiseTitle;
 
     public static Fragment newInstance(int position, String title) {
         CreatePromiseFragment fragment = new CreatePromiseFragment();
@@ -52,20 +74,16 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
         now = new DateTime();
     }
 
-    private TextInputEditText dateEditText;
-    private TextInputEditText timeEditText;
-    private TextInputEditText promisePlace;
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = null;
+
         if (pageKey == 0) {
             view = inflater.inflate(R.layout.fragment_create_promise_1, container, false);
             TextView question = view.findViewById(R.id.create_question_text);
             question.setText(Html.fromHtml(getString(R.string.create_question_1, username)));
 
-//            TextInputEditText inputEditText = view.findViewById(R.id.promise_title_layout);
-//            EditText editText = view.findViewById(R.id.promise_title_edit_text);
+            promiseTitle = view.findViewById(R.id.promise_title_edit_text);
         } else if (pageKey == 1) {
             view = inflater.inflate(R.layout.fragment_create_promise_2, container, false);
             TextView question = view.findViewById(R.id.create_question_text);
@@ -97,20 +115,93 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
             });
 
             promisePlace = view.findViewById(R.id.promise_location_edit_text);
-            promisePlace.setOnClickListener(v -> NavigationUtil.openMapScreen(getActivity()));
+            promisePlace.setOnClickListener(v -> {
+//                NavigationUtil.openMapScreen(getActivity());
+                Intent intent = new Intent(getActivity(), MapSearchActivity.class);
+                startActivityForResult(intent, REQUEST_MAP_SEARCH);
+            });
         } else {
             view = inflater.inflate(R.layout.fragment_create_promise_3, container, false);
             TextView question = view.findViewById(R.id.create_question_text);
-            question.setText(Html.fromHtml(getString(R.string.create_question_1, username)));
+            question.setText(getString(R.string.create_question_3));
+            RadioGroup radioGroup = view.findViewById(R.id.radio_group);
+            radioButtonFirst = view.findViewById(R.id.rg_btn1);
+            radioButtonSecond = view.findViewById(R.id.rg_btn2);
+            radioButtonThird = view.findViewById(R.id.rg_btn3);
+            radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+                Activity activity = getActivity();
+                if (activity == null
+                        || radioButtonFirst == null
+                        || radioButtonSecond == null
+                        || radioButtonThird == null) return;
 
-            TextInputEditText inputEditText = view.findViewById(R.id.promise_title_layout);
-            EditText editText = view.findViewById(R.id.promise_title_edit_text);
+                radioButtonFirst.setTextColor(ContextCompat.getColor(activity, R.color.colorPrimary));
+                radioButtonSecond.setTextColor(ContextCompat.getColor(activity, R.color.colorPrimary));
+                radioButtonThird.setTextColor(ContextCompat.getColor(activity, R.color.colorPrimary));
+
+                if (checkedId != -1) {
+                    RadioButton radioButton = group.findViewById(checkedId);
+                    radioButton.setTextColor(ContextCompat.getColor(activity, R.color.white));
+
+                    setPromiseTime(checkedId);
+                }
+
+            });
+
+            AppCompatButton createPromiseButton = view.findViewById(R.id.create_promise_button);
+            createPromiseButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CreatePromiseActivity activity = ((CreatePromiseActivity)getActivity());
+                    activity.createPromise();
+                }
+            });
+            creatPromiseTimer = view.findViewById(R.id.create_question_timer);
+            addFromCurrentTime(0);
+
         }
         return view;
     }
 
-    public void setPromisePlace(String placeText) {
-        Timber.d("setPromisePlace(): " + placeText + " " + promisePlace);
+    private void setPromiseTime(final int checkedId) {
+        final int first = radioButtonFirst.getId();
+        final int second = radioButtonSecond.getId();
+        final int third = radioButtonThird.getId();
+
+        if (checkedId == first) {
+            addFromCurrentTime(60);
+        } else if (checkedId == second) {
+            addFromCurrentTime(120);
+        } else if (checkedId == third) {
+            addFromCurrentTime(480);
+        } else {
+            Toast.makeText(getContext(), "대기 시간을 선택해주세요!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void addFromCurrentTime(int addingTime) {
+        if (creatPromiseTimer != null) {
+            DateTime newDate = now.plusMinutes(addingTime);
+            creatPromiseTimer.setText(newDate.getHourOfDay() + ":" + newDate.getMinuteOfHour());
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_MAP_SEARCH) {
+            if (resultCode == RESULT_OK && data != null) {
+                String name = data.getStringExtra("selected_name");
+                String address = data.getStringExtra("selected_address");
+                setPromisePlace(address + " (" + name + ")");
+            } else {
+                Toast.makeText(getContext(), "약속 장소를 선택해주세요.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void setPromisePlace(String placeText) {
+        Timber.d("setPromisePlace(): " + placeText);
 
         if (promisePlace != null) {
             promisePlace.setText(placeText);
@@ -136,5 +227,13 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
 
 
         // get time shit and set
+    }
+
+    String getTitle() {
+        if (promiseTitle != null) {
+            return String.valueOf(promiseTitle.getText());
+        }
+
+        return "";
     }
 }
