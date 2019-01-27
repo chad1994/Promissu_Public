@@ -48,6 +48,8 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
     private FullListAdapter suggestionAdapter;
     private String selectedPromiseLocationName = "";
     private String selectedPromiseLocationAddress = "";
+    private double x;
+    private double y;
 
 
     @Override
@@ -72,6 +74,8 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
 
             selectedPromiseLocationName = item.getPlace_name();
             selectedPromiseLocationAddress = item.getAddress_name();
+            x = item.getX();
+            y = item.getY();
 
             mapView.addPOIItem(marker);
             mapView.moveCamera(CameraUpdateFactory.newMapPoint(MapPoint.mapPointWithGeoCoord(item.getY(), item.getX())));
@@ -240,6 +244,8 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
             Intent data = new Intent();
             data.putExtra("selected_name", selectedPromiseLocationName);
             data.putExtra("selected_address", selectedPromiseLocationAddress);
+            data.putExtra("selected_x", x);
+            data.putExtra("selected_y", y);
             setResult(RESULT_OK, data);
             finish();
         } else {

@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -22,11 +23,13 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.simsimhan.promissu.promise.PromiseFragment;
 import com.simsimhan.promissu.util.DialogUtil;
 import com.simsimhan.promissu.util.NavigationUtil;
 
 import org.json.JSONObject;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,14 +38,20 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 import timber.log.Timber;
 
+import static com.simsimhan.promissu.util.NavigationUtil.REQUEST_CREATE_PROMISE;
+
 public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnTabSelectedListener {
     private static final boolean DEBUG = BuildConfig.DEBUG;
     private static final String TAG = "MainActivity";
+    private static final int NUM_ITEMS = 2;
 
 //    private FragmentManager fragmentManager;
     private FrameLayout frameView;
@@ -55,6 +64,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
     private MainFragmentPagerAdapter adapterViewPager;
     private TabLayout tabLayout;
     private FloatingActionButton floatingActionButton;
+    private ViewPager vpPager;
+    private PromiseFragment firstFragment;
+    private PromiseFragment secondFragment;
+
 
 
     @Override
@@ -70,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         fabOpen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fabClose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
 
-        ViewPager vpPager = findViewById(R.id.vpPager);
+        vpPager = findViewById(R.id.vpPager);
         mainText = findViewById(R.id.main_intro);
         floatingActionButton = findViewById(R.id.floating_action_button);
 
@@ -155,7 +168,13 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
             // This method will be invoked when a new page becomes selected.
             @Override
             public void onPageSelected(int position) {
-                Toast.makeText(MainActivity.this, "Selected page position: " + position, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, "Selected page position: " + position, Toast.LENGTH_SHORT).show();
+                if (position == 0) {
+                    firstFragment.onRefresh();
+                } else if (position == 1) {
+                    secondFragment.onRefresh();
+                }
+
             }
 
             // This method will be invoked when the current page is scrolled
@@ -172,16 +191,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
             }
         });
     }
-
-//    public void anim() {
-//        if (floatingActionButton.isExpanded()) {
-//            floatingActionButton.startAnimation(fabClose);
-//            floatingActionButton.setClickable(false);
-//        } else {
-//            floatingActionButton.startAnimation(fabOpen);
-//            floatingActionButton.setClickable(true);
-//        }
-//    }
 
     @Override
     protected void onDestroy() {
@@ -203,7 +212,14 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        if (requestCode == REQUEST_CREATE_PROMISE && resultCode == RESULT_OK) {
+            // refresh logic here
+            if (vpPager.getCurrentItem() == 0) {
+                firstFragment.onRefresh();
+            } else if (vpPager.getCurrentItem() == 1) {
+                secondFragment.onRefresh();
+            }
+        }
     }
 
 
@@ -286,5 +302,54 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
 
+    }
+
+
+    class MainFragmentPagerAdapter extends FragmentPagerAdapter {
+        MainFragmentPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        @Nullable
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return PromiseFragment.newInstance(position, "약속", false);
+                case 1:
+                    return PromiseFragment.newInstance(position, "지난 약속", true);
+                default:
+                    return null;
+            }
+        }
+
+
+        @NonNull
+        @Override
+        public Object instantiateItem(@NonNull ViewGroup container, int position) {
+            Fragment createdFragment = (Fragment) super.instantiateItem(container, position);
+
+            switch (position) {
+                case 0:
+                    firstFragment = (PromiseFragment) createdFragment;
+                    break;
+                case 1:
+                    secondFragment = (PromiseFragment) createdFragment;
+                    break;
+            }
+
+            return createdFragment;
+        }
+
+        @Override
+        public int getCount() {
+            return NUM_ITEMS;
+        }
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return position == 0 ? "약속": "지난 약속";
+        }
     }
 }

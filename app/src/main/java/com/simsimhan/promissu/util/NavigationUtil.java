@@ -19,6 +19,7 @@ import androidx.fragment.app.FragmentActivity;
 public class NavigationUtil {
     public static final int REQEUSET_LOGIN = 101;
     public static final int REQUEST_MAP_SEARCH = 102;
+    public static final int REQUEST_CREATE_PROMISE = 103;
 
     public static void replaceWithLoginView(AppCompatActivity activity) {
         Intent intent = new Intent(activity, LoginActivity.class);
@@ -29,7 +30,7 @@ public class NavigationUtil {
 
     public static void openAddPromiseScreen(AppCompatActivity activity) {
         Intent intent = new Intent(activity, CreatePromiseActivity.class);
-        activity.startActivity(intent);
+        activity.startActivityForResult(intent, REQUEST_CREATE_PROMISE);
     }
 
     public static void openMapScreen(Activity activity) {

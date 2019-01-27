@@ -1,14 +1,13 @@
 package com.simsimhan.promissu.promise.create;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -17,9 +16,7 @@ import android.widget.Toast;
 import com.google.android.material.textfield.TextInputEditText;
 import com.simsimhan.promissu.PromissuApplication;
 import com.simsimhan.promissu.R;
-import com.simsimhan.promissu.cache.DiskCache;
 import com.simsimhan.promissu.map.MapSearchActivity;
-import com.simsimhan.promissu.util.NavigationUtil;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -28,7 +25,6 @@ import org.joda.time.DateTime;
 import java.util.Calendar;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -179,12 +175,18 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
         }
     }
 
+    private int waitTime = 0;
+
     private void addFromCurrentTime(int addingTime) {
         if (creatPromiseTimer != null) {
+            waitTime = addingTime;
             DateTime newDate = now.plusMinutes(addingTime);
             creatPromiseTimer.setText(newDate.getHourOfDay() + ":" + newDate.getMinuteOfHour());
         }
     }
+
+    private double x;
+    private double y;
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -193,6 +195,9 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
             if (resultCode == RESULT_OK && data != null) {
                 String name = data.getStringExtra("selected_name");
                 String address = data.getStringExtra("selected_address");
+                x = data.getDoubleExtra("selected_x", 0);
+                y = data.getDoubleExtra("selected_y", 0);
+
                 setPromisePlace(address + " (" + name + ")");
             } else {
                 Toast.makeText(getContext(), "약속 장소를 선택해주세요.", Toast.LENGTH_LONG).show();
@@ -210,15 +215,19 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        selectedDate = now.withYear(year).withMonthOfYear(monthOfYear + 1).withDayOfMonth(dayOfMonth);
         // get date shit shit and set
         if (dateEditText != null) {
             dateEditText.setText(year + " " + (monthOfYear + 1) + " " + dayOfMonth);
         }
     }
 
+    private DateTime selectedDate;
+    private DateTime selectedDateTime;
+
     @Override
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
-        DateTime selectedTime = now.withHourOfDay(hourOfDay)
+        selectedDateTime = now.withHourOfDay(hourOfDay)
                 .withMinuteOfHour(minute);
 
         if (timeEditText != null) {
@@ -235,5 +244,23 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
         }
 
         return "";
+    }
+
+    DateTime getStartTime() {
+        if (selectedDate == null || selectedDateTime == null) return null;
+
+        return selectedDate.withHourOfDay(selectedDateTime.getHourOfDay()).withMinuteOfHour(selectedDateTime.getMinuteOfHour());
+    }
+
+    double getLocationX() {
+        return x;
+    }
+
+    double getLocationY() {
+        return y;
+    }
+
+    int getWaitTime() {
+        return waitTime;
     }
 }

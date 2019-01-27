@@ -11,6 +11,12 @@ import android.widget.Toast;
 
 import com.simsimhan.promissu.PromissuApplication;
 import com.simsimhan.promissu.R;
+import com.simsimhan.promissu.network.AuthAPI;
+import com.simsimhan.promissu.network.model.Promise;
+
+import org.joda.time.DateTime;
+
+import java.util.Date;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +28,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.simsimhan.promissu.util.NavigationUtil.REQUEST_MAP_SEARCH;
@@ -34,6 +43,8 @@ public class CreatePromiseActivity extends AppCompatActivity {
     private CreatePromiseFragment firstFragment;
     private CreatePromiseFragment secondFragment;
     private CreatePromiseFragment thirdFragment;
+    private String token;
+    private CompositeDisposable disposables = new CompositeDisposable();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +58,7 @@ public class CreatePromiseActivity extends AppCompatActivity {
         }
 
         adapterViewPager = new CreatePromiseFragmentPagerAdapter(getSupportFragmentManager());
+        token = PromissuApplication.getDiskCache().getUserToken();
         toolbar = findViewById(R.id.toolbar);
         viewPager = findViewById(R.id.vpPager);
         viewPager.setAdapter(adapterViewPager);
@@ -64,6 +76,12 @@ public class CreatePromiseActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        disposables.clear();
+    }
+
     private void changeStatusBarColor() {
         Window window = getWindow();
 
@@ -78,14 +96,87 @@ public class CreatePromiseActivity extends AppCompatActivity {
     }
 
     public void createPromise() {
+//        {
+//                "title": "테스트 모임333",
+//                "description": "우리 함께 모여서 놀아요",
+//                "start_datetime": "2018-01-28 14:01",
+//                "end_datetime": "2018-01-28 15:00",
+//                "waiting_time": 1440,
+//                "location_x": "37.499385",
+//                "location_y": "127.029204"
+//        }
         String title = "";
+        String detail = "";
+        Date startTime = null;
+        Date endTime = null;
+        int waitingTime = 30;
+        float locationX = 0f;
+        float locationY = 0f;
+
         if (firstFragment != null) {
             title = firstFragment.getTitle();
+            detail = title;
+
+            if (title == null || title.isEmpty()) {
+                Toast.makeText(this, "제목을 설정해주세요!", Toast.LENGTH_LONG).show();
+                viewPager.setCurrentItem(0, true);
+                return;
+            }
         }
 
         if (secondFragment != null) {
-            
+            DateTime selectedTime = secondFragment.getStartTime();
+            double x = secondFragment.getLocationX();
+            double y = secondFragment.getLocationX();
+
+            if (x == 0 && y == 0) {
+                Toast.makeText(this, "위치를 설정해주세요!", Toast.LENGTH_LONG).show();
+                viewPager.setCurrentItem(1, true);
+                return;
+            }
+
+            if (selectedTime == null) {
+                Toast.makeText(this, "시간을 설정해주세요!", Toast.LENGTH_LONG).show();
+                viewPager.setCurrentItem(1, true);
+                return;
+            }
+
+            startTime = selectedTime.toDate();
+            endTime = selectedTime.plusMinutes(30).toDate();
+            locationX = (float) x;
+            locationY = (float) y;
         }
+
+        if (thirdFragment != null) {
+            waitingTime = thirdFragment.getWaitTime();
+
+            if (waitingTime == 0) {
+                Toast.makeText(this, "대기 시간을 설정해주세요!", Toast.LENGTH_LONG).show();
+                viewPager.setCurrentItem(2, true);
+                return;
+            }
+        }
+
+        remoteCallCreatePromise(new Promise.Request(title, detail, startTime, endTime, locationX, locationY, waitingTime));
+    }
+
+    private void remoteCallCreatePromise(Promise.Request request) {
+        disposables.add(
+                PromissuApplication.getRetrofit()
+                        .create(AuthAPI.class)
+                        .createPromise("Bearer " + token, request)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(onNext -> {
+                            Timber.d("" + onNext.toString());
+                            Toast.makeText(getBaseContext(), "약속 생성이 완료 되었습니다.", Toast.LENGTH_LONG).show();
+                            // TODO: do something here
+
+                            setResult(RESULT_OK);
+                            finish();
+                        }, onError -> {
+                            Timber.e(onError);
+                        }));
     }
 
 

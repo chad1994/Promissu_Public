@@ -96,27 +96,33 @@ public class Promise {
         }
     }
 
-    //    {
-//            "title": "테스트 모임3",
-//            "explain": "우리 함께 모여서 놀아요",
-//            "date": "2018-01-11 13:00",
-//            "location_x": "37.499385",
-//            "location_y": "127.029204",
-//            "admin_id": "tester"
-//    }
+
+    //        {
+//                "title": "테스트 모임333",
+//                "description": "우리 함께 모여서 놀아요",
+//                "start_datetime": "2018-01-28 14:01",
+//                "end_datetime": "2018-01-28 15:00",
+//                "waiting_time": 1440,
+//                "location_x": "37.499385",
+//                "location_y": "127.029204"
+//        }
     public static class Request {
         private String title;
-        private Date date;
+        private String description;
+        private Date start_datetime;
+        private Date end_datetime;
         private float location_x;
         private float location_y;
-        private Date delayTime;
+        private int waiting_time;
 
-        public Request(String title, Date date, float location_x, float location_y, Date delayTime) {
+        public Request(String title, String description, Date start_datetime, Date end_datetime, float location_x, float location_y, int waiting_time) {
             this.title = title;
-            this.date = date;
+            this.description = description;
+            this.start_datetime = start_datetime;
+            this.end_datetime = end_datetime;
             this.location_x = location_x;
             this.location_y = location_y;
-            this.delayTime = delayTime;
+            this.waiting_time = waiting_time;
         }
 
         public String getTitle() {
@@ -127,12 +133,28 @@ public class Promise {
             this.title = title;
         }
 
-        public Date getDate() {
-            return date;
+        public String getDetail() {
+            return description;
         }
 
-        public void setDate(Date date) {
-            this.date = date;
+        public void setDetail(String detail) {
+            this.description = detail;
+        }
+
+        public Date getStart_datetime() {
+            return start_datetime;
+        }
+
+        public void setStart_datetime(Date start_datetime) {
+            this.start_datetime = start_datetime;
+        }
+
+        public Date getEnd_datetime() {
+            return end_datetime;
+        }
+
+        public void setEnd_datetime(Date end_datetime) {
+            this.end_datetime = end_datetime;
         }
 
         public float getLocation_x() {
@@ -151,12 +173,12 @@ public class Promise {
             this.location_y = location_y;
         }
 
-        public Date getDelayTime() {
-            return delayTime;
+        public int getWaiting_time() {
+            return waiting_time;
         }
 
-        public void setDelayTime(Date delayTime) {
-            this.delayTime = delayTime;
+        public void setWaiting_time(int waiting_time) {
+            this.waiting_time = waiting_time;
         }
     }
 }
