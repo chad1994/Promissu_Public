@@ -9,11 +9,11 @@ import androidx.annotation.NonNull;
 
 public class DiskCache {
     private String TAG = BuildConfig.APPLICATION_ID;
-    private String USER_TOKEN_TAG = TAG = ".userToken";
-    private String USER_NAME_TAG = TAG = ".userName";
-    private String USER_NAME_LONG_ID = TAG = ".id";
-    private String USER_PROFILE_THUMBNAIL = TAG = ".userProfileThumbnail";
-    private String USER_IS_UPLOADED_BEFORE_TAG = TAG = ".isUploadedBefore";
+    private String USER_TOKEN_TAG = TAG + ".userToken";
+    private String USER_NAME_TAG = TAG + ".userName";
+    private String USER_NAME_LONG_ID = TAG + ".id";
+    private String USER_PROFILE_THUMBNAIL = TAG + ".userProfileThumbnail";
+    private String USER_IS_UPLOADED_BEFORE_TAG = TAG + ".isUploadedBefore";
     private SharedPreferences pref;
 
 

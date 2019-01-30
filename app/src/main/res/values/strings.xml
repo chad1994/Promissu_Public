@@ -1,7 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
     <string name="app_name" >Promissu</string>
+    <string name="kakao_scheme">kakaod88d1806085dfba3a3d329db2755f8e7</string>
     <string name="kakao_app_key">d88d1806085dfba3a3d329db2755f8e7</string>
+    <string name="kakaolink_host">kakaolink</string>
+
     <string name="rest_key">KakaoAK 22522353ecef5814da720a0f597d15c5</string>
 
     <string name="my_points">내 포인트</string>

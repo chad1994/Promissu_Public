@@ -75,6 +75,7 @@
 
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/invite_people"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
@@ -87,7 +88,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 
-
     <!-- Container for contents of drawer - use NavigationView to make configuration easier -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
@@ -96,6 +96,8 @@
         android:layout_gravity="right"
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
-        android:fitsSystemWindows="true"
-        app:menu="@menu/pending_menu_detail" />
+        android:fitsSystemWindows="false">
+
+        <include layout="@layout/view_invite_nav" />
+    </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>

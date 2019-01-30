@@ -27,6 +27,7 @@ public class Promise {
         private final int participants;
         private final int waiting_time;
         private final String description;
+        private final String admin_id;
         private final float location_x;
         private final float location_y;
         private final int status;
@@ -34,11 +35,12 @@ public class Promise {
         private final Date end_datetime;
         private final Date createdAt;
 
-        public Response(int id, String title, int participants, Date date, String description, float location_x, float location_y, int status, Date createAt, Date updatedAt, int waiting_time, Date createdAt) {
+        public Response(int id, String title, int participants, Date date, String description, String admin_id, float location_x, float location_y, int status, Date createAt, Date updatedAt, int waiting_time, Date createdAt) {
             this.id = id;
             this.title = title;
             this.participants = participants;
             this.description = description;
+            this.admin_id = admin_id;
             this.location_x = location_x;
             this.location_y = location_y;
             this.status = status;
@@ -54,6 +56,7 @@ public class Promise {
             participants = in.readInt();
             waiting_time = in.readInt();
             description = in.readString();
+            admin_id = in.readString();
             location_x = in.readFloat();
             location_y = in.readFloat();
             status = in.readInt();
@@ -69,6 +72,7 @@ public class Promise {
             dest.writeInt(participants);
             dest.writeInt(waiting_time);
             dest.writeString(description);
+            dest.writeString(admin_id);
             dest.writeFloat(location_x);
             dest.writeFloat(location_y);
             dest.writeInt(status);
@@ -136,6 +140,10 @@ public class Promise {
 
         public Date getCreatedAt() {
             return createdAt;
+        }
+
+        public String getAdmin_id() {
+            return admin_id;
         }
     }
 

@@ -31,6 +31,13 @@ public interface AuthAPI {
             "Accept: application/json",
             "Content-Type: application/json"
     })
+    @POST("participation/invite")
+    Observable<Promise.Response> inviteFriends(@Header("Authorization") String token, @Body Promise.Request promiseRequest);
+
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
     @GET("appointments")
     Observable<List<Promise.Response>> getMyPromise(@Header("Authorization") String token, @Query("offset") int offset, @Query("limit") int limit, @Query("type") String type);
 }

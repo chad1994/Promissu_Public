@@ -12,24 +12,39 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
-import com.simsimhan.promissu.MainActivity;
+import com.kakao.auth.ApiResponseCallback;
+import com.kakao.friends.AppFriendContext;
+import com.kakao.friends.FriendsService;
+import com.kakao.friends.response.AppFriendsResponse;
+import com.kakao.kakaolink.v2.KakaoLinkResponse;
+import com.kakao.kakaolink.v2.KakaoLinkService;
+import com.kakao.kakaotalk.callback.TalkResponseCallback;
+import com.kakao.kakaotalk.v2.KakaoTalkService;
+import com.kakao.message.template.ButtonObject;
+import com.kakao.message.template.ContentObject;
+import com.kakao.message.template.LinkObject;
+import com.kakao.message.template.LocationTemplate;
+import com.kakao.network.ErrorResult;
+import com.kakao.network.callback.ResponseCallback;
+import com.kakao.util.helper.log.Logger;
 import com.simsimhan.promissu.PromissuApplication;
 import com.simsimhan.promissu.R;
+import com.simsimhan.promissu.network.AuthAPI;
 import com.simsimhan.promissu.network.model.Promise;
-import com.simsimhan.promissu.util.DialogUtil;
+import com.simsimhan.promissu.promise.create.CreatePromiseActivity;
 import com.simsimhan.promissu.util.NavigationUtil;
 
 import org.joda.time.DateTime;
-import org.joda.time.Hours;
-import org.joda.time.Minutes;
 import org.joda.time.Period;
-import org.joda.time.Seconds;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -38,13 +53,19 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class PendingPromiseActivity extends AppCompatActivity {
     private CompositeDisposable disposables;
     private DrawerLayout drawerLayout;
+    private AppCompatButton inviteButton;
     private Promise.Response promise;
-    private DateTime promiseStartTime;
+    private DateTime promiseDelayEndTime;
+    private DateTime promiseCreatedTime;
+
     private TextView promiseLeftTimeTextView;
+    private TextView promiseDateActual;
+    private TextView locationTextView;
     private DateTime now;
 
     @Override
@@ -53,6 +74,9 @@ public class PendingPromiseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pending_promise);
         drawerLayout = findViewById(R.id.drawer_layout);
         promiseLeftTimeTextView = findViewById(R.id.timer);
+        inviteButton = findViewById(R.id.invite_people);
+        promiseDateActual = findViewById(R.id.promise_date_actual);
+        locationTextView = findViewById(R.id.promise_location_actual);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
@@ -68,7 +92,6 @@ public class PendingPromiseActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-
         TextView title = toolbar.findViewById(R.id.toolbar_title);
 
         setSupportActionBar(toolbar);
@@ -84,11 +107,135 @@ public class PendingPromiseActivity extends AppCompatActivity {
         disposables = new CompositeDisposable();
         changeStatusBarColor();
 
-        DateTime createdTime = new DateTime(promise.getCreatedAt());
-        promiseStartTime = createdTime.plusMinutes(promise.getWaitTime());
+        promiseCreatedTime = new DateTime(promise.getCreatedAt());
+        promiseDelayEndTime = promiseCreatedTime.plusMinutes(promise.getWaitTime());
         now = new DateTime();
 
+        DateTime promiseStartTime = new DateTime(promise.getStartTime());
+        Timber.d("onCreate(): %s", promiseStartTime.toString());
+        promiseDateActual.setText(promiseStartTime.toString("MM/dd/yyyy h:mm"));
+        // TODO: get promise location and set text for locationTextView
+
+        String adminId = promise.getAdmin_id();
+
+        if (adminId != null && !adminId.isEmpty()) {
+            long roomAdminId = Long.valueOf(adminId);
+            long localUserId = PromissuApplication.getDiskCache().getUserId();
+
+            inviteButton.setVisibility(roomAdminId == localUserId ? View.VISIBLE : View.GONE);
+        } else {
+            throw new IllegalStateException("Admin ID should always be visible");
+        }
+
         startTimer();
+        inviteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LocationTemplate params = LocationTemplate.newBuilder("성남시 분당구 판교역로 235",
+                        ContentObject.newBuilder(promise.getTitle(),
+                                "https://i.imgur.com/eS85S6C.jpg",
+                                LinkObject.newBuilder()
+                                        .setWebUrl("https://developers.kakao.com")
+                                        .setMobileWebUrl("https://developers.kakao.com")
+                                        .build())
+                                .setDescrption(promise.getDescription())
+                                .build())
+                        .setAddressTitle("이곳에 장소 이름이 나옴. 좌표: (" + promise.getLocation_x() + ", " + promise.getLocation_y() + ")")
+                        .addButton(new ButtonObject("앱에서 보기", LinkObject.newBuilder()
+                                .setWebUrl("'https://developers.kakao.com")
+                                .setMobileWebUrl("'https://developers.kakao.com")
+                                .setAndroidExecutionParams("roomID=" + promise.getId())
+                                .setIosExecutionParams("roomID=" + promise.getId())
+                                .build()))
+                        .build();
+
+                Map<String, String> serverCallbackArgs = new HashMap<String, String>();
+                serverCallbackArgs.put("user_id", "${current_user_id}");
+                serverCallbackArgs.put("product_id", "${shared_product_id}");
+
+                KakaoLinkService.getInstance().sendDefault(PendingPromiseActivity.this, params, serverCallbackArgs, new ResponseCallback<KakaoLinkResponse>() {
+                    @Override
+                    public void onFailure(ErrorResult errorResult) {
+                        Timber.e(errorResult.getException());
+                    }
+
+                    @Override
+                    public void onSuccess(KakaoLinkResponse result) {
+                        // 템플릿 밸리데이션과 쿼터 체크가 성공적으로 끝남. 톡에서 정상적으로 보내졌는지 보장은 할 수 없다. 전송 성공 유무는 서버콜백 기능을 이용하여야 한다.
+                        Timber.d("onSuccess(): " + result.toString());
+                    }
+                });
+
+
+
+//                This is kakao friends service
+//                AppFriendContext friendContext = new AppFriendContext(true, 0, 100, "asc");
+//
+//                KakaoTalkService.getInstance().requestAppFriends(friendContext, new TalkResponseCallback<AppFriendsResponse>() {
+//                    @Override
+//                    public void onSessionClosed(ErrorResult errorResult) {
+//                        Timber.e(errorResult.getException());
+//                        NavigationUtil.replaceWithLoginView(PendingPromiseActivity.this);
+//                    }
+//
+//                    @Override
+//                    public void onNotSignedUp() {
+//                        NavigationUtil.replaceWithLoginView(PendingPromiseActivity.this);
+//                    }
+//
+//                    @Override
+//                    public void onSuccess(AppFriendsResponse result) {
+//                        if (result.getFriends() == null) {
+//                            Timber.d("onSuccess(): null");
+//                            return;
+//                        }
+//
+//                        Timber.d("onSuccess(): %s", result.getFriends().size());
+//
+//                        for (int i = 0; i < result.getFriends().size(); i++) {
+//                            Timber.d("onSuccess(): %s", result.getFriends().get(i).getProfileNickname());
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(ErrorResult errorResult) {
+//                        super.onFailure(errorResult);
+//                        Timber.e(errorResult.getException());
+//                    }
+//
+//                    @Override
+//                    public void onNotKakaoTalkUser() {
+//                        Timber.d("onNotKakaoTalkUser()");
+//                    }
+//
+//                    @Override
+//                    public void onFailureForUiThread(ErrorResult errorResult) {
+//                        super.onFailureForUiThread(errorResult);
+//                        Timber.e(errorResult.getException());
+//                    }
+//                });
+
+
+//                disposables.add(
+//                        PromissuApplication.getRetrofit()
+//                                .create(AuthAPI.class)
+//                                .inviteFriends("Bearer " + PromissuApplication.getDiskCache().getUserToken(), request)
+//                                .subscribeOn(Schedulers.io())
+//                                .observeOn(AndroidSchedulers.mainThread())
+//                                .subscribe(onNext -> {
+//                                    Timber.d("" + onNext.toString());
+//                                    Toast.makeText(getBaseContext(), "약속 생성이 완료 되었습니다.", Toast.LENGTH_LONG).show();
+//                                    // TODO: do something here
+//
+//                                    setResult(RESULT_OK);
+//
+//                                    NavigationUtil.openPendingScreen(CreatePromiseActivity.this, onNext);
+//                                    finish();
+//                                }, onError -> {
+//                                    Timber.e(onError);
+//                                }));
+            }
+        });
     }
 
     @Override
@@ -99,20 +246,34 @@ public class PendingPromiseActivity extends AppCompatActivity {
 
     private void startTimer() {
         disposables.add(
-        Observable.interval(0, 1, TimeUnit.SECONDS)
-                .map(timer -> promiseStartTime.plusSeconds(timer.intValue()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(onNext -> {
-//                    DateTime difference = now.minus(onNext);
-//                    Hours hoursBetween = Hours.hoursBetween(onNext, now);
-//                    Minutes minutesBetween = Minutes.minutesBetween(onNext, now);
-//                    Seconds secondsBetween = Seconds.secondsBetween(onNext, now);
-                    Period period = new Period(onNext, now);
-                    promiseLeftTimeTextView.setText(period.getHours() + ":" + period.getMinutes() + ":" + period.getSeconds());
-                }, onError -> {
+                Observable.interval(0, 1, TimeUnit.SECONDS)
+                        .map(timer -> now.plusSeconds(timer.intValue()))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(onNext -> {
+                            Period period = new Period(onNext, promiseDelayEndTime);
+                            promiseLeftTimeTextView.setText(addPaddingIfSingleDigit(period.getHours()) + ":" +
+                                    addPaddingIfSingleDigit(period.getMinutes()) + ":" +
+                                    addPaddingIfSingleDigit(period.getSeconds()));
+                        }, onError -> {
 
-                }));
+                        }));
+    }
+
+    private String addPaddingIfSingleDigit(int time) {
+        if (time >= 0) {
+            if (time < 10) {
+                return "0" + time;
+            } else {
+                return "" + time;
+            }
+        } else {
+            if (time < -10) {
+                return "-0" + (time * -1);
+            } else {
+                return "" + time;
+            }
+        }
     }
 
     @Override

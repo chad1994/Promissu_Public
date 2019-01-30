@@ -38,14 +38,14 @@ android {
 //            buildConfigField 'String', 'SERVER_URL', '"http://13.209.137.202:3333"'
             minifyEnabled false
             debuggable true
-            buildConfigField 'String', 'SERVER_URL', '"http://ec2-54-180-109-96.ap-northeast-2.compute.amazonaws.com:3000"'
+            buildConfigField 'String', 'SERVER_URL', '"http://ec2-13-124-3-48.ap-northeast-2.compute.amazonaws.com:3000"'
         }
 
         staging {
             debuggable true
             minifyEnabled false
 //            signingConfig signingConfigs.release
-            buildConfigField 'String', 'SERVER_URL', '"http://ec2-54-180-109-96.ap-northeast-2.compute.amazonaws.com:3000"'
+            buildConfigField 'String', 'SERVER_URL', '"http://ec2-13-124-3-48.ap-northeast-2.compute.amazonaws.com:3000"'
             matchingFallbacks = ['release', 'debug']
         }
     }
@@ -74,6 +74,9 @@ dependencies {
     implementation "com.google.android.material:material:${rootProject.ext.supportLibVersion}"
     implementation 'androidx.multidex:multidex:2.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
+
+    implementation 'com.kakao.sdk:friends:1.11.1'
+    implementation 'com.kakao.sdk:kakaotalk:1.11.1'
     implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
@@ -116,4 +119,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     // 카카오 로그인 sdk를 사용하기 위해 필요.
     implementation group: 'com.kakao.sdk', name: 'usermgmt', version: project.KAKAO_SDK_VERSION
+    // 카카오 방에 메시지 쏘기
+    implementation group: 'com.kakao.sdk', name: 'kakaolink', version: project.KAKAO_SDK_VERSION
 }
