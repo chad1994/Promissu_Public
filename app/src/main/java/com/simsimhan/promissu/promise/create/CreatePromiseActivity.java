@@ -97,15 +97,6 @@ public class CreatePromiseActivity extends AppCompatActivity {
     }
 
     public void createPromise() {
-//        {
-//                "title": "테스트 모임333",
-//                "description": "우리 함께 모여서 놀아요",
-//                "start_datetime": "2018-01-28 14:01",
-//                "end_datetime": "2018-01-28 15:00",
-//                "waiting_time": 1440,
-//                "location_x": "37.499385",
-//                "location_y": "127.029204"
-//        }
         String title = "";
         String detail = "";
         Date startTime = null;
@@ -113,6 +104,7 @@ public class CreatePromiseActivity extends AppCompatActivity {
         int waitingTime = 30;
         float locationX = 0f;
         float locationY = 0f;
+        String locationName = "";
 
         if (firstFragment != null) {
             title = firstFragment.getTitle();
@@ -128,7 +120,8 @@ public class CreatePromiseActivity extends AppCompatActivity {
         if (secondFragment != null) {
             DateTime selectedTime = secondFragment.getStartTime();
             double x = secondFragment.getLocationX();
-            double y = secondFragment.getLocationX();
+            double y = secondFragment.getLocationY();
+            locationName = secondFragment.getLocationText();
 
             if (x == 0 && y == 0) {
                 Toast.makeText(this, "위치를 설정해주세요!", Toast.LENGTH_LONG).show();
@@ -158,7 +151,7 @@ public class CreatePromiseActivity extends AppCompatActivity {
             }
         }
 
-        remoteCallCreatePromise(new Promise.Request(title, detail, startTime, endTime, locationX, locationY, waitingTime));
+        remoteCallCreatePromise(new Promise.Request(title, detail, startTime, endTime, locationX, locationY, waitingTime, locationName));
     }
 
     private void remoteCallCreatePromise(Promise.Request request) {
@@ -175,13 +168,12 @@ public class CreatePromiseActivity extends AppCompatActivity {
 
                             setResult(RESULT_OK);
 
-                            NavigationUtil.openPendingScreen(CreatePromiseActivity.this, onNext);
+                            NavigationUtil.enterRoom(CreatePromiseActivity.this, onNext);
                             finish();
                         }, onError -> {
                             Timber.e(onError);
                         }));
     }
-
 
     public class CreatePromiseFragmentPagerAdapter extends FragmentPagerAdapter {
         CreatePromiseFragmentPagerAdapter(FragmentManager fm) {

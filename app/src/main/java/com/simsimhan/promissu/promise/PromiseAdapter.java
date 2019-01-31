@@ -96,27 +96,13 @@ public class PromiseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                 //TODO: should use sonething else
                 dateLeftLabel.setText("" + (response.getStartTime().getMonth() + 1) + "." + (response.getStartTime().getDay() + 1));
-                container.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        NavigationUtil.openPromiseDetilScreen(appCompatActivity);
-                    }
-                });
+                container.setOnClickListener(v -> NavigationUtil.enterRoom(appCompatActivity, response));
             } else {
                 container.setBackgroundColor(ContextCompat.getColor(container.getContext(), R.color.background_grey));
                 dateLeft.setVisibility(View.VISIBLE);
                 dateLeft.setText("" + response.getStartTime().getDay());
                 dateLeftLabel.setText("일 남음");
-                container.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (response.getStatus() == 0) {
-                            NavigationUtil.openPendingScreen(appCompatActivity, response);
-                        } else {
-                            NavigationUtil.openPromiseDetilScreen(appCompatActivity);
-                        }
-                    }
-                });
+                container.setOnClickListener(v -> NavigationUtil.enterRoom(appCompatActivity, response));
             }
 
         }

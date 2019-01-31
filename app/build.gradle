@@ -30,22 +30,21 @@ android {
 
 //            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField 'String', 'SERVER_URL', '"http://123.123.123.123:3000"'
+            buildConfigField 'String', 'SERVER_URL', '"http://api.promissu.com"'
         }
 
         debug {
 //            for test server
-//            buildConfigField 'String', 'SERVER_URL', '"http://13.209.137.202:3333"'
             minifyEnabled false
             debuggable true
-            buildConfigField 'String', 'SERVER_URL', '"http://ec2-13-124-3-48.ap-northeast-2.compute.amazonaws.com:3000"'
+            buildConfigField 'String', 'SERVER_URL', '"http://api.promissu.com"'
         }
 
         staging {
             debuggable true
             minifyEnabled false
 //            signingConfig signingConfigs.release
-            buildConfigField 'String', 'SERVER_URL', '"http://ec2-13-124-3-48.ap-northeast-2.compute.amazonaws.com:3000"'
+            buildConfigField 'String', 'SERVER_URL', '"http://api.promissu.com"'
             matchingFallbacks = ['release', 'debug']
         }
     }

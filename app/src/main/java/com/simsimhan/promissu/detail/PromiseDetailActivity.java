@@ -2,6 +2,7 @@ package com.simsimhan.promissu.detail;
 
 import android.os.Bundle;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -12,18 +13,19 @@ import com.simsimhan.promissu.detail.decorators.EnabledDayDecorator;
 import com.simsimhan.promissu.detail.decorators.SaturdayDecorator;
 import com.simsimhan.promissu.detail.decorators.SelectedDayDecorator;
 import com.simsimhan.promissu.detail.decorators.SundayDecorator;
+import com.simsimhan.promissu.network.model.Promise;
 
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
 
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 
 public class PromiseDetailActivity extends AppCompatActivity implements MapView.MapViewEventListener, MapView.POIItemEventListener {
     private static final boolean DEBUG = BuildConfig.DEBUG;
@@ -38,6 +40,8 @@ public class PromiseDetailActivity extends AppCompatActivity implements MapView.
     private DateTime startDate, endDate, today;
     private MaterialCalendarView materialCalendarView;
     private Toolbar toolbar;
+    private Promise.Response promise;
+    private TextView promiseDateLeft;
 
 
     @Override
@@ -45,41 +49,42 @@ public class PromiseDetailActivity extends AppCompatActivity implements MapView.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_promise);
 
-        materialCalendarView = findViewById(R.id.calendarView);
-        materialCalendarView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
-        materialCalendarView.setTopbarVisible(false);
-        materialCalendarView.setOnDateChangedListener((widget, date, selected) -> {
-            selectedDayDecorator.updateSelectedDate(date);
-            materialCalendarView.invalidateDecorators();
-            // update selected Date
-//            updateCurrentDay(date);
-        });
+        promise = getIntent().getParcelableExtra("promise");
 
-        selectedDayDecorator = new SelectedDayDecorator(null);
-        sundayDecorator = new SundayDecorator(this);
-        saturdayDecorator = new SaturdayDecorator(this);
+//        materialCalendarView = findViewById(R.id.calendarView);
+//        materialCalendarView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+//        materialCalendarView.setTopbarVisible(false);
+//        materialCalendarView.setOnDateChangedListener((widget, date, selected) -> {
+//            selectedDayDecorator.updateSelectedDate(date);
+//            materialCalendarView.invalidateDecorators();
+//            // update selected Date
+////            updateCurrentDay(date);
+//        });
+//        selectedDayDecorator = new SelectedDayDecorator(null);
+//        sundayDecorator = new SundayDecorator(this);
+//        saturdayDecorator = new SaturdayDecorator(this);
 
         today = new DateTime();
-        startDate = new DateTime(today.minusWeeks(2));
-        endDate = new DateTime(today.plusWeeks(2));
+        startDate = new DateTime(promise.getStartTime());
+        endDate = new DateTime(promise.getEndTime());
 
-        materialCalendarView.state().edit()
-                .setMinimumDate(getStartDateMinusWeek())
-                .setMaximumDate(getEndDatePlusWeek())
-                .commit();
+//        materialCalendarView.state().edit()
+//                .setMinimumDate(getStartDateMinusWeek())
+//                .setMaximumDate(getEndDatePlusWeek())
+//                .commit();
+//
+//
+//        materialCalendarView.addDecorators(
+//                selectedDayDecorator,
+//                sundayDecorator,
+//                saturdayDecorator
+//        );
 
 
-        materialCalendarView.addDecorators(
-                selectedDayDecorator,
-                sundayDecorator,
-                saturdayDecorator
-        );
-
-
-        disabledDayDecorator = new DisabledDayDecorator(startDate, endDate, PromiseDetailActivity.this);
-        enabledDayDecorator = new EnabledDayDecorator(startDate, endDate, PromiseDetailActivity.this);
-        materialCalendarView.addDecorators(disabledDayDecorator, enabledDayDecorator);
-        materialCalendarView.setDateSelected(getCalendarDate(today), true);
+//        disabledDayDecorator = new DisabledDayDecorator(startDate, endDate, PromiseDetailActivity.this);
+//        enabledDayDecorator = new EnabledDayDecorator(startDate, endDate, PromiseDetailActivity.this);
+//        materialCalendarView.addDecorators(disabledDayDecorator, enabledDayDecorator);
+//        materialCalendarView.setDateSelected(getCalendarDate(today), true);
 
         MapView mapView = new MapView(this);
         mapView.setMapViewEventListener(this);
@@ -89,12 +94,32 @@ public class PromiseDetailActivity extends AppCompatActivity implements MapView.
         mapViewContainer.addView(mapView);
 
         toolbar = findViewById(R.id.toolbar);
+        promiseDateLeft = findViewById(R.id.promise_date_left);
+        Days daysBetween = Days.daysBetween(today, startDate);
+        promiseDateLeft.setText(daysBetween.getDays() + "일 남았어요!");
+
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowTitleEnabled(false);
         }
+
+        TextView title = toolbar.findViewById(R.id.toolbar_title);
+        title.setText(promise.getTitle());
+
+        TextView promiseTime = findViewById(R.id.promise_time);
+        promiseTime.setText(startDate.getHourOfDay() + ":" + startDate.getMinuteOfHour());
+
+        TextView promiseLocation = findViewById(R.id.promise_location);
+        promiseLocation.setText(promise.getLocation() + " 좌표: (" + promise.getLocation_lan() + " " + promise.getLocation_lon() + ")");
+
+        TextView promiseMembers = findViewById(R.id.promise_user);
+        promiseMembers.setText(promise.getParticipants());
+
+
+
+
 
     }
 

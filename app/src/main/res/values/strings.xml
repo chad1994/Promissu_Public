@@ -1,11 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
-    <string name="app_name" >Promissu</string>
-    <string name="kakao_scheme">kakaod88d1806085dfba3a3d329db2755f8e7</string>
-    <string name="kakao_app_key">d88d1806085dfba3a3d329db2755f8e7</string>
+    <string name="app_name" >프라미슈</string>
+    <string name="kakao_scheme">kakao8c8bd47430b458795fc84ac27e88f617</string>
+    <string name="kakao_app_key">8c8bd47430b458795fc84ac27e88f617</string>
     <string name="kakaolink_host">kakaolink</string>
-
-    <string name="rest_key">KakaoAK 22522353ecef5814da720a0f597d15c5</string>
+    <string name="rest_key">KakaoAK 0a826c9918d987fd0f1263de1c843362</string>
 
     <string name="my_points">내 포인트</string>
     <string name="my_promise_credit">내 신용등급</string>

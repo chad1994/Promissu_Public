@@ -9,30 +9,19 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
-import com.kakao.auth.ApiResponseCallback;
-import com.kakao.friends.AppFriendContext;
-import com.kakao.friends.FriendsService;
-import com.kakao.friends.response.AppFriendsResponse;
 import com.kakao.kakaolink.v2.KakaoLinkResponse;
 import com.kakao.kakaolink.v2.KakaoLinkService;
-import com.kakao.kakaotalk.callback.TalkResponseCallback;
-import com.kakao.kakaotalk.v2.KakaoTalkService;
 import com.kakao.message.template.ButtonObject;
 import com.kakao.message.template.ContentObject;
 import com.kakao.message.template.LinkObject;
 import com.kakao.message.template.LocationTemplate;
 import com.kakao.network.ErrorResult;
 import com.kakao.network.callback.ResponseCallback;
-import com.kakao.util.helper.log.Logger;
 import com.simsimhan.promissu.PromissuApplication;
 import com.simsimhan.promissu.R;
-import com.simsimhan.promissu.network.AuthAPI;
 import com.simsimhan.promissu.network.model.Promise;
-import com.simsimhan.promissu.promise.create.CreatePromiseActivity;
-import com.simsimhan.promissu.util.NavigationUtil;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
@@ -128,43 +117,47 @@ public class PendingPromiseActivity extends AppCompatActivity {
         }
 
         startTimer();
-        inviteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LocationTemplate params = LocationTemplate.newBuilder("성남시 분당구 판교역로 235",
-                        ContentObject.newBuilder(promise.getTitle(),
-                                "https://i.imgur.com/eS85S6C.jpg",
-                                LinkObject.newBuilder()
-                                        .setWebUrl("https://developers.kakao.com")
-                                        .setMobileWebUrl("https://developers.kakao.com")
-                                        .build())
-                                .setDescrption(promise.getDescription())
-                                .build())
-                        .setAddressTitle("이곳에 장소 이름이 나옴. 좌표: (" + promise.getLocation_x() + ", " + promise.getLocation_y() + ")")
-                        .addButton(new ButtonObject("앱에서 보기", LinkObject.newBuilder()
-                                .setWebUrl("'https://developers.kakao.com")
-                                .setMobileWebUrl("'https://developers.kakao.com")
-                                .setAndroidExecutionParams("roomID=" + promise.getId())
-                                .setIosExecutionParams("roomID=" + promise.getId())
-                                .build()))
-                        .build();
+        inviteButton.setOnClickListener(v -> {
+            DateTime promiseDate = new DateTime(promise.getStartTime());
 
-                Map<String, String> serverCallbackArgs = new HashMap<String, String>();
-                serverCallbackArgs.put("user_id", "${current_user_id}");
-                serverCallbackArgs.put("product_id", "${shared_product_id}");
+            LocationTemplate params = LocationTemplate.newBuilder(promise.getLocation() +" 좌표: (" + promise.getLocation_lan() + ", " + promise.getLocation_lon() + ")",
+                    ContentObject.newBuilder(promise.getTitle(),
+                            "https://i.pinimg.com/originals/92/e4/43/92e443862a7ae5db7cf74b41db2f5e37.jpg",
+                            LinkObject.newBuilder()
+                                    .setWebUrl("https://developers.kakao.com")
+                                    .setMobileWebUrl("https://developers.kakao.com")
+                                    .build())
+                            .setDescrption(
+                                    promiseDate.getYear() + "년 "
+                                    + promiseDate.getMonthOfYear()  + "월 "
+                                    + promiseDate.getDayOfMonth() + "일 "
+                                    + promise.getDescription())
+                            .build())
+                    .setAddressTitle(promise.getLocation() + " 좌표: (" + promise.getLocation_lan() + ", " + promise.getLocation_lon() + ")")
+                    .addButton(new ButtonObject("앱에서 보기", LinkObject.newBuilder()
+                            .setWebUrl("'https://developers.kakao.com")
+                            .setMobileWebUrl("'https://developers.kakao.com")
+                            .setAndroidExecutionParams("roomID=" + promise.getId())
+                            .setIosExecutionParams("roomID=" + promise.getId())
+                            .build()))
+                    .build();
 
-                KakaoLinkService.getInstance().sendDefault(PendingPromiseActivity.this, params, serverCallbackArgs, new ResponseCallback<KakaoLinkResponse>() {
-                    @Override
-                    public void onFailure(ErrorResult errorResult) {
-                        Timber.e(errorResult.getException());
-                    }
+            Map<String, String> serverCallbackArgs = new HashMap<String, String>();
+            serverCallbackArgs.put("user_id", "${current_user_id}");
+            serverCallbackArgs.put("product_id", "${shared_product_id}");
 
-                    @Override
-                    public void onSuccess(KakaoLinkResponse result) {
-                        // 템플릿 밸리데이션과 쿼터 체크가 성공적으로 끝남. 톡에서 정상적으로 보내졌는지 보장은 할 수 없다. 전송 성공 유무는 서버콜백 기능을 이용하여야 한다.
-                        Timber.d("onSuccess(): " + result.toString());
-                    }
-                });
+            KakaoLinkService.getInstance().sendDefault(PendingPromiseActivity.this, params, serverCallbackArgs, new ResponseCallback<KakaoLinkResponse>() {
+                @Override
+                public void onFailure(ErrorResult errorResult) {
+                    Timber.e(errorResult.getException());
+                }
+
+                @Override
+                public void onSuccess(KakaoLinkResponse result) {
+                    // 템플릿 밸리데이션과 쿼터 체크가 성공적으로 끝남. 톡에서 정상적으로 보내졌는지 보장은 할 수 없다. 전송 성공 유무는 서버콜백 기능을 이용하여야 한다.
+                    Timber.d("onSuccess(): " + result.toString());
+                }
+            });
 
 
 
@@ -234,7 +227,6 @@ public class PendingPromiseActivity extends AppCompatActivity {
 //                                }, onError -> {
 //                                    Timber.e(onError);
 //                                }));
-            }
         });
     }
 

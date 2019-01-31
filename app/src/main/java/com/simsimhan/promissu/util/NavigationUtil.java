@@ -82,12 +82,21 @@ public class NavigationUtil {
         return string.length() > length ? string.substring(0, length) : string;
     }
 
-    public static void openPromiseDetilScreen(AppCompatActivity appCompatActivity) {
+    public static void enterRoom(AppCompatActivity appCompatActivity, Promise.Response promise) {
+        if (promise.getStatus() == 0) {
+            openPendingScreen(appCompatActivity, promise);
+        } else {
+            openPromiseDetailScreen(appCompatActivity, promise);
+        }
+    }
+
+    private static void openPromiseDetailScreen(AppCompatActivity appCompatActivity, Promise.Response promise) {
         Intent intent = new Intent(appCompatActivity, PromiseDetailActivity.class);
+        intent.putExtra("promise", promise);
         appCompatActivity.startActivity(intent);
     }
 
-    public static void openPendingScreen(AppCompatActivity appCompatActivity, Promise.Response promise) {
+    private static void openPendingScreen(AppCompatActivity appCompatActivity, Promise.Response promise) {
         Intent intent = new Intent(appCompatActivity, PendingPromiseActivity.class);
         intent.putExtra("promise", promise);
         appCompatActivity.startActivity(intent);

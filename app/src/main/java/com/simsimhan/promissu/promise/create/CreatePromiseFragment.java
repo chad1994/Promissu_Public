@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,8 +43,16 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
     private RadioButton radioButtonFirst;
     private RadioButton radioButtonSecond;
     private RadioButton radioButtonThird;
-    private TextView creatPromiseTimer;
+    private TextView createPromiseTimer;
     private TextInputEditText promiseTitle;
+
+    private DateTime selectedDate;
+    private DateTime selectedDateTime;
+    private int waitTime = 0;
+    private double x;
+    private double y;
+    private String locationText;
+
 
     public static Fragment newInstance(int position, String title) {
         CreatePromiseFragment fragment = new CreatePromiseFragment();
@@ -112,7 +119,6 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
 
             promisePlace = view.findViewById(R.id.promise_location_edit_text);
             promisePlace.setOnClickListener(v -> {
-//                NavigationUtil.openMapScreen(getActivity());
                 Intent intent = new Intent(getActivity(), MapSearchActivity.class);
                 startActivityForResult(intent, REQUEST_MAP_SEARCH);
             });
@@ -152,7 +158,7 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
                     activity.createPromise();
                 }
             });
-            creatPromiseTimer = view.findViewById(R.id.create_question_timer);
+            createPromiseTimer = view.findViewById(R.id.create_question_timer);
             addFromCurrentTime(0);
 
         }
@@ -175,18 +181,15 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
         }
     }
 
-    private int waitTime = 0;
-
     private void addFromCurrentTime(int addingTime) {
-        if (creatPromiseTimer != null) {
+        if (createPromiseTimer != null) {
             waitTime = addingTime;
             DateTime newDate = now.plusMinutes(addingTime);
-            creatPromiseTimer.setText(newDate.getHourOfDay() + ":" + newDate.getMinuteOfHour());
+            createPromiseTimer.setText(newDate.getHourOfDay() + ":" + newDate.getMinuteOfHour());
         }
     }
 
-    private double x;
-    private double y;
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -209,6 +212,7 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
         Timber.d("setPromisePlace(): " + placeText);
 
         if (promisePlace != null) {
+            this.locationText = placeText;
             promisePlace.setText(placeText);
         }
     }
@@ -222,8 +226,6 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
         }
     }
 
-    private DateTime selectedDate;
-    private DateTime selectedDateTime;
 
     @Override
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
@@ -258,6 +260,10 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
 
     double getLocationY() {
         return y;
+    }
+
+    String getLocationText() {
+        return locationText;
     }
 
     int getWaitTime() {

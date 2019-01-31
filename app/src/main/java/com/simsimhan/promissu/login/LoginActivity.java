@@ -23,6 +23,7 @@ import com.simsimhan.promissu.network.AuthAPI;
 import com.simsimhan.promissu.network.Login;
 import com.simsimhan.promissu.network.model.Promise;
 import com.simsimhan.promissu.util.NavigationUtil;
+import com.simsimhan.promissu.util.StringUtil;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -49,7 +50,9 @@ public class LoginActivity extends AppCompatActivity implements ISessionCallback
         disposables = new CompositeDisposable();
         loginButton = findViewById(R.id.btn_kakao_login);
 //        Session.getCurrentSession().open(AuthType.KAKAO_LOGIN_ALL, LoginActivity.this);
-//        StringUtil.getHashKey(this);  Kakao key hash
+
+//        Kakao key hash
+        StringUtil.getHashKey(this);
     }
 
     @Override

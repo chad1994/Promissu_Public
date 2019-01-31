@@ -37,26 +37,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-                android:id="@+id/calendarView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingBottom="@dimen/activity_horizontal_margin"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:mcv_calendarMode="week"
-                app:mcv_dateTextAppearance="@style/CustomCalendarTextAppearance"
-                app:mcv_selectionMode="single"
-                app:mcv_showOtherDates="all"
-                app:mcv_weekDayTextAppearance="@style/CustomCalendarTextAppearance_White"
-                tools:visibility="gone" />
-
+            <!--<com.prolificinteractive.materialcalendarview.MaterialCalendarView-->
+                <!--android:id="@+id/calendarView"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:paddingLeft="@dimen/activity_horizontal_margin"-->
+                <!--android:paddingRight="@dimen/activity_horizontal_margin"-->
+                <!--android:paddingBottom="@dimen/activity_horizontal_margin"-->
+                <!--app:layout_constraintLeft_toLeftOf="parent"-->
+                <!--app:layout_constraintRight_toRightOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent"-->
+                <!--app:mcv_calendarMode="week"-->
+                <!--app:mcv_dateTextAppearance="@style/CustomCalendarTextAppearance"-->
+                <!--app:mcv_selectionMode="single"-->
+                <!--app:mcv_showOtherDates="all"-->
+                <!--app:mcv_weekDayTextAppearance="@style/CustomCalendarTextAppearance_White"-->
+                <!--tools:visibility="gone" />-->
 
             <TextView
-                android:id="@+id/promise_title"
+                android:id="@+id/promise_date_left"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -67,7 +66,7 @@
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/calendarView" />
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <FrameLayout
                 android:id="@+id/frame"
@@ -79,7 +78,7 @@
                 android:paddingRight="24dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/promise_title" />
+                app:layout_constraintTop_toBottomOf="@id/promise_date_left" />
 
             <TextView
                 android:id="@+id/promise_time"

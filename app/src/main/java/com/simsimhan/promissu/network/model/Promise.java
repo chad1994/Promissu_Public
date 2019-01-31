@@ -13,8 +13,8 @@ public class Promise {
 //        "deposit":null,
 //        "date":"2018-01-11T04:00:00.000Z",
 //        "participants":5,
-//        "location_x":"37.499385",
-//        "location_y":"127.029204",
+//        "location_lan":"37.499385",
+//        "location_lon":"127.029204",
 //        "admin_id":"996635036",
 //        "status":0,
 //        "createdAt": "2019-01-13T11:52:59.000Z",
@@ -28,26 +28,28 @@ public class Promise {
         private final int waiting_time;
         private final String description;
         private final String admin_id;
-        private final float location_x;
-        private final float location_y;
+        private final float location_lan;
+        private final float location_lon;
         private final int status;
         private final Date start_datetime;
         private final Date end_datetime;
         private final Date createdAt;
+        private final String location;
 
-        public Response(int id, String title, int participants, Date date, String description, String admin_id, float location_x, float location_y, int status, Date createAt, Date updatedAt, int waiting_time, Date createdAt) {
+        public Response(int id, String title, int participants, Date date, String description, String admin_id, float location_lan, float location_lon, int status, Date createAt, Date updatedAt, int waiting_time, Date createdAt, String location) {
             this.id = id;
             this.title = title;
             this.participants = participants;
             this.description = description;
             this.admin_id = admin_id;
-            this.location_x = location_x;
-            this.location_y = location_y;
+            this.location_lan = location_lan;
+            this.location_lon = location_lon;
             this.status = status;
             this.start_datetime = createAt;
             this.end_datetime = updatedAt;
             this.waiting_time = waiting_time;
             this.createdAt = createdAt;
+            this.location = location;
         }
 
         protected Response(Parcel in) {
@@ -57,12 +59,13 @@ public class Promise {
             waiting_time = in.readInt();
             description = in.readString();
             admin_id = in.readString();
-            location_x = in.readFloat();
-            location_y = in.readFloat();
+            location_lan = in.readFloat();
+            location_lon = in.readFloat();
             status = in.readInt();
             end_datetime = new Date(in.readLong());
             start_datetime = new Date(in.readLong());
             createdAt = new Date(in.readLong());
+            location = in.readString();
         }
 
         @Override
@@ -73,12 +76,13 @@ public class Promise {
             dest.writeInt(waiting_time);
             dest.writeString(description);
             dest.writeString(admin_id);
-            dest.writeFloat(location_x);
-            dest.writeFloat(location_y);
+            dest.writeFloat(location_lan);
+            dest.writeFloat(location_lon);
             dest.writeInt(status);
             dest.writeLong(end_datetime.getTime());
             dest.writeLong(start_datetime.getTime());
             dest.writeLong(createdAt.getTime());
+            dest.writeString(location);
         }
 
         @Override
@@ -106,12 +110,12 @@ public class Promise {
             return title;
         }
 
-        public float getLocation_x() {
-            return location_x;
+        public float getLocation_lan() {
+            return location_lan;
         }
 
-        public float getLocation_y() {
-            return location_y;
+        public float getLocation_lon() {
+            return location_lon;
         }
 
         public int getStatus() {
@@ -145,6 +149,10 @@ public class Promise {
         public String getAdmin_id() {
             return admin_id;
         }
+
+        public String getLocation() {
+            return location;
+        }
     }
 
 
@@ -154,26 +162,36 @@ public class Promise {
 //                "start_datetime": "2018-01-28 14:01",
 //                "end_datetime": "2018-01-28 15:00",
 //                "waiting_time": 1440,
-//                "location_x": "37.499385",
-//                "location_y": "127.029204"
+//                "location_lan": "37.499385",
+//                "location_lon": "127.029204"
 //        }
     public static class Request {
         private String title;
         private String description;
         private Date start_datetime;
         private Date end_datetime;
-        private float location_x;
-        private float location_y;
+        private float location_lan;
+        private float location_lon;
         private int waiting_time;
+        private String location;
 
-        public Request(String title, String description, Date start_datetime, Date end_datetime, float location_x, float location_y, int waiting_time) {
+        public Request(String title, String description, Date start_datetime, Date end_datetime, float location_lan, float location_lon, int waiting_time, String location) {
             this.title = title;
             this.description = description;
             this.start_datetime = start_datetime;
             this.end_datetime = end_datetime;
-            this.location_x = location_x;
-            this.location_y = location_y;
+            this.location_lan = location_lan;
+            this.location_lon = location_lon;
             this.waiting_time = waiting_time;
+            this.location = location;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public void setLocation(String location) {
+            this.location = location;
         }
 
         public String getTitle() {
@@ -208,20 +226,20 @@ public class Promise {
             this.end_datetime = end_datetime;
         }
 
-        public float getLocation_x() {
-            return location_x;
+        public float getLocation_lan() {
+            return location_lan;
         }
 
-        public void setLocation_x(float location_x) {
-            this.location_x = location_x;
+        public void setLocation_lan(float location_lan) {
+            this.location_lan = location_lan;
         }
 
-        public float getLocation_y() {
-            return location_y;
+        public float getLocation_lon() {
+            return location_lon;
         }
 
-        public void setLocation_y(float location_y) {
-            this.location_y = location_y;
+        public void setLocation_lon(float location_lon) {
+            this.location_lon = location_lon;
         }
 
         public int getWaiting_time() {

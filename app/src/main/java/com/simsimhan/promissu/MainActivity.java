@@ -1,6 +1,8 @@
 package com.simsimhan.promissu;
 
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -23,6 +25,10 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.simsimhan.promissu.login.LoginActivity;
+import com.simsimhan.promissu.network.AuthAPI;
+import com.simsimhan.promissu.network.Login;
+import com.simsimhan.promissu.promise.PendingPromiseActivity;
 import com.simsimhan.promissu.promise.PromiseFragment;
 import com.simsimhan.promissu.util.DialogUtil;
 import com.simsimhan.promissu.util.NavigationUtil;
@@ -44,6 +50,9 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.simsimhan.promissu.util.NavigationUtil.REQUEST_CREATE_PROMISE;
@@ -53,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
     private static final String TAG = "MainActivity";
     private static final int NUM_ITEMS = 2;
 
-//    private FragmentManager fragmentManager;
+    //    private FragmentManager fragmentManager;
     private FrameLayout frameView;
     private Animation fabOpen, fabClose;
     private DrawerLayout drawerLayout;
@@ -67,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
     private ViewPager vpPager;
     private PromiseFragment firstFragment;
     private PromiseFragment secondFragment;
-
+    private CompositeDisposable disposables = new CompositeDisposable();
 
 
     @Override
@@ -80,6 +89,23 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent intent = getIntent();
+        Uri uri = intent.getData();
+
+        if (uri != null) {
+            String execparamkey1 = uri.getQueryParameter("roomID");
+
+            if (execparamkey1 != null) {
+                Timber.d("onCreate() param=roomID, key=%s", execparamkey1);
+
+                enterPromiseRoom(execparamkey1);
+                intent.replaceExtras(new Bundle());
+                intent.setAction("");
+                intent.setData(null);
+                intent.setFlags(0);
+            }
+        }
+
         fabOpen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fabClose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
 
@@ -90,8 +116,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         floatingActionButton.setOnClickListener(v -> {
             // do something here
             NavigationUtil.openAddPromiseScreen(MainActivity.this);
-            // TODO: remove this, for testing only
-//            NavigationUtil.openMapScreen(MainActivity.this);
         });
 
         profileMainImage = findViewById(R.id.profile_image_main);
@@ -193,10 +217,34 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         });
     }
 
+    private void enterPromiseRoom(String roomId) {
+        Timber.d("enterPromiseRoom(): " + roomId);
+        disposables.add(
+                PromissuApplication.getRetrofit()
+                        .create(AuthAPI.class)
+                        .enterPromise("Bearer " + PromissuApplication.getDiskCache().getUserToken(), roomId)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(onNext -> {
+                            // save token
+                            NavigationUtil.enterRoom(this, onNext);
+                        }, onError -> {
+                            if (BuildConfig.DEBUG) {
+                                Toast.makeText(MainActivity.this, "[DEV] enterPromiseRoom() check log", Toast.LENGTH_SHORT).show();
+                            }
+
+                            Timber.e("enterPromiseRoom(): %s", onError.toString());
+                        }, () -> {
+                            Timber.d("enterPromiseRoom(): on complete");
+                        }));
+    }
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         tabLayout.removeOnTabSelectedListener(this);
+        disposables.clear();
     }
 
     @Override
@@ -260,9 +308,29 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
 
     @Override
     public void onNewIntent(Intent intent) {
-        this.setIntent(intent);
+        setIntent(intent);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent = getIntent();
+        Uri uri = intent.getData();
+
+        if (uri != null) {
+            String execparamkey1 = uri.getQueryParameter("roomID");
+
+            if (execparamkey1 != null) {
+                Timber.d("onCreate() param=roomID, key=%s", execparamkey1);
+                enterPromiseRoom(execparamkey1);
+                intent.replaceExtras(new Bundle());
+                intent.setAction("");
+                intent.setData(null);
+                intent.setFlags(0);
+            }
+        }
+
+    }
 
     public View getCustomTabView(int index) {
         View customView = LayoutInflater.from(MainActivity.this).inflate(R.layout.view_custom_tab, null);
@@ -350,7 +418,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         @Nullable
         @Override
         public CharSequence getPageTitle(int position) {
-            return position == 0 ? "약속": "지난 약속";
+            return position == 0 ? "약속" : "지난 약속";
         }
     }
 }
