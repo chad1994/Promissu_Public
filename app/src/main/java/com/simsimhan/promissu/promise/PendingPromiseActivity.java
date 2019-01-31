@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
@@ -21,11 +22,13 @@ import com.kakao.network.ErrorResult;
 import com.kakao.network.callback.ResponseCallback;
 import com.simsimhan.promissu.PromissuApplication;
 import com.simsimhan.promissu.R;
+import com.simsimhan.promissu.network.AuthAPI;
 import com.simsimhan.promissu.network.model.Promise;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -38,6 +41,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.RecyclerView;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -56,16 +60,21 @@ public class PendingPromiseActivity extends AppCompatActivity {
     private TextView promiseDateActual;
     private TextView locationTextView;
     private DateTime now;
+    private ParticipantAdapter adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pending_promise);
         drawerLayout = findViewById(R.id.drawer_layout);
+
         promiseLeftTimeTextView = findViewById(R.id.timer);
         inviteButton = findViewById(R.id.invite_people);
         promiseDateActual = findViewById(R.id.promise_date_actual);
         locationTextView = findViewById(R.id.promise_location_actual);
+        RecyclerView promiseFriends = findViewById(R.id.promise_friend_list);
+        adapter = new ParticipantAdapter(new ArrayList<>());
+        promiseFriends.setAdapter(adapter);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
@@ -102,8 +111,23 @@ public class PendingPromiseActivity extends AppCompatActivity {
 
         DateTime promiseStartTime = new DateTime(promise.getStartTime());
         Timber.d("onCreate(): %s", promiseStartTime.toString());
+
         promiseDateActual.setText(promiseStartTime.toString("MM/dd/yyyy h:mm"));
-        // TODO: get promise location and set text for locationTextView
+        locationTextView.setText(promise.getLocation());
+
+        disposables.add(
+                PromissuApplication.getRetrofit()
+                        .create(AuthAPI.class)
+                        .getParticipants("Bearer " + PromissuApplication.getDiskCache().getUserToken(), promise.getId())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(onNext -> {
+                            adapter.addAll(onNext);
+                        }, onError -> {
+                            Timber.e(onError);
+
+                        }));
+
 
         String adminId = promise.getAdmin_id();
 
@@ -304,6 +328,4 @@ public class PendingPromiseActivity extends AppCompatActivity {
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.main_01));
         }
     }
-
-
 }

@@ -116,11 +116,6 @@ public class PromiseDetailActivity extends AppCompatActivity implements MapView.
 
         TextView promiseMembers = findViewById(R.id.promise_user);
         promiseMembers.setText(promise.getParticipants());
-
-
-
-
-
     }
 
     private CalendarDay getCalendarDate(DateTime dateTime) {

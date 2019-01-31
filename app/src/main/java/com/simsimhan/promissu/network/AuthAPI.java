@@ -1,5 +1,6 @@
 package com.simsimhan.promissu.network;
 
+import com.simsimhan.promissu.network.model.Participant;
 import com.simsimhan.promissu.network.model.Promise;
 
 import java.util.List;
@@ -50,4 +51,12 @@ public interface AuthAPI {
     })
     @POST("participation/join/{room_id}")
     Observable<Promise.Response> enterPromise(@Header("Authorization") String token, @Path("room_id") String roomId);
+
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
+    @GET("appointment/{room_id}/participants")
+    Observable<List<Participant.Response>> getParticipants(@Header("Authorization") String token, @Path("room_id") int roomId);
+
 }
