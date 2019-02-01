@@ -112,7 +112,7 @@ public class PromiseDetailActivity extends AppCompatActivity implements MapView.
         promiseTime.setText(startDate.getHourOfDay() + ":" + startDate.getMinuteOfHour());
 
         TextView promiseLocation = findViewById(R.id.promise_location);
-        promiseLocation.setText(promise.getLocation() + " 좌표: (" + promise.getLocation_lan() + " " + promise.getLocation_lon() + ")");
+        promiseLocation.setText(promise.getLocation() + " 좌표: (" + promise.getLocation_lat() + " " + promise.getLocation_lon() + ")");
 
         TextView promiseMembers = findViewById(R.id.promise_user);
         promiseMembers.setText(promise.getParticipants());

@@ -13,7 +13,7 @@ public class Promise {
 //        "deposit":null,
 //        "date":"2018-01-11T04:00:00.000Z",
 //        "participants":5,
-//        "location_lan":"37.499385",
+//        "location_lat":"37.499385",
 //        "location_lon":"127.029204",
 //        "admin_id":"996635036",
 //        "status":0,
@@ -28,7 +28,7 @@ public class Promise {
         private final int waiting_time;
         private final String description;
         private final String admin_id;
-        private final float location_lan;
+        private final float location_lat;
         private final float location_lon;
         private final int status;
         private final Date start_datetime;
@@ -36,13 +36,13 @@ public class Promise {
         private final Date createdAt;
         private final String location;
 
-        public Response(int id, String title, int participants, Date date, String description, String admin_id, float location_lan, float location_lon, int status, Date createAt, Date updatedAt, int waiting_time, Date createdAt, String location) {
+        public Response(int id, String title, int participants, Date date, String description, String admin_id, float location_lat, float location_lon, int status, Date createAt, Date updatedAt, int waiting_time, Date createdAt, String location) {
             this.id = id;
             this.title = title;
             this.participants = participants;
             this.description = description;
             this.admin_id = admin_id;
-            this.location_lan = location_lan;
+            this.location_lat = location_lat;
             this.location_lon = location_lon;
             this.status = status;
             this.start_datetime = createAt;
@@ -59,7 +59,7 @@ public class Promise {
             waiting_time = in.readInt();
             description = in.readString();
             admin_id = in.readString();
-            location_lan = in.readFloat();
+            location_lat = in.readFloat();
             location_lon = in.readFloat();
             status = in.readInt();
             end_datetime = new Date(in.readLong());
@@ -76,7 +76,7 @@ public class Promise {
             dest.writeInt(waiting_time);
             dest.writeString(description);
             dest.writeString(admin_id);
-            dest.writeFloat(location_lan);
+            dest.writeFloat(location_lat);
             dest.writeFloat(location_lon);
             dest.writeInt(status);
             dest.writeLong(end_datetime.getTime());
@@ -110,8 +110,8 @@ public class Promise {
             return title;
         }
 
-        public float getLocation_lan() {
-            return location_lan;
+        public float getLocation_lat() {
+            return location_lat;
         }
 
         public float getLocation_lon() {
@@ -162,7 +162,7 @@ public class Promise {
 //                "start_datetime": "2018-01-28 14:01",
 //                "end_datetime": "2018-01-28 15:00",
 //                "waiting_time": 1440,
-//                "location_lan": "37.499385",
+//                "location_lat": "37.499385",
 //                "location_lon": "127.029204"
 //        }
     public static class Request {
@@ -170,17 +170,17 @@ public class Promise {
         private String description;
         private Date start_datetime;
         private Date end_datetime;
-        private float location_lan;
+        private float location_lat;
         private float location_lon;
         private int waiting_time;
         private String location;
 
-        public Request(String title, String description, Date start_datetime, Date end_datetime, float location_lan, float location_lon, int waiting_time, String location) {
+        public Request(String title, String description, Date start_datetime, Date end_datetime, float location_lat, float location_lon, int waiting_time, String location) {
             this.title = title;
             this.description = description;
             this.start_datetime = start_datetime;
             this.end_datetime = end_datetime;
-            this.location_lan = location_lan;
+            this.location_lat = location_lat;
             this.location_lon = location_lon;
             this.waiting_time = waiting_time;
             this.location = location;
@@ -226,12 +226,12 @@ public class Promise {
             this.end_datetime = end_datetime;
         }
 
-        public float getLocation_lan() {
-            return location_lan;
+        public float getLocation_lat() {
+            return location_lat;
         }
 
-        public void setLocation_lan(float location_lan) {
-            this.location_lan = location_lan;
+        public void setLocation_lat(float location_lat) {
+            this.location_lat = location_lat;
         }
 
         public float getLocation_lon() {

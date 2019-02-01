@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
@@ -144,7 +143,7 @@ public class PendingPromiseActivity extends AppCompatActivity {
         inviteButton.setOnClickListener(v -> {
             DateTime promiseDate = new DateTime(promise.getStartTime());
 
-            LocationTemplate params = LocationTemplate.newBuilder(promise.getLocation() +" 좌표: (" + promise.getLocation_lan() + ", " + promise.getLocation_lon() + ")",
+            LocationTemplate params = LocationTemplate.newBuilder(promise.getLocation() +" 좌표: (" + promise.getLocation_lat() + ", " + promise.getLocation_lon() + ")",
                     ContentObject.newBuilder(promise.getTitle(),
                             "https://i.pinimg.com/originals/92/e4/43/92e443862a7ae5db7cf74b41db2f5e37.jpg",
                             LinkObject.newBuilder()
@@ -157,7 +156,7 @@ public class PendingPromiseActivity extends AppCompatActivity {
                                     + promiseDate.getDayOfMonth() + "일 "
                                     + promise.getDescription())
                             .build())
-                    .setAddressTitle(promise.getLocation() + " 좌표: (" + promise.getLocation_lan() + ", " + promise.getLocation_lon() + ")")
+                    .setAddressTitle(promise.getLocation() + " 좌표: (" + promise.getLocation_lat() + ", " + promise.getLocation_lon() + ")")
                     .addButton(new ButtonObject("앱에서 보기", LinkObject.newBuilder()
                             .setWebUrl("'https://developers.kakao.com")
                             .setMobileWebUrl("'https://developers.kakao.com")

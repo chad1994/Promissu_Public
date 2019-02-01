@@ -51,8 +51,8 @@ public class LoginActivity extends AppCompatActivity implements ISessionCallback
         loginButton = findViewById(R.id.btn_kakao_login);
 //        Session.getCurrentSession().open(AuthType.KAKAO_LOGIN_ALL, LoginActivity.this);
 
-//        Kakao key hash
-        StringUtil.getHashKey(this);
+//        Kakao key hash for debug
+//        StringUtil.getHashKey(this);
     }
 
     @Override
