@@ -32,13 +32,13 @@ public class PromiseDetailActivity extends AppCompatActivity implements MapView.
     private static final String TAG = "PromiseDetailActivity";
 
     // Decorators
-    private SelectedDayDecorator selectedDayDecorator;
-    private SundayDecorator sundayDecorator;
-    private SaturdayDecorator saturdayDecorator;
-    private DisabledDayDecorator disabledDayDecorator;
-    private EnabledDayDecorator enabledDayDecorator;
+//    private SelectedDayDecorator selectedDayDecorator;
+//    private SundayDecorator sundayDecorator;
+//    private SaturdayDecorator saturdayDecorator;
+//    private DisabledDayDecorator disabledDayDecorator;
+//    private EnabledDayDecorator enabledDayDecorator;
     private DateTime startDate, endDate, today;
-    private MaterialCalendarView materialCalendarView;
+//    private MaterialCalendarView materialCalendarView;
     private Toolbar toolbar;
     private Promise.Response promise;
     private TextView promiseDateLeft;
@@ -115,7 +115,7 @@ public class PromiseDetailActivity extends AppCompatActivity implements MapView.
         promiseLocation.setText(promise.getLocation() + " 좌표: (" + promise.getLocation_lat() + " " + promise.getLocation_lon() + ")");
 
         TextView promiseMembers = findViewById(R.id.promise_user);
-        promiseMembers.setText(promise.getParticipants());
+        promiseMembers.setText(String.valueOf(promise.getParticipants()));
     }
 
     private CalendarDay getCalendarDate(DateTime dateTime) {
@@ -125,7 +125,7 @@ public class PromiseDetailActivity extends AppCompatActivity implements MapView.
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        materialCalendarView.removeDecorators();
+//        materialCalendarView.removeDecorators();
     }
 
     private CalendarDay getStartDateMinusWeek() {
