@@ -340,7 +340,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         if (index == 0) {
             text.setText("약속");
             text.setTextColor(ContextCompat.getColor(this, R.color.white));
-            container.setBackground(ContextCompat.getDrawable(this, R.drawable.round_background));
+            container.setBackground(ContextCompat.getDrawable(this, R.drawable.round_background_no_border));
         } else {
             text.setText("지난 약속");
             text.setTextColor(ContextCompat.getColor(this, R.color.grey_02));

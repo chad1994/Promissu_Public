@@ -5,14 +5,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.simsimhan.promissu.BuildConfig;
 import com.simsimhan.promissu.R;
-import com.simsimhan.promissu.detail.decorators.DisabledDayDecorator;
-import com.simsimhan.promissu.detail.decorators.EnabledDayDecorator;
-import com.simsimhan.promissu.detail.decorators.SaturdayDecorator;
-import com.simsimhan.promissu.detail.decorators.SelectedDayDecorator;
-import com.simsimhan.promissu.detail.decorators.SundayDecorator;
 import com.simsimhan.promissu.network.model.Promise;
 
 import net.daum.mf.map.api.MapPOIItem;
