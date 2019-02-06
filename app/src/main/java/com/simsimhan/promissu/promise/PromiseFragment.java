@@ -9,11 +9,14 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.simsimhan.promissu.MainActivity;
 import com.simsimhan.promissu.PromissuApplication;
 import com.simsimhan.promissu.R;
 import com.simsimhan.promissu.network.AuthAPI;
 import com.simsimhan.promissu.network.model.Promise;
+import com.simsimhan.promissu.util.NavigationUtil;
 
 import org.joda.time.DateTime;
 
@@ -136,7 +139,9 @@ public class PromiseFragment extends Fragment implements SwipeRefreshLayout.OnRe
                         }, onError -> {
                             swipeContainer.setRefreshing(false);
                             Timber.e(onError);
-                            setEmptyViewVisible(true);
+                            Toast.makeText(getActivity(), "서버 점검 중입니다. 다시 로그인해 주세요.", Toast.LENGTH_SHORT).show();
+                            PromissuApplication.getDiskCache().clearUserData();
+                            NavigationUtil.replaceWithLoginView((AppCompatActivity) getActivity());
                         }));
     }
 

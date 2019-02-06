@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity implements ISessionCallback
 //        Session.getCurrentSession().open(AuthType.KAKAO_LOGIN_ALL, LoginActivity.this);
 
 //        Kakao key hash for debug
-//        StringUtil.getHashKey(this);
+        StringUtil.getHashKey(this);
     }
 
     @Override
@@ -103,11 +103,8 @@ public class LoginActivity extends AppCompatActivity implements ISessionCallback
                                     // save token
                                     NavigationUtil.replaceWithMainView(LoginActivity.this);
                                 }, onError -> {
-                                    if (BuildConfig.DEBUG) {
-                                        Toast.makeText(LoginActivity.this, "[DEV] onSessionClosed() check log", Toast.LENGTH_SHORT).show();
-                                    }
-
                                     Timber.e("onSessionClosed(): %s", onError.toString());
+                                    Toast.makeText(LoginActivity.this, "서버 점검 중입니다. 나중에 다시 확인해주세요.", Toast.LENGTH_SHORT).show();
                                 }));
             }
 

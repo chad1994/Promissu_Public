@@ -47,6 +47,8 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
+import static com.simsimhan.promissu.util.StringUtil.addPaddingIfSingleDigit;
+
 public class PendingPromiseActivity extends AppCompatActivity {
     private CompositeDisposable disposables;
     private DrawerLayout drawerLayout;
@@ -273,22 +275,6 @@ public class PendingPromiseActivity extends AppCompatActivity {
                         }, onError -> {
 
                         }));
-    }
-
-    private String addPaddingIfSingleDigit(int time) {
-        if (time >= 0) {
-            if (time < 10) {
-                return "0" + time;
-            } else {
-                return "" + time;
-            }
-        } else {
-            if (time < -10) {
-                return "-0" + (time * -1);
-            } else {
-                return "" + time;
-            }
-        }
     }
 
     @Override

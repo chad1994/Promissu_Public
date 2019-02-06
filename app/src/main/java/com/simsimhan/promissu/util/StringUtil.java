@@ -28,6 +28,22 @@ public class StringUtil {
     private static final String TAG = "StringUtil";
     private static final boolean DEBUG = BuildConfig.DEBUG;
 
+    public static String addPaddingIfSingleDigit(int time) {
+        if (time >= 0) {
+            if (time < 10) {
+                return "0" + time;
+            } else {
+                return "" + time;
+            }
+        } else {
+            if (time < -10) {
+                return "-0" + (time * -1);
+            } else {
+                return "" + time;
+            }
+        }
+    }
+
     public static boolean isStringEmpty(String source) {
         return source == null || source.isEmpty();
     }

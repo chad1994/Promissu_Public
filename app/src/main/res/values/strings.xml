@@ -1,10 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
     <string name="app_name" >프라미슈</string>
-    <string name="kakao_scheme">kakao8c8bd47430b458795fc84ac27e88f617</string>
-    <string name="kakao_app_key">8c8bd47430b458795fc84ac27e88f617</string>
+    <string name="kakao_scheme">kakao72f849d440d10fb40e679b28a7057f36</string>
+    <string name="kakao_app_key">72f849d440d10fb40e679b28a7057f36</string>
     <string name="kakaolink_host">kakaolink</string>
-    <string name="rest_key">KakaoAK 0a826c9918d987fd0f1263de1c843362</string>
+    <string name="rest_key">KakaoAK b8b6711f4210de0410c2dfafea2dfe25</string>
 
     <string name="my_points">내 포인트</string>
     <string name="my_promise_credit">내 신용등급</string>

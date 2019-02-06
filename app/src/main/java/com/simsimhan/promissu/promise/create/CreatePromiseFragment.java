@@ -16,6 +16,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.simsimhan.promissu.PromissuApplication;
 import com.simsimhan.promissu.R;
 import com.simsimhan.promissu.map.MapSearchActivity;
+import com.simsimhan.promissu.util.StringUtil;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -233,7 +234,7 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
                 .withMinuteOfHour(minute);
 
         if (timeEditText != null) {
-            timeEditText.setText(hourOfDay + ":" + minute);
+            timeEditText.setText(StringUtil.addPaddingIfSingleDigit(hourOfDay) + ":" + StringUtil.addPaddingIfSingleDigit(minute));
         }
 
 
