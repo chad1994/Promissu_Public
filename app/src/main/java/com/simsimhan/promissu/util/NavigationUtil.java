@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.util.DisplayMetrics;
+import android.widget.Toast;
 
 import com.simsimhan.promissu.MainActivity;
 import com.simsimhan.promissu.detail.PromiseDetailActivity;
@@ -22,6 +23,30 @@ public class NavigationUtil {
     public static final int REQEUSET_LOGIN = 101;
     public static final int REQUEST_MAP_SEARCH = 102;
     public static final int REQUEST_CREATE_PROMISE = 103;
+
+    enum PROMISE_STATUS {
+        // 현재 사람들을 초대중인 상태
+        INVITING(0),
+
+        // 사람들이 다 모이고, 약속이 시작되기를 기다리는 상태
+        PENDING(1),
+
+        // 약속 시간이 다 끝난 상태
+        CLOSED(2),
+
+        // 약속이 삭제된 상태
+        DELETED(-1);
+
+        int value;
+
+        PROMISE_STATUS(final int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
 
     public static void replaceWithLoginView(AppCompatActivity activity) {
         Intent intent = new Intent(activity, LoginActivity.class);
@@ -83,8 +108,10 @@ public class NavigationUtil {
     }
 
     public static void enterRoom(AppCompatActivity appCompatActivity, Promise.Response promise) {
-        if (promise.getStatus() == 0) {
+        if (promise.getStatus() == PROMISE_STATUS.PENDING.getValue()) {
             openPendingScreen(appCompatActivity, promise);
+        } else if (promise.getStatus() == PROMISE_STATUS.DELETED.getValue()) {
+            Toast.makeText(appCompatActivity, "삭제된 방입니다.", Toast.LENGTH_SHORT).show();
         } else {
             openPromiseDetailScreen(appCompatActivity, promise);
         }

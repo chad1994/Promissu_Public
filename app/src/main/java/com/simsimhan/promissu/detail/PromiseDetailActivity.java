@@ -83,9 +83,11 @@ public class PromiseDetailActivity extends AppCompatActivity implements MapView.
         MapView mapView = new MapView(this);
         mapView.setMapViewEventListener(this);
         mapView.setPOIItemEventListener(this);
+        mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(promise.getLocation_lon(), promise.getLocation_lat()), true);
 
         ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.frame);
         mapViewContainer.addView(mapView);
+        mapViewContainer.setOnTouchListener(null);
 
         toolbar = findViewById(R.id.toolbar);
         promiseDateLeft = findViewById(R.id.promise_date_left);

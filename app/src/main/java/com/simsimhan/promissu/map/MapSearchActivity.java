@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -19,6 +20,7 @@ import com.simsimhan.promissu.map.search.FullListAdapter;
 import com.simsimhan.promissu.map.search.Item;
 import com.simsimhan.promissu.util.ScreenUtil;
 
+import net.daum.mf.map.api.CalloutBalloonAdapter;
 import net.daum.mf.map.api.CameraUpdateFactory;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
@@ -148,6 +150,7 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
         mapView = new MapView(this);
         mapView.setMapViewEventListener(this);
         mapView.setPOIItemEventListener(this);
+        mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());
         mapViewContainer.addView(mapView);
 
         setSupportActionBar(toolbar);
@@ -267,4 +270,26 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
+
+    class CustomCalloutBalloonAdapter implements CalloutBalloonAdapter {
+        private final View mCalloutBalloon;
+
+        public CustomCalloutBalloonAdapter() {
+            mCalloutBalloon = getLayoutInflater().inflate(R.layout.custom_callout_balloon, null);
+        }
+
+        @Override
+        public View getCalloutBalloon(MapPOIItem poiItem) {
+//            ((ImageView) mCalloutBalloon.findViewById(R.id.badge)).setImageResource(R.drawable.ic_launcher);
+//            ((TextView) mCalloutBalloon.findViewById(R.id.title)).setText(poiItem.getItemName());
+//            ((TextView) mCalloutBalloon.findViewById(R.id.desc)).setText("Custom CalloutBalloon");
+            return mCalloutBalloon;
+        }
+
+        @Override
+        public View getPressedCalloutBalloon(MapPOIItem poiItem) {
+            return null;
+        }
+    }
+
 }

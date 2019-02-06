@@ -5,6 +5,7 @@
     <color name="colorAccent">#AEAEAE</color>
     <color name="statusBarColor">@color/white</color>
     <color name="colorStrong">#5f6ccc</color>
+    <color name="sub_color">#c0395f</color>
 
     <!-- white & black -->
     <color name="white">#FFFFFF</color>
