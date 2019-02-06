@@ -24,6 +24,8 @@ public class NavigationUtil {
     public static final int REQUEST_MAP_SEARCH = 102;
     public static final int REQUEST_CREATE_PROMISE = 103;
 
+    public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9991;
+
     enum PROMISE_STATUS {
         // 현재 사람들을 초대중인 상태
         INVITING(0),

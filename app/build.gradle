@@ -103,6 +103,11 @@ dependencies {
     implementation 'com.romandanylyk:pageindicatorview:1.0.0@aar'
     implementation 'com.miguelcatalan:materialsearchview:1.4.0'
 
+    // google location integration
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.google.android.gms:play-services-places:16.0.0'
+
+
     // for android
     annotationProcessor 'io.requery:requery-processor:1.5.1'
     // debug drawer

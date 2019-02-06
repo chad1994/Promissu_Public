@@ -1,7 +1,10 @@
 package com.simsimhan.promissu.map;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -11,6 +14,15 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.PlaceDetectionClient;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.simsimhan.promissu.BuildConfig;
 import com.simsimhan.promissu.PromissuApplication;
@@ -18,9 +30,11 @@ import com.simsimhan.promissu.R;
 import com.simsimhan.promissu.map.search.DaumAPI;
 import com.simsimhan.promissu.map.search.FullListAdapter;
 import com.simsimhan.promissu.map.search.Item;
+import com.simsimhan.promissu.util.NavigationUtil;
 import com.simsimhan.promissu.util.ScreenUtil;
 
 import net.daum.mf.map.api.CalloutBalloonAdapter;
+import net.daum.mf.map.api.CameraUpdate;
 import net.daum.mf.map.api.CameraUpdateFactory;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
@@ -30,10 +44,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -45,6 +62,7 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
 
     private Toolbar toolbar;
     private MaterialSearchView searchView;
+    private FloatingActionButton actionButton;
     private MapView mapView;
     private CompositeDisposable disposables;
     private FullListAdapter suggestionAdapter;
@@ -52,6 +70,14 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
     private String selectedPromiseLocationAddress = "";
     private double x;
     private double y;
+    private boolean locationPermissionGranted;
+
+    // location
+    private GeoDataClient mGeoDataClient;
+    private PlaceDetectionClient mPlaceDetectionClient;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private Location mLastKnownLocation;
+    private MapPOIItem myMarker;
 
 
     @Override
@@ -59,6 +85,20 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_search);
         disposables = new CompositeDisposable();
+        actionButton = findViewById(R.id.floating_action_button);
+        myMarker = new MapPOIItem();
+        myMarker.setMarkerType(MapPOIItem.MarkerType.RedPin);
+        myMarker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
+
+
+        // Construct a GeoDataClient.
+        mGeoDataClient = Places.getGeoDataClient(this, null);
+
+        // Construct a PlaceDetectionClient.
+        mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
+
+        // Construct a FusedLocationProviderClient.
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         ViewGroup mapViewContainer = findViewById(R.id.container);
 
@@ -159,10 +199,30 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowTitleEnabled(false);
         }
+
+        actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     private void hideSoftKeyboard() {
         ScreenUtil.closeKeyboard(this.getCurrentFocus(), (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE));
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                setResult(Activity.RESULT_CANCELED);
+                finish();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -271,6 +331,72 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        locationPermissionGranted = false;
+        switch (requestCode) {
+            case NavigationUtil.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    locationPermissionGranted = true;
+                }
+            }
+        }
+
+        updateLocationUI();
+    }
+
+    private void updateLocationUI() {
+        try {
+            if (locationPermissionGranted) {
+                getDeviceLocation();
+            } else {
+                getLocationPermission();
+            }
+        } catch (SecurityException e)  {
+            Timber.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    private void getDeviceLocation() {
+        try {
+            if (locationPermissionGranted) {
+                Task locationResult = mFusedLocationProviderClient.getLastLocation();
+                locationResult.addOnCompleteListener(this, new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if (task.isSuccessful()) {
+                            mLastKnownLocation = (Location) task.getResult();
+
+                            mapView.removePOIItem(myMarker);
+                            myMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
+
+                            mapView.addPOIItem(myMarker);
+                            mapView.moveCamera(CameraUpdateFactory.newMapPoint(MapPoint.mapPointWithGeoCoord(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude())));
+                        } else {
+                            Timber.d("Current location is null. Using defaults.");
+                            Timber.e(task.getException());
+
+                            //  move to default location
+
+                        }
+                    }
+                });
+            }
+        } catch(SecurityException e)  {
+            Timber.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    private void getLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, NavigationUtil.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }
+
+
     class CustomCalloutBalloonAdapter implements CalloutBalloonAdapter {
         private final View mCalloutBalloon;
 
@@ -291,5 +417,4 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
             return null;
         }
     }
-
 }
