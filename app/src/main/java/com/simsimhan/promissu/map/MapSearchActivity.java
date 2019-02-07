@@ -77,7 +77,7 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
     private PlaceDetectionClient mPlaceDetectionClient;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Location mLastKnownLocation;
-    private MapPOIItem myMarker;
+    private MapPOIItem myMarker = new MapPOIItem();
 
 
     @Override
@@ -86,9 +86,6 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
         setContentView(R.layout.activity_map_search);
         disposables = new CompositeDisposable();
         actionButton = findViewById(R.id.floating_action_button);
-        myMarker = new MapPOIItem();
-        myMarker.setMarkerType(MapPOIItem.MarkerType.RedPin);
-        myMarker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
 
 
         // Construct a GeoDataClient.
@@ -136,6 +133,7 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
 //                int radius = 10000;
 //                int page = 1;
                 mapView.removeAllPOIItems();
+                mapView.addPOIItem(myMarker);
 
                 disposables.add(
                         PromissuApplication.getDaumRetrofit()
@@ -190,7 +188,7 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
         mapView = new MapView(this);
         mapView.setMapViewEventListener(this);
         mapView.setPOIItemEventListener(this);
-        mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());
+//        mapView.setCalloutBalloonAdapter(new CustomCalloutBalloonAdapter());
         mapViewContainer.addView(mapView);
 
         setSupportActionBar(toolbar);
@@ -203,7 +201,7 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                updateLocationUI();
             }
         });
     }
@@ -219,7 +217,6 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
                 setResult(Activity.RESULT_CANCELED);
                 finish();
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -367,9 +364,14 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
                     public void onComplete(@NonNull Task task) {
                         if (task.isSuccessful()) {
                             mLastKnownLocation = (Location) task.getResult();
-
                             mapView.removePOIItem(myMarker);
+
+                            myMarker.setItemName("내 위치");
+                            myMarker.setTag(0);
+                            myMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
+                            myMarker.setCustomImageResourceId(R.drawable.map_red_dot);
                             myMarker.setMapPoint(MapPoint.mapPointWithGeoCoord(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude()));
+                            myMarker.setShowCalloutBalloonOnTouch(false);
 
                             mapView.addPOIItem(myMarker);
                             mapView.moveCamera(CameraUpdateFactory.newMapPoint(MapPoint.mapPointWithGeoCoord(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude())));
@@ -388,11 +390,15 @@ public class MapSearchActivity extends AppCompatActivity implements MapView.POII
         }
     }
 
+
+
     private void getLocationPermission() {
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationPermissionGranted = true;
+            if (ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                locationPermissionGranted = true;
+            }
         } else {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, NavigationUtil.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION}, NavigationUtil.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
     }
 

@@ -24,6 +24,10 @@
         <item name="colorPrimary">@android:color/transparent</item>
     </style>
 
+    <style name="ToolbarWhite" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="colorControlNormal">@color/white</item>
+    </style>
+
 
     <style name="OverflowMenuStyle" parent="Widget.AppCompat.PopupMenu.Overflow">
         <item name="android:dropDownHorizontalOffset">-16dp</item>

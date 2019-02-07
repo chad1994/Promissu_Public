@@ -9,8 +9,7 @@
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </FrameLayout>
+        android:layout_height="match_parent"></FrameLayout>
 
 
     <FrameLayout
@@ -23,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+            android:theme="@style/ToolbarWhite">
 
             <TextView
                 android:id="@+id/toolbar_title"
@@ -37,23 +36,21 @@
         </androidx.appcompat.widget.Toolbar>
 
         <com.miguelcatalan.materialsearchview.MaterialSearchView
-            style="@style/MaterialSearchViewStyle"
             android:id="@+id/search_view"
+            style="@style/MaterialSearchViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </FrameLayout>
 
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floating_action_button"
-        android:src="@drawable/ic_mylocation"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="24dp"
         android:layout_marginRight="24dp"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/ic_mylocation"
         app:backgroundTint="@color/white"
         app:elevation="8dp"
-        app:pressedTranslationZ="12dp"
-        android:layout_width="56dp"
-        android:layout_height="56dp" />
-
+        app:pressedTranslationZ="12dp" />
 </FrameLayout>
