@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_icon_marker_default_png"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/user_marker_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#fa0066"
+        android:layout_gravity="center"
+        android:layout_marginBottom="3dp"
+        android:lineSpacingExtra="16sp"
+        android:gravity="center_horizontal"
+        android:text="준영"
+        />
+</FrameLayout>

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.simsimhan.promissu.detail.DetailViewModel" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/ll_main_backdrop"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:foregroundGravity="bottom"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/zxing_transparent"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/bs_guideline"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="15dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:paddingTop="37dp"
+                android:paddingBottom="37dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/bs_guideline">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/detail_bs_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="24dp"
+                    android:gravity="center_horizontal"
+                    android:lineSpacingExtra="8sp"
+                    android:text="프라미슈 해커톤"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/detail_bs_time_iv"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="50dp"
+                    android:background="@color/colorStrong"
+                    app:layout_constraintLeft_toLeftOf="@id/detail_bs_title"
+                    app:layout_constraintTop_toBottomOf="@id/detail_bs_title" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/detail_bs_time_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="19dp"
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="16sp"
+                    android:text="10월 28일 8:30 P.M"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toRightOf="@id/detail_bs_time_iv"
+                    app:layout_constraintTop_toTopOf="@id/detail_bs_time_iv" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/detail_bs_location_iv"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/colorStrong"
+                    app:layout_constraintLeft_toLeftOf="@id/detail_bs_title"
+                    app:layout_constraintTop_toBottomOf="@id/detail_bs_time_iv" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/detail_bs_location_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="19dp"
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="16sp"
+                    android:text="강남 마이캠퍼스"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toRightOf="@id/detail_bs_location_iv"
+                    app:layout_constraintTop_toTopOf="@id/detail_bs_location_iv" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/detail_bs_user_iv"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/colorStrong"
+                    app:layout_constraintLeft_toLeftOf="@id/detail_bs_title"
+                    app:layout_constraintTop_toBottomOf="@id/detail_bs_location_iv" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/detail_bs_user_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="19dp"
+                    android:includeFontPadding="false"
+                    android:lineSpacingExtra="16sp"
+                    android:text="12 명"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toRightOf="@id/detail_bs_user_iv"
+                    app:layout_constraintTop_toTopOf="@id/detail_bs_user_iv" />
+
+                <!--<androidx.appcompat.widget.AppCompatTextView-->
+                <!--android:id="@+id/detail_bs_description"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textSize="12sp"-->
+                <!--android:textColor="@color/mdtp_light_gray"-->
+                <!--android:lineSpacingExtra="10sp"-->
+                <!--android:includeFontPadding="false"-->
+                <!--android:layout_marginTop="28dp"-->
+                <!--android:text="프라미슈팀에서 자체 진행하는 해커톤! 참여할사람 모여라~~! 밤샘 코딩, 디자인하고 각자 한만큼 부담없이 작업물에 대해 발표 마무리하는 시간을 가질거에요!"-->
+                <!--app:layout_constraintTop_toBottomOf="@id/detail_bs_user_tv"-->
+                <!--app:layout_constraintLeft_toLeftOf="parent"-->
+                <!--android:paddingLeft="24dp"-->
+                <!--android:paddingRight="38dp"-->
+                <!--/>-->
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ImageButton
+                android:id="@+id/bs_img_btn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/round_button"
+                android:src="@drawable/ic_arrow_down"
+                app:layout_constraintBottom_toBottomOf="@id/bs_guideline"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/bs_guideline" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

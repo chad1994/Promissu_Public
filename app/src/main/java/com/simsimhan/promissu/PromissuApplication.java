@@ -12,6 +12,7 @@ import com.kakao.auth.IApplicationConfig;
 import com.kakao.auth.ISessionConfig;
 import com.kakao.auth.KakaoAdapter;
 import com.kakao.auth.KakaoSDK;
+import com.naver.maps.map.NaverMapSdk;
 import com.simsimhan.promissu.cache.DiskCache;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -19,7 +20,6 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import androidx.multidex.MultiDex;
 import androidx.multidex.MultiDexApplication;
 import io.branch.referral.Branch;
-import io.branch.referral.BranchApp;
 import io.branch.referral.BranchUtil;
 import io.palaima.debugdrawer.timber.data.LumberYard;
 import io.requery.sql.EntityDataStore;
@@ -69,6 +69,8 @@ public class PromissuApplication extends MultiDexApplication {
         Timber.plant(lumberYard.tree());
         Timber.plant(new Timber.DebugTree());
 
+        NaverMapSdk.getInstance(this).setClient(
+                new NaverMapSdk.NaverCloudPlatformClient(BuildConfig.NaverClientId));
 //        DatabaseSource source = new DatabaseSource(this, Models.DEFAULT, 1);
 //        if (BuildConfig.DEBUG)
 //            source.setTableCreationMode(TableCreationMode.DROP_CREATE); // use this in development mode to drop and recreate the tables on every upgrade
