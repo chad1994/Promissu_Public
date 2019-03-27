@@ -65,3 +65,7 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
+/keystore.properties
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml

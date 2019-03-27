@@ -30,4 +30,9 @@
     <dimen name="placeholder_text_height">30dp</dimen>
     <dimen name="placeholder_text_height_normal">25dp</dimen>
     <dimen name="placeholder_text_height_small">18dp</dimen>
+
+
+    <dimen name="detail_ll_height">86dp</dimen>
+    <dimen name="dropbar_header">187dp</dimen>
+
 </resources>

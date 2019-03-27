@@ -14,10 +14,8 @@ import com.simsimhan.promissu.map.MapSearchActivity;
 import com.simsimhan.promissu.network.model.Promise;
 import com.simsimhan.promissu.promise.PendingPromiseActivity;
 import com.simsimhan.promissu.promise.create.CreatePromiseActivity;
-import com.simsimhan.promissu.view.DummyTutorialActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
 
 public class NavigationUtil {
     public static final int REQEUSET_LOGIN = 101;
