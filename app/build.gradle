@@ -1,4 +1,11 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -31,6 +38,7 @@ android {
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'SERVER_URL', '"http://api.promissu.com"'
+            buildConfigField "String", "NaverClientId", keystoreProperties.getProperty("naverClientId")
         }
 
         debug {
@@ -38,6 +46,7 @@ android {
             minifyEnabled false
             debuggable true
             buildConfigField 'String', 'SERVER_URL', '"http://api.promissu.com"'
+            buildConfigField "String", "NaverClientId", keystoreProperties.getProperty("naverClientId")
         }
 
         staging {
@@ -47,6 +56,10 @@ android {
             buildConfigField 'String', 'SERVER_URL', '"http://api.promissu.com"'
             matchingFallbacks = ['release', 'debug']
         }
+    }
+
+    dataBinding {
+        enabled = true
     }
 
 //    splits {
@@ -73,6 +86,10 @@ dependencies {
     implementation "com.google.android.material:material:${rootProject.ext.supportLibVersion}"
     implementation 'androidx.multidex:multidex:2.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
+    implementation "androidx.core:core-ktx:$ktx_version"
+
+    implementation "org.koin:koin-android:$koin_version"
+    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
 
     implementation 'com.kakao.sdk:friends:1.11.1'
     implementation 'com.kakao.sdk:kakaotalk:1.11.1'
@@ -108,6 +125,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-places:16.0.0'
 
 
+    implementation 'gun0912.ted:tedbottompicker:2.0.0-alpha1'
+
     // for android
     annotationProcessor 'io.requery:requery-processor:1.5.1'
     // debug drawer
@@ -125,4 +144,8 @@ dependencies {
     implementation group: 'com.kakao.sdk', name: 'usermgmt', version: project.KAKAO_SDK_VERSION
     // 카카오 방에 메시지 쏘기
     implementation group: 'com.kakao.sdk', name: 'kakaolink', version: project.KAKAO_SDK_VERSION
+
+    //네이버 지도
+    implementation 'com.naver.maps:map-sdk:3.2.1'
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
 }
