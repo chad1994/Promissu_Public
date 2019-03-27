@@ -1,6 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-</LinearLayout>
+    <data>
+        <variable
+            name="participants"
+            type="com.simsimhan.promissu.network.model.Participant.Response"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        >
+        <ImageView
+            android:id="@+id/item_detail_circle"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/bg_circle_detail_item"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+        <TextView
+            android:id="@+id/item_detail_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="@color/white"
+            android:lineSpacingExtra="10sp"
+            android:gravity="center"
+            android:text="@{participants.nickname}"
+            app:layout_constraintTop_toTopOf="@id/item_detail_circle"
+            app:layout_constraintBottom_toBottomOf="@id/item_detail_circle"
+            app:layout_constraintStart_toStartOf="@id/item_detail_circle"
+            app:layout_constraintEnd_toEndOf="@id/item_detail_circle"/>
+        <ImageView
+            android:id="@+id/item_detail_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/item_detail_circle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="40dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

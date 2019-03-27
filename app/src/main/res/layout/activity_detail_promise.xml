@@ -1,146 +1,108 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root_container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:bind="http://schemas.android.com/tools">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.simsimhan.promissu.detail.DetailViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/activity_detail_cdl"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/toolbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/my_promise_name"
-            android:textColor="@color/white"
-            android:textSize="@dimen/font_16"
-            android:textStyle="bold" />
-    </androidx.appcompat.widget.Toolbar>
-
-
-    <ScrollView
-        android:id="@+id/scrollview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:paddingBottom="86dp"
-        android:clipToPadding="false">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/container"
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/detail_ll_height"
+            android:background="@color/white">
 
-            <!--<com.prolificinteractive.materialcalendarview.MaterialCalendarView-->
-                <!--android:id="@+id/calendarView"-->
+            <com.naver.maps.map.MapView
+                android:id="@+id/detail_activity_mapview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </com.naver.maps.map.MapView>
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/detail_back_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:onClick="@{()->viewModel.onClickedBackButton()}"
+                android:layout_marginLeft="23dp"
+                android:layout_marginTop="10dp"
+                android:elevation="8dp"
+                android:background="@drawable/round_button"
+                android:src="@drawable/ic_icon_back"/>
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/detail_alarm_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="end"
+                android:elevation="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="80dp"
+                android:background="@drawable/round_button" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/detail_current_location_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="end"
+                android:elevation="8dp"
+                android:onClick="@{()->viewModel.onClickedCurrentLocation()}"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="24dp"
+                android:src="@drawable/ic_icon_mylocation"
+                android:background="@drawable/round_button"/>
+
+            <!--<View-->
+                <!--android:id="@+id/bs_shadow"-->
                 <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:paddingLeft="@dimen/activity_horizontal_margin"-->
-                <!--android:paddingRight="@dimen/activity_horizontal_margin"-->
-                <!--android:paddingBottom="@dimen/activity_horizontal_margin"-->
-                <!--app:layout_constraintLeft_toLeftOf="parent"-->
-                <!--app:layout_constraintRight_toRightOf="parent"-->
-                <!--app:layout_constraintTop_toTopOf="parent"-->
-                <!--app:mcv_calendarMode="week"-->
-                <!--app:mcv_dateTextAppearance="@style/CustomCalendarTextAppearance"-->
-                <!--app:mcv_selectionMode="single"-->
-                <!--app:mcv_showOtherDates="all"-->
-                <!--app:mcv_weekDayTextAppearance="@style/CustomCalendarTextAppearance_White"-->
-                <!--tools:visibility="gone" />-->
-
-            <TextView
-                android:id="@+id/promise_date_left"
-                android:layout_width="match_parent"
+                <!--android:layout_height="16dp"-->
+                <!--android:background="@drawable/shape_gradient_top_shadow"-->
+                <!--app:layout_anchor="@id/detail_activity_bottom_sheet" />-->
+            <include
+                android:id="@+id/detail_activity_bottom_sheet"
+                layout="@layout/bottom_sheet_detail_promise"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:padding="24dp"
-                android:text="32일 남았어요!"
-                android:textColor="@color/black"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
-            <FrameLayout
-                android:id="@+id/frame"
                 android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:clickable="false"
-                android:focusable="false"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/promise_date_left" />
+                app:behavior_hideable="false"
+                app:behavior_peekHeight="30dp"
+                app:layout_behavior="@string/bottom_sheet_behavior"
+                bind:viewModel="@{viewModel}"/>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <!--<View-->
+            <!--android:id="@+id/ll_shadow"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="4dp"-->
+            <!--android:background="@drawable/shape_gradient_top_shadow"-->
+            <!--app:layout_constraintBottom_toTopOf="@id/detail_activity_ll" />-->
 
-            <TextView
-                android:id="@+id/promise_time"
+        <LinearLayout
+            android:id="@+id/detail_activity_ll"
+            android:layout_width="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="@dimen/detail_ll_height"
+            android:layout_gravity="bottom"
+            android:background="@color/white"
+            android:orientation="horizontal">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detail_bottom_rv"
+                android:orientation="horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="17dp"
+                setRvItems="@{viewModel.participants}"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:drawableLeft="@drawable/icon_time_mini"
-                android:drawablePadding="10dp"
-                android:paddingLeft="24dp"
-                android:paddingTop="4dp"
-                android:paddingRight="24dp"
-                android:paddingBottom="4dp"
-                android:text="9:00"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/frame" />
+                android:layout_height="match_parent">
+            </androidx.recyclerview.widget.RecyclerView>
+        </LinearLayout>
 
 
-            <TextView
-                android:id="@+id/promise_location"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/icon_location_mini"
-                android:drawablePadding="10dp"
-                android:paddingLeft="24dp"
-                android:paddingTop="4dp"
-                android:paddingRight="24dp"
-                android:paddingBottom="4dp"
-                android:text="강남 마이캠퍼스"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/promise_time" />
-
-
-            <TextView
-                android:id="@+id/promise_user"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/icon_user_mini"
-                android:drawablePadding="10dp"
-                android:paddingLeft="24dp"
-                android:paddingTop="4dp"
-                android:paddingRight="24dp"
-                android:text="56 "
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/promise_location" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="출석완료"
-        android:textColor="@color/white"
-        android:layout_gravity="bottom"
-        android:layout_margin="24dp"
-        app:backgroundTint="@color/colorPrimary"/>
-</FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
