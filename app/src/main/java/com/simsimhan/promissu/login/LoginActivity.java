@@ -2,14 +2,10 @@ package com.simsimhan.promissu.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
-import com.kakao.auth.AuthType;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
-import com.kakao.auth.api.AuthApi;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.LoginButton;
 import com.kakao.usermgmt.UserManagement;
@@ -21,7 +17,6 @@ import com.simsimhan.promissu.PromissuApplication;
 import com.simsimhan.promissu.R;
 import com.simsimhan.promissu.network.AuthAPI;
 import com.simsimhan.promissu.network.Login;
-import com.simsimhan.promissu.network.model.Promise;
 import com.simsimhan.promissu.util.NavigationUtil;
 import com.simsimhan.promissu.util.StringUtil;
 
