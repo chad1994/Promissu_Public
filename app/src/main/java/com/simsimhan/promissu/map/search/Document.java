@@ -1,19 +1,21 @@
 package com.simsimhan.promissu.map.search;
 
+import com.simsimhan.promissu.model.LocationSearchItem;
+
 import java.util.List;
 
 public class Document {
-    private List<Item> documents;
+    private List<LocationSearchItem> documents;
 
-    public Document(List<Item> documents) {
+    public Document(List<LocationSearchItem> documents) {
         this.documents = documents;
     }
 
-    public List<Item> getDocuments() {
+    public List<LocationSearchItem> getDocuments() {
         return documents;
     }
 
-    public void setDocuments(List<Item> documents) {
+    public void setDocuments(List<LocationSearchItem> documents) {
         this.documents = documents;
     }
 
