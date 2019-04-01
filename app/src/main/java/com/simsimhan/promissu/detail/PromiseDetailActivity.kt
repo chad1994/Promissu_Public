@@ -2,6 +2,7 @@ package com.simsimhan.promissu.detail
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.graphics.PointF
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -72,7 +73,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         binding.detailBottomRv.apply {
-            layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = DetailUserStatusAdapter(this@PromiseDetailActivity)
         }
 
@@ -94,8 +95,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         })
 
         viewModel.participants.observe(this, Observer {
-            it.forEach{
-                Timber.d("participants: "+it.nickname)
+            it.forEach {
+                Timber.d("participants: " + it.nickname)
             }
 
         })
@@ -105,7 +106,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(naverMap: NaverMap) {
         naverMap.locationSource = locationSource
         viewModel.setNaverMap(naverMap)
-        naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BUILDING,true)
+        naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BUILDING, true)
+
 //        val marker = Marker()
 //        marker.position = LatLng(37.5670135, 126.9783740)
 //        marker.map = naverMap
@@ -116,7 +118,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         initMyLocation(naverMap)
 
         viewModel.meetingLocation.observe(this, Observer {
-            initTargetLocation(it,naverMap)
+            initTargetLocation(it, naverMap)
         })
 
         viewModel.trackingMode.observe(this, Observer {
@@ -130,7 +132,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
-    private fun initTargetLocation(it:LatLng,naverMap: NaverMap) {
+    private fun initTargetLocation(it: LatLng, naverMap: NaverMap) {
         meetingMarker.apply {
             position = it
             map = naverMap
@@ -141,17 +143,18 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             map = naverMap
             color = Color.parseColor("#11ff0068")
         }
-        val cameraUpdate = CameraUpdate.scrollAndZoomTo(it,16.0)
+        val cameraUpdate = CameraUpdate.scrollAndZoomTo(it, 16.0)
         naverMap.moveCamera(cameraUpdate)
 
     }
 
-    private fun initMyLocation(naverMap: NaverMap){
+    private fun initMyLocation(naverMap: NaverMap) {
         val location = naverMap.locationOverlay
         val myView = LayoutInflater.from(this).inflate(R.layout.user_marker, null)
         val tv = myView.findViewById(R.id.user_marker_name) as TextView
         tv.text = "나"
         location.icon = OverlayImage.fromView(myView)
+        location.anchor = PointF(0.5f, 1f)
     }
 
     override fun onStart() {
