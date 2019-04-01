@@ -170,28 +170,18 @@ public class Promise {
         private String description;
         private Date start_datetime;
         private Date end_datetime;
+        private String location_name;
         private float location_lat;
         private float location_lon;
-        private int waiting_time;
-        private String location;
 
-        public Request(String title, String description, Date start_datetime, Date end_datetime, float location_lat, float location_lon, int waiting_time, String location) {
+        public Request(String title, String description, Date start_datetime, Date end_datetime, String location_name, float location_lat, float location_lon) {
             this.title = title;
             this.description = description;
             this.start_datetime = start_datetime;
             this.end_datetime = end_datetime;
+            this.location_name = location_name;
             this.location_lat = location_lat;
             this.location_lon = location_lon;
-            this.waiting_time = waiting_time;
-            this.location = location;
-        }
-
-        public String getLocation() {
-            return location;
-        }
-
-        public void setLocation(String location) {
-            this.location = location;
         }
 
         public String getTitle() {
@@ -202,12 +192,12 @@ public class Promise {
             this.title = title;
         }
 
-        public String getDetail() {
+        public String getDescription() {
             return description;
         }
 
-        public void setDetail(String detail) {
-            this.description = detail;
+        public void setDescription(String description) {
+            this.description = description;
         }
 
         public Date getStart_datetime() {
@@ -226,6 +216,14 @@ public class Promise {
             this.end_datetime = end_datetime;
         }
 
+        public String getLocation_name() {
+            return location_name;
+        }
+
+        public void setLocation_name(String location_name) {
+            this.location_name = location_name;
+        }
+
         public float getLocation_lat() {
             return location_lat;
         }
@@ -240,14 +238,6 @@ public class Promise {
 
         public void setLocation_lon(float location_lon) {
             this.location_lon = location_lon;
-        }
-
-        public int getWaiting_time() {
-            return waiting_time;
-        }
-
-        public void setWaiting_time(int waiting_time) {
-            this.waiting_time = waiting_time;
         }
     }
 }
