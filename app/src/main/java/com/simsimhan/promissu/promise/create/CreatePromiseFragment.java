@@ -1,3 +1,4 @@
+/*
 package com.simsimhan.promissu.promise.create;
 
 import android.app.Activity;
@@ -87,13 +88,13 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
 
         if (pageKey == 0) {
             view = inflater.inflate(R.layout.fragment_create_promise_1, container, false);
-            TextView question = view.findViewById(R.id.create_question_text);
+            TextView question = view.findViewById(R.id.create_question1_text);
             question.setText(Html.fromHtml(getString(R.string.create_question_1, username)));
 
             promiseTitle = view.findViewById(R.id.promise_title_edit_text);
         } else if (pageKey == 1) {
             view = inflater.inflate(R.layout.fragment_create_promise_2, container, false);
-            TextView question = view.findViewById(R.id.create_question_text);
+            TextView question = view.findViewById(R.id.create_question2_text);
             question.setText(Html.fromHtml(getString(R.string.create_question_2)));
 
             dateEditText = view.findViewById(R.id.promise_date);
@@ -128,7 +129,7 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
             });
         } else {
             view = inflater.inflate(R.layout.fragment_create_promise_3, container, false);
-            TextView question = view.findViewById(R.id.create_question_text);
+            TextView question = view.findViewById(R.id.create_question3_text);
             question.setText(getString(R.string.create_question_3));
             RadioGroup radioGroup = view.findViewById(R.id.radio_group);
             radioButtonFirst = view.findViewById(R.id.rg_btn1);
@@ -274,3 +275,4 @@ public class CreatePromiseFragment extends Fragment implements DatePickerDialog.
         return waitTime;
     }
 }
+*/
