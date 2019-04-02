@@ -70,7 +70,7 @@ public class PromiseFragment extends Fragment implements SwipeRefreshLayout.OnRe
             isPastPromise = getArguments().getBoolean("is_past_key");
         }
 
-        token = PromissuApplication.getDiskCache().getUserToken();
+        token = PromissuApplication.Companion.getDiskCache().getUserToken();
         adapter = new PromiseAdapter((AppCompatActivity) getActivity(), new ArrayList<>(), isPastPromise);
         disposables = new CompositeDisposable();
     }
@@ -127,7 +127,7 @@ public class PromiseFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     private void fetch() {
         disposables.add(
-                PromissuApplication.getRetrofit()
+                PromissuApplication.Companion.getRetrofit()
                         .create(AuthAPI.class)
                         .getMyPromise("Bearer " + token, 0, 9, isPastPromise ? "past" : "future")
                         .subscribeOn(Schedulers.io())
@@ -140,7 +140,7 @@ public class PromiseFragment extends Fragment implements SwipeRefreshLayout.OnRe
                             swipeContainer.setRefreshing(false);
                             Timber.e(onError);
                             Toast.makeText(getActivity(), "서버 점검 중입니다. 다시 로그인해 주세요.", Toast.LENGTH_SHORT).show();
-                            PromissuApplication.getDiskCache().clearUserData();
+                            PromissuApplication.Companion.getDiskCache().clearUserData();
                             NavigationUtil.replaceWithLoginView((AppCompatActivity) getActivity());
                         }));
     }

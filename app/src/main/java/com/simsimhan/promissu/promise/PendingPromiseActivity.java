@@ -107,19 +107,21 @@ public class PendingPromiseActivity extends AppCompatActivity {
         changeStatusBarColor();
 
         promiseCreatedTime = new DateTime(promise.getCreatedAt());
-        promiseDelayEndTime = promiseCreatedTime.plusMinutes(promise.getWaitTime());
+//        promiseDelayEndTime = promiseCreatedTime.plusMinutes(promise.getWaitTime());
+        promiseDelayEndTime = new DateTime(promise.getEnd_datetime());
+
         now = new DateTime();
 
-        DateTime promiseStartTime = new DateTime(promise.getStartTime());
+        DateTime promiseStartTime = new DateTime(promise.getStart_datetime());
         Timber.d("onCreate(): %s", promiseStartTime.toString());
 
         promiseDateActual.setText(promiseStartTime.toString("MM/dd/yyyy h:mm"));
         locationTextView.setText(promise.getLocation());
 
         disposables.add(
-                PromissuApplication.getRetrofit()
+                PromissuApplication.Companion.getRetrofit()
                         .create(AuthAPI.class)
-                        .getParticipants("Bearer " + PromissuApplication.getDiskCache().getUserToken(), promise.getId())
+                        .getParticipants("Bearer " + PromissuApplication.Companion.getDiskCache().getUserToken(), promise.getId())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(onNext -> {
@@ -130,12 +132,11 @@ public class PendingPromiseActivity extends AppCompatActivity {
                         }));
 
 
-        String adminId = promise.getAdmin_id();
+        String adminId = String.valueOf(promise.getAdmin_id());
 
         if (adminId != null && !adminId.isEmpty()) {
             long roomAdminId = Long.valueOf(adminId);
-            long localUserId = PromissuApplication.getDiskCache().getUserId();
-
+            long localUserId = PromissuApplication.Companion.getDiskCache().getUserId();
             inviteButton.setVisibility(roomAdminId == localUserId ? View.VISIBLE : View.GONE);
         } else {
             throw new IllegalStateException("Admin ID should always be visible");
@@ -143,7 +144,7 @@ public class PendingPromiseActivity extends AppCompatActivity {
 
         startTimer();
         inviteButton.setOnClickListener(v -> {
-            DateTime promiseDate = new DateTime(promise.getStartTime());
+            DateTime promiseDate = new DateTime(promise.getStart_datetime());
 
             LocationTemplate params = LocationTemplate.newBuilder(promise.getLocation() +" 좌표: (" + promise.getLocation_lat() + ", " + promise.getLocation_lon() + ")",
                     ContentObject.newBuilder(promise.getTitle(),

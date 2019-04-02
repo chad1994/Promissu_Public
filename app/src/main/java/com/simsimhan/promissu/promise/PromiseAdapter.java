@@ -93,25 +93,25 @@ public class PromiseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         void setItem(Promise.Response response, boolean isPastPromise, DateTime now, AppCompatActivity appCompatActivity) {
-            title.setText(response.getDescription());
+            title.setText(response.getTitle());
 
             if (isPastPromise) {
                 container.setBackgroundColor(ContextCompat.getColor(container.getContext(), R.color.past_background_color));
                 dateLeft.setVisibility(View.GONE);
-                dateLeftLabel.setText("" + (response.getStartTime().getMonth() + 1) + "." + (response.getStartTime().getDay() + 1));
+                dateLeftLabel.setText("" + (response.getStart_datetime().getMonth() + 1) + "." + (response.getStart_datetime().getDay() + 1));
                 container.setOnClickListener(v -> NavigationUtil.enterRoom(appCompatActivity, response));
             } else {
                 container.setBackgroundColor(ContextCompat.getColor(container.getContext(), R.color.background_grey));
                 dateLeft.setVisibility(View.VISIBLE);
 
-                DateTime promiseStartDate = new DateTime(response.getStartTime());
+                DateTime promiseStartDate = new DateTime(response.getStart_datetime());
                 Days daysDifference = Days.daysBetween(now, promiseStartDate);
                 if (daysDifference.getDays() == 0) {
                     dateLeft.setText("");
                     dateLeftLabel.setText("대기중");
                     dateLeftLabel.setTextColor(ContextCompat.getColor(appCompatActivity, R.color.sub_color));
                 } else {
-                    dateLeft.setText("" + response.getStartTime().getDay());
+                    dateLeft.setText("" + response.getStart_datetime().getDay());
                     dateLeftLabel.setText("일 남음");
                     dateLeftLabel.setTextColor(ContextCompat.getColor(appCompatActivity, R.color.black));
                 }
