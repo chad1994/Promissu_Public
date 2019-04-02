@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProviders
 import com.miguelcatalan.materialsearchview.MaterialSearchView
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraUpdate
@@ -30,6 +29,7 @@ import com.simsimhan.promissu.promise.create.CreateViewModel
 import com.simsimhan.promissu.util.keyboardHide
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -42,16 +42,20 @@ class LocationSearchActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.
     private lateinit var naverMap: NaverMap
     private lateinit var searchMarker: Marker
     private lateinit var searchInfo: InfoWindow
-    private lateinit var viewModel: CreateViewModel
     private lateinit var searchView: MaterialSearchView
     private lateinit var toolbar: Toolbar
     private lateinit var suggestionAdapter: FullListAdapter
+    private var location : String? = null
+    private var locationName : String? = null
+    private var x : Double? = null
+    private var y : Double? = null
+    private val viewModel : CreateViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_map_search)
-        viewModel = ViewModelProviders.of(this).get(CreateViewModel::class.java)
+//        viewModel = ViewModelProviders.of(this).get(CreateViewModel::class.java)
 
         if (savedInstanceState == null) {
             mapView = binding.container
@@ -112,7 +116,10 @@ class LocationSearchActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.
             val cameraUpdate = CameraUpdate.scrollAndZoomTo(searchMarker.position, 16.0)
             naverMap.moveCamera(cameraUpdate)
 
-            viewModel.setCreateInfo(item.y.toDouble(), item.x.toDouble(), item.jibun_address, item.name)
+            x = item.x.toDouble()
+            y = item.y.toDouble()
+            locationName = item.name
+            location = item.jibun_address
 
         }
     }
@@ -125,7 +132,7 @@ class LocationSearchActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.
                 searchMarker.map = null
                 searchInfo.map = null
                 viewModel.addDisposable(
-                        PromissuApplication.getNaverRetrofit()
+                        PromissuApplication.naverRetrofit!!
                                 .create(NaverAPI::class.java)
                                 .searchLocationWithKeyword(BuildConfig.NaverClientId, BuildConfig.NaverClientSecret, query, naverMap.locationOverlay.position.longitude.toString() + "," + naverMap.locationOverlay.position.latitude.toString())
                                 .subscribeOn(Schedulers.io())
@@ -175,12 +182,14 @@ class LocationSearchActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.
     }
 
     override fun onClick(overlay: Overlay): Boolean {
-        Timber.d("클릭됨 @@@@@@@" + viewModel.lat.value + "," + viewModel.location.value)
         if (overlay.tag == "info") {
-            Toast.makeText(this, "정보 클릭됨", Toast.LENGTH_SHORT).show()
-            if (!viewModel.location.value.isNullOrEmpty()) {
+            Toast.makeText(this, "정보 클릭", Toast.LENGTH_SHORT).show()
+            if (!location.isNullOrEmpty()) {
                 val intent = Intent()
-                intent.putExtra("address", viewModel.location.value)
+                intent.putExtra("location", location)
+                intent.putExtra("locationName",locationName)
+                intent.putExtra("x",x)
+                intent.putExtra("y",y)
                 setResult(RESULT_OK, intent)
                 finish()
             } else {

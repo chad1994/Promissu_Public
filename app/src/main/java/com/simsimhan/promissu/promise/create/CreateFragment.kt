@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.textfield.TextInputEditText
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
@@ -26,6 +25,11 @@ import kotlinx.android.synthetic.main.fragment_create_promise_1.view.*
 import kotlinx.android.synthetic.main.fragment_create_promise_2.view.*
 import kotlinx.android.synthetic.main.fragment_create_promise_3.view.*
 import org.joda.time.DateTime
+import org.joda.time.Days
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.util.*
 
@@ -49,7 +53,8 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
     private var endSelectedDate : DateTime? = null
     private var endSelectedDateTime : DateTime? = null
     private lateinit var binding: ViewDataBinding
-    private lateinit var viewModel: CreateViewModel
+//    private lateinit var viewModel: CreateViewModel
+    private val viewModel : CreateViewModel by sharedViewModel()
 
     companion object {
         fun newInstance(position: Int, title: String): Fragment {
@@ -69,10 +74,8 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
             // get arguments and set here
             pageKey = arguments!!.getInt("Page_key")
         }
-        viewModel = ViewModelProviders.of(this).get(CreateViewModel::class.java)
-        Timber.d("@@@@vm id"+viewModel.hashCode())
 
-        username = PromissuApplication.getDiskCache().userName
+        username = PromissuApplication.diskCache!!.userName
         now = DateTime()
     }
 
@@ -115,7 +118,12 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
                         now.get(Calendar.YEAR),
                         now.get(Calendar.MONTH),
                         now.get(Calendar.DAY_OF_MONTH))
-
+                datePickerDialog.minDate = now
+                if(endSelectedDate != null) {
+                    val maxDate = Calendar.getInstance()
+                    maxDate.set(endSelectedDate!!.year,endSelectedDate!!.monthOfYear-1,endSelectedDate!!.dayOfMonth)
+                    datePickerDialog.maxDate = maxDate
+                }
                 datePickerDialog.showYearPickerFirst(true)
                 datePickerDialog.show(fragmentManager!!, "StartDatePickerDialog")
             }
@@ -138,15 +146,22 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
 
         endDateEditText = binding.root.promise_end_date.apply {
             setOnClickListener {
-                val now = Calendar.getInstance()
-                val datePickerDialog = DatePickerDialog.newInstance(
-                        this@CreateFragment,
-                        now.get(Calendar.YEAR),
-                        now.get(Calendar.MONTH),
-                        now.get(Calendar.DAY_OF_MONTH))
+                if(startSelectedDateTime==null){
+                    Toast.makeText(requireContext(),"약속 시작시간을 먼저 선택 해주세요",Toast.LENGTH_SHORT).show()
+                }else {
+                    val now = Calendar.getInstance()
+                    val datePickerDialog = DatePickerDialog.newInstance(
+                            this@CreateFragment,
+                            now.get(Calendar.YEAR),
+                            now.get(Calendar.MONTH),
+                            now.get(Calendar.DAY_OF_MONTH))
 
-                datePickerDialog.showYearPickerFirst(true)
-                datePickerDialog.show(fragmentManager!!, "EndDatePickerDialog")
+                    val startCalendar = Calendar.getInstance()
+                    startCalendar.set(startSelectedDate!!.year,startSelectedDate!!.monthOfYear-1, startSelectedDate!!.dayOfMonth)
+                    datePickerDialog.minDate = startCalendar
+                    datePickerDialog.showYearPickerFirst(true)
+                    datePickerDialog.show(fragmentManager!!, "EndDatePickerDialog")
+                }
             }
         }
 
@@ -182,22 +197,18 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
                 startActivityForResult(intent, NavigationUtil.REQUEST_MAP_SEARCH)
             }
         }
-
-        val createPromiseButton = binding.root.create_promise_button.apply {
-            setOnClickListener {
-                val activity = activity as CreateActivity?
-//                activity?.createPromise() TODO: createActivity 에서 createPromise 함수 로직 구현
-            }
-        }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == NavigationUtil.REQUEST_MAP_SEARCH) {
             if (resultCode == Activity.RESULT_OK && data != null) {
-                val address = data.getStringExtra("address")
-                setPromisePlace(address)
+                val location = data.getStringExtra("location")
+                val locationName = data.getStringExtra("locationName")
+                val x = data.getDoubleExtra("x",0.0)
+                val y = data.getDoubleExtra("y",0.0)
+                viewModel.setCreateInfo(y,x,location,locationName)
+                setPromisePlace(location)
             } else {
                 Toast.makeText(context, "약속 장소를 선택해주세요.", Toast.LENGTH_LONG).show()
             }
@@ -235,12 +246,19 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
             if (startTimeEditText != null) {
                 startTimeEditText!!.setText(StringUtil.addPaddingIfSingleDigit(hourOfDay) + ":" + StringUtil.addPaddingIfSingleDigit(minute))
             }
-            Timber.d("@@@Time"+startSelectedDateTime!!.hourOfDay+"/"+startSelectedDate.toString())
+            val requestStartDateTime = startSelectedDate!!.withHourOfDay(startSelectedDateTime!!.getHourOfDay()).withMinuteOfHour(startSelectedDateTime!!.getMinuteOfHour()).toDate()
+            viewModel.setStartDateTime(requestStartDateTime)
         }else{
             endSelectedDateTime = now!!.withHourOfDay(hourOfDay)
                     .withMinuteOfHour(minute)
-            if (endTimeEditText != null) {
-                endTimeEditText!!.setText(StringUtil.addPaddingIfSingleDigit(hourOfDay) + ":" + StringUtil.addPaddingIfSingleDigit(minute))
+            if((startSelectedDate == endSelectedDate)&&(endSelectedDateTime!!.isBefore(startSelectedDateTime))){ //시작 종료일이 같고 종료시간이 시작시간보다 빠르다면
+                    Toast.makeText(requireContext(),"시작 시간보다 종료 시간이 늦도록 설정해주세요",Toast.LENGTH_SHORT).show()
+            }else {
+                if (endTimeEditText != null) {
+                    endTimeEditText!!.setText(StringUtil.addPaddingIfSingleDigit(hourOfDay) + ":" + StringUtil.addPaddingIfSingleDigit(minute))
+                }
+                val requestEndDateTime = endSelectedDate!!.withHourOfDay(endSelectedDateTime!!.getHourOfDay()).withMinuteOfHour(endSelectedDateTime!!.getMinuteOfHour()).toDate()
+                viewModel.setEndDateTime(requestEndDateTime)
             }
         }
     }

@@ -12,11 +12,16 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.simsimhan.promissu.BuildConfig
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityCreatePromiseBinding
+import com.simsimhan.promissu.util.NavigationUtil
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModelByClass
+import timber.log.Timber
 
 class CreateActivity : AppCompatActivity(){
     private val NUM_ITEMS = 3
@@ -26,16 +31,15 @@ class CreateActivity : AppCompatActivity(){
     private lateinit var secondFragment: CreateFragment
     private lateinit var thirdFragment: CreateFragment
     private lateinit var binding: ActivityCreatePromiseBinding
-    private lateinit var viewModel: CreateViewModel
     private lateinit var adapterViewPager: CreateFragmentPagerAdapter
+    private val viewModel: CreateViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_promise)
-        viewModel = ViewModelProviders.of(this).get(CreateViewModel::class.java)
 
-        if (!PromissuApplication.getDiskCache().isUploadedPromiseBefore) {
+        if (!PromissuApplication.diskCache!!.isUploadedPromiseBefore) {
             Toast.makeText(this, "좌우로 미세요.", Toast.LENGTH_LONG).show()
         }
 
@@ -50,6 +54,15 @@ class CreateActivity : AppCompatActivity(){
             actionBar.setDisplayHomeAsUpEnabled(true)
             actionBar.setDisplayShowTitleEnabled(false)
         }
+
+        viewModel.toastMessage.observe(this, Observer {
+            Toast.makeText(this,it,Toast.LENGTH_SHORT).show()
+        })
+
+        viewModel.response.observe(this, Observer {
+            NavigationUtil.enterRoom(this, it)
+            finish()
+        })
     }
 
     private fun changeStatusBarColor() {
