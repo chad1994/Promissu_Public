@@ -78,19 +78,19 @@ public class LoginActivity extends AppCompatActivity implements ISessionCallback
         UserManagement.getInstance().me(new MeV2ResponseCallback() {
             @Override
             public void onSuccess(MeV2Response result) {
-                PromissuApplication.getDiskCache().setUserData(result.getNickname(), result.getId(), result.getThumbnailImagePath());
+                PromissuApplication.Companion.getDiskCache().setUserData(result.getNickname(), result.getId(), result.getThumbnailImagePath());
                 String userSessionToken = Session.getCurrentSession().getTokenInfo().getAccessToken();
                 if (BuildConfig.DEBUG) {
                     Toast.makeText(LoginActivity.this, "[DEV] onSuccess() user token: " + userSessionToken, Toast.LENGTH_SHORT).show();
                 }
 
                 disposables.add(
-                        PromissuApplication.getRetrofit()
+                        PromissuApplication.Companion.getRetrofit()
                                 .create(AuthAPI.class)
                                 .loginKakao(new Login.Request(userSessionToken))
                                 .doOnNext(next -> {
-                                    PromissuApplication.getDiskCache().setUserData(result.getNickname(), result.getId(), result.getThumbnailImagePath());
-                                    PromissuApplication.getDiskCache().setUserToken(next.getToken());
+                                    PromissuApplication.Companion.getDiskCache().setUserData(result.getNickname(), result.getId(), result.getThumbnailImagePath());
+                                    PromissuApplication.Companion.getDiskCache().setUserToken(next.getToken());
                                 })
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
