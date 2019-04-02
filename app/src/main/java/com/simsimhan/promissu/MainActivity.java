@@ -81,8 +81,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (TextUtils.isEmpty(PromissuApplication.getDiskCache().getUserToken())
-                && TextUtils.isEmpty(PromissuApplication.getDiskCache().getUserName())) {
+        if (TextUtils.isEmpty(PromissuApplication.Companion.getDiskCache().getUserToken())
+                && TextUtils.isEmpty(PromissuApplication.Companion.getDiskCache().getUserName())) {
             NavigationUtil.replaceWithLoginView(this);
         }
 
@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
                     switch (menuItem.getItemId()) {
                         case R.id.nav_logout:
                             DialogUtil.showSimpleDialog(MainActivity.this, R.string.logout, R.string.okay, R.string.cancel, "정말 로그아웃 하시겠습니까?", (dialog, which) -> {
-                                PromissuApplication.getDiskCache().clearUserData();
+                                PromissuApplication.Companion.getDiskCache().clearUserData();
                                 NavigationUtil.replaceWithLoginView(MainActivity.this);
                                 drawerLayout.closeDrawers();
                             });
@@ -167,16 +167,16 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         userName = navigationView.getHeaderView(0).findViewById(R.id.profile_username);
 
         Glide.with(this)
-                .load(PromissuApplication.getDiskCache().getProfileThumbnail())
+                .load(PromissuApplication.Companion.getDiskCache().getProfileThumbnail())
                 .apply(RequestOptions.circleCropTransform())
                 .into(profileImage);
 
         Glide.with(this)
-                .load(PromissuApplication.getDiskCache().getProfileThumbnail())
+                .load(PromissuApplication.Companion.getDiskCache().getProfileThumbnail())
                 .apply(RequestOptions.circleCropTransform())
                 .into(profileMainImage);
 
-        String userNameText = PromissuApplication.getDiskCache().getUserName();
+        String userNameText = PromissuApplication.Companion.getDiskCache().getUserName();
         mainText.setText(Html.fromHtml(getString(R.string.main_dummy, userNameText)));
         userName.setText(userNameText);
 
@@ -220,9 +220,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
     private void enterPromiseRoom(String roomId) {
         Timber.d("enterPromiseRoom(): " + roomId);
         disposables.add(
-                PromissuApplication.getRetrofit()
+                PromissuApplication.Companion.getRetrofit()
                         .create(AuthAPI.class)
-                        .enterPromise("Bearer " + PromissuApplication.getDiskCache().getUserToken(), roomId)
+                        .enterPromise("Bearer " + PromissuApplication.Companion.getDiskCache().getUserToken(), roomId)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(onNext -> {
