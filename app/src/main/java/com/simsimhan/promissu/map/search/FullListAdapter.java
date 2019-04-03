@@ -10,23 +10,24 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.simsimhan.promissu.R;
+import com.simsimhan.promissu.model.LocationSearchItem;
 
 import java.util.List;
 
 public class FullListAdapter extends BaseAdapter implements Filterable {
-    private List<Item> documents;
+    private List<LocationSearchItem> documents;
     private RecommendClickListener listener;
 
-    public void replaceAll(List<Item> documents) {
+    public void replaceAll(List<LocationSearchItem> documents) {
         this.documents = documents;
         notifyDataSetChanged();
     }
 
     public interface RecommendClickListener {
-        void onClick(Item position);
+        void onClick(LocationSearchItem position);
     }
 
-    public FullListAdapter(List<Item> documents, RecommendClickListener listener) {
+    public FullListAdapter(List<LocationSearchItem> documents, RecommendClickListener listener) {
         this.documents = documents;
         this.listener = listener;
     }
@@ -55,12 +56,12 @@ public class FullListAdapter extends BaseAdapter implements Filterable {
             convertView = inflater.inflate(R.layout.suggestion_list_view, parent, false);
         }
 
-        Item listViewItem = documents.get(position);
+        LocationSearchItem listViewItem = documents.get(position);
         TextView name = convertView.findViewById(R.id.place_name);
         TextView location = convertView.findViewById(R.id.place_location);
         convertView.findViewById(R.id.container).setOnClickListener(v -> listener.onClick(listViewItem));
-        name.setText(listViewItem.getPlace_name());
-        location.setText(listViewItem.getAddress_name());
+        name.setText(listViewItem.getName());
+        location.setText(listViewItem.getRoad_address());
 
         return convertView;
     }

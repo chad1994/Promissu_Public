@@ -39,6 +39,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'SERVER_URL', '"http://api.promissu.com"'
             buildConfigField "String", "NaverClientId", keystoreProperties.getProperty("naverClientId")
+            buildConfigField "String", "NaverClientSecret", keystoreProperties.getProperty("naverClientSecret")
         }
 
         debug {
@@ -47,6 +48,7 @@ android {
             debuggable true
             buildConfigField 'String', 'SERVER_URL', '"http://api.promissu.com"'
             buildConfigField "String", "NaverClientId", keystoreProperties.getProperty("naverClientId")
+            buildConfigField "String", "NaverClientSecret", keystoreProperties.getProperty("naverClientSecret")
         }
 
         staging {

@@ -10,10 +10,10 @@ import android.widget.Toast;
 import com.simsimhan.promissu.MainActivity;
 import com.simsimhan.promissu.detail.PromiseDetailActivity;
 import com.simsimhan.promissu.login.LoginActivity;
-import com.simsimhan.promissu.map.MapSearchActivity;
+import com.simsimhan.promissu.map.LocationSearchActivity;
 import com.simsimhan.promissu.network.model.Promise;
 import com.simsimhan.promissu.promise.PendingPromiseActivity;
-import com.simsimhan.promissu.promise.create.CreatePromiseActivity;
+import com.simsimhan.promissu.promise.create.CreateActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,7 +28,7 @@ public class NavigationUtil {
         // 현재 사람들을 초대중인 상태
         INVITING(0),
 
-        // 사람들이 다 모이고, 약속이 시작되기를 기다리는 상태
+        // 사람들이 다 모이고, 약속이 시작되기를 기다리는 상태 -> (변경) 약속 시작 1시간 전
         PENDING(1),
 
         // 약속 시간이 다 끝난 상태
@@ -56,12 +56,13 @@ public class NavigationUtil {
     }
 
     public static void openAddPromiseScreen(AppCompatActivity activity) {
-        Intent intent = new Intent(activity, CreatePromiseActivity.class);
+//        Intent intent = new Intent(activity, CreatePromiseActivity.class);
+        Intent intent = new Intent(activity, CreateActivity.class);
         activity.startActivityForResult(intent, REQUEST_CREATE_PROMISE);
     }
 
     public static void openMapScreen(Activity activity) {
-        Intent intent = new Intent(activity, MapSearchActivity.class);
+        Intent intent = new Intent(activity, LocationSearchActivity.class);
         activity.startActivityForResult(intent, REQUEST_MAP_SEARCH);
     }
 

@@ -1,59 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:attrs="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <FrameLayout
-        android:id="@+id/frame"
+    <data>
+        <variable
+            name="viewModel"
+            type="com.simsimhan.promissu.promise.create.CreateViewModel"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <FrameLayout
+            android:id="@+id/frame"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/white"
-            android:elevation="0dp"
-            android:gravity="top"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            app:elevation="0dp">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/toolbar_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="1단계"
-                android:textColor="@color/black"
-                android:textSize="@dimen/font_16"
-                android:textStyle="bold" />
-        </androidx.appcompat.widget.Toolbar>
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/white"
+                android:elevation="0dp"
+                android:gravity="top"
+                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+                app:elevation="0dp">
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/vpPager"
-            android:paddingTop="?attr/actionBarSize"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-    </FrameLayout>
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="1단계"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/font_16"
+                    android:textStyle="bold" />
+            </androidx.appcompat.widget.Toolbar>
 
-    <com.rd.PageIndicatorView
-        android:background="@drawable/center_line"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:id="@+id/pageIndicatorView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
-        app:piv_animationType="worm"
-        app:piv_dynamicCount="true"
-        app:piv_interactiveAnimation="true"
-        app:piv_selectedColor="@color/colorPrimary"
-        app:piv_unselectedColor="@color/white_1"
-        app:piv_viewPager="@id/vpPager"
-        app:piv_radius="8dp"
-        app:piv_padding="100dp" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/vpPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="?attr/actionBarSize"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        </FrameLayout>
+
+        <com.rd.PageIndicatorView
+            android:id="@+id/pageIndicatorView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="72dp"
+            android:background="@drawable/center_line"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:piv_animationType="worm"
+            app:piv_dynamicCount="true"
+            app:piv_interactiveAnimation="true"
+            app:piv_padding="100dp"
+            app:piv_radius="8dp"
+            app:piv_selectedColor="@color/colorPrimary"
+            app:piv_unselectedColor="@color/white_1"
+            app:piv_viewPager="@id/vpPager" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

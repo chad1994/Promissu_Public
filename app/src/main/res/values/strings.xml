@@ -16,8 +16,8 @@
 
     <string name="main_dummy"><![CDATA[<b>%1$s</b>]]> 님 \n약속을 꼭 지켜주세요</string>
     <string name="create_question_1"><![CDATA[<b>%1$s</b>]]> 님 \n어떤 약속을 만들까요?</string>
-    <string name="create_question_2">언제\n어디서 만날까요?</string>
-    <string name="create_question_3">대기시간을 정해주세요!</string>
+    <string name="create_question_2">언제 만날까요?</string>
+    <string name="create_question_3">어디서 만날까요?</string>
     <string name="promise_title">방제목을 입력해주세요</string>
     <string name="promise_date">약속 날짜</string>
     <string name="promise_time">약속 시간</string>

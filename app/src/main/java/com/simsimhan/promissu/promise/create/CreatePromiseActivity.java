@@ -1,3 +1,4 @@
+/*
 package com.simsimhan.promissu.promise.create;
 
 import android.app.Activity;
@@ -230,3 +231,4 @@ public class CreatePromiseActivity extends AppCompatActivity {
     }
 
 }
+*/

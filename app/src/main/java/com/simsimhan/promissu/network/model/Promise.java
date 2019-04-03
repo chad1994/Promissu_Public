@@ -22,67 +22,80 @@ public class Promise {
 //    }
 
     public static class Response implements Parcelable {
+//        private final int id;
+//        private final String title;
+//        private final int participants;
+//        private final int waiting_time;
+//        private final String description;
+//        private final String admin_id;
+//        private final float location_lat;
+//        private final float location_lon;
+//        private final int status;
+//        private final Date start_datetime;
+//        private final Date end_datetime;
+//        private final Date createdAt;
+//        private final String location;
+        private final int status;
         private final int id;
         private final String title;
-        private final int participants;
-        private final int waiting_time;
-        private final String description;
-        private final String admin_id;
-        private final float location_lat;
-        private final float location_lon;
-        private final int status;
+        private final String  description;
         private final Date start_datetime;
         private final Date end_datetime;
-        private final Date createdAt;
         private final String location;
+        private final String location_name;
+        private final Double location_lat;
+        private final Double location_lon;
+        private final int admin_id;
+        private final Date updatedAt;
+        private final Date createdAt;
 
-        public Response(int id, String title, int participants, Date date, String description, String admin_id, float location_lat, float location_lon, int status, Date createAt, Date updatedAt, int waiting_time, Date createdAt, String location) {
+        public Response(int status, int id, String title, String description, Date start_datetime, Date end_datetime, String location, String location_name, Double location_lat, Double location_lon, int admin_id, Date updatedAt, Date createdAt) {
+            this.status = status;
             this.id = id;
             this.title = title;
-            this.participants = participants;
             this.description = description;
-            this.admin_id = admin_id;
+            this.start_datetime = start_datetime;
+            this.end_datetime = end_datetime;
+            this.location = location;
+            this.location_name = location_name;
             this.location_lat = location_lat;
             this.location_lon = location_lon;
-            this.status = status;
-            this.start_datetime = createAt;
-            this.end_datetime = updatedAt;
-            this.waiting_time = waiting_time;
+            this.admin_id = admin_id;
+            this.updatedAt = updatedAt;
             this.createdAt = createdAt;
-            this.location = location;
         }
 
         protected Response(Parcel in) {
+            status = in.readInt();
             id = in.readInt();
             title = in.readString();
-            participants = in.readInt();
-            waiting_time = in.readInt();
             description = in.readString();
-            admin_id = in.readString();
-            location_lat = in.readFloat();
-            location_lon = in.readFloat();
-            status = in.readInt();
-            end_datetime = new Date(in.readLong());
             start_datetime = new Date(in.readLong());
-            createdAt = new Date(in.readLong());
+            end_datetime = new Date(in.readLong());
             location = in.readString();
+            location_name = in.readString();
+            location_lat = in.readDouble();
+            location_lon = in.readDouble();
+            admin_id = in.readInt();
+            updatedAt = new Date(in.readLong());
+            createdAt = new Date(in.readLong());
         }
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(status);
             dest.writeInt(id);
             dest.writeString(title);
-            dest.writeInt(participants);
-            dest.writeInt(waiting_time);
             dest.writeString(description);
-            dest.writeString(admin_id);
-            dest.writeFloat(location_lat);
-            dest.writeFloat(location_lon);
-            dest.writeInt(status);
-            dest.writeLong(end_datetime.getTime());
             dest.writeLong(start_datetime.getTime());
-            dest.writeLong(createdAt.getTime());
+            dest.writeLong(end_datetime.getTime());
             dest.writeString(location);
+            dest.writeString(location_name);
+            dest.writeDouble(location_lat);
+            dest.writeDouble(location_lon);
+            dest.writeInt(admin_id);
+            dest.writeLong(updatedAt.getTime());
+            dest.writeLong(createdAt.getTime());
         }
 
         @Override
@@ -102,6 +115,10 @@ public class Promise {
             }
         };
 
+        public int getStatus() {
+            return status;
+        }
+
         public int getId() {
             return id;
         }
@@ -110,48 +127,44 @@ public class Promise {
             return title;
         }
 
-        public float getLocation_lat() {
-            return location_lat;
-        }
-
-        public float getLocation_lon() {
-            return location_lon;
-        }
-
-        public int getStatus() {
-            return status;
-        }
-
-        public Date getStartTime() {
-            return start_datetime;
-        }
-
-        public Date getEndTime() {
-            return end_datetime;
-        }
-
-        public int getWaitTime() {
-            return waiting_time;
-        }
-
         public String getDescription() {
             return description;
         }
 
-        public int getParticipants() {
-            return participants;
+        public Date getStart_datetime() {
+            return start_datetime;
         }
 
-        public Date getCreatedAt() {
-            return createdAt;
-        }
-
-        public String getAdmin_id() {
-            return admin_id;
+        public Date getEnd_datetime() {
+            return end_datetime;
         }
 
         public String getLocation() {
             return location;
+        }
+
+        public String getLocation_name() {
+            return location_name;
+        }
+
+        public Double getLocation_lat() {
+            return location_lat;
+        }
+
+        public Double getLocation_lon() {
+            return location_lon;
+        }
+
+        public int getAdmin_id() {
+            return admin_id;
+        }
+
+        public Date getUpdatedAt() {
+            return updatedAt;
+        }
+
+        public Date getCreatedAt() {
+            return createdAt;
         }
     }
 
@@ -170,28 +183,21 @@ public class Promise {
         private String description;
         private Date start_datetime;
         private Date end_datetime;
-        private float location_lat;
-        private float location_lon;
-        private int waiting_time;
         private String location;
+        private String location_name;
+        private Double location_lat;
+        private Double location_lon;
 
-        public Request(String title, String description, Date start_datetime, Date end_datetime, float location_lat, float location_lon, int waiting_time, String location) {
+
+        public Request(String title, String description, Date start_datetime, Date end_datetime, String location, String location_name, Double location_lat, Double location_lon) {
             this.title = title;
             this.description = description;
             this.start_datetime = start_datetime;
             this.end_datetime = end_datetime;
+            this.location = location;
+            this.location_name = location_name;
             this.location_lat = location_lat;
             this.location_lon = location_lon;
-            this.waiting_time = waiting_time;
-            this.location = location;
-        }
-
-        public String getLocation() {
-            return location;
-        }
-
-        public void setLocation(String location) {
-            this.location = location;
         }
 
         public String getTitle() {
@@ -202,12 +208,12 @@ public class Promise {
             this.title = title;
         }
 
-        public String getDetail() {
+        public String getDescription() {
             return description;
         }
 
-        public void setDetail(String detail) {
-            this.description = detail;
+        public void setDescription(String description) {
+            this.description = description;
         }
 
         public Date getStart_datetime() {
@@ -226,28 +232,36 @@ public class Promise {
             this.end_datetime = end_datetime;
         }
 
-        public float getLocation_lat() {
+        public String getLocation() {
+            return location;
+        }
+
+        public void setLocation(String location) {
+            this.location = location;
+        }
+
+        public String getLocation_name() {
+            return location_name;
+        }
+
+        public void setLocation_name(String location_name) {
+            this.location_name = location_name;
+        }
+
+        public Double getLocation_lat() {
             return location_lat;
         }
 
-        public void setLocation_lat(float location_lat) {
+        public void setLocation_lat(Double location_lat) {
             this.location_lat = location_lat;
         }
 
-        public float getLocation_lon() {
+        public Double getLocation_lon() {
             return location_lon;
         }
 
-        public void setLocation_lon(float location_lon) {
+        public void setLocation_lon(Double location_lon) {
             this.location_lon = location_lon;
-        }
-
-        public int getWaiting_time() {
-            return waiting_time;
-        }
-
-        public void setWaiting_time(int waiting_time) {
-            this.waiting_time = waiting_time;
         }
     }
 }

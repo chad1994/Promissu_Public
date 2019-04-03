@@ -2,14 +2,10 @@ package com.simsimhan.promissu.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
-import com.kakao.auth.AuthType;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
-import com.kakao.auth.api.AuthApi;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.LoginButton;
 import com.kakao.usermgmt.UserManagement;
@@ -21,7 +17,6 @@ import com.simsimhan.promissu.PromissuApplication;
 import com.simsimhan.promissu.R;
 import com.simsimhan.promissu.network.AuthAPI;
 import com.simsimhan.promissu.network.Login;
-import com.simsimhan.promissu.network.model.Promise;
 import com.simsimhan.promissu.util.NavigationUtil;
 import com.simsimhan.promissu.util.StringUtil;
 
@@ -83,19 +78,19 @@ public class LoginActivity extends AppCompatActivity implements ISessionCallback
         UserManagement.getInstance().me(new MeV2ResponseCallback() {
             @Override
             public void onSuccess(MeV2Response result) {
-                PromissuApplication.getDiskCache().setUserData(result.getNickname(), result.getId(), result.getThumbnailImagePath());
+                PromissuApplication.Companion.getDiskCache().setUserData(result.getNickname(), result.getId(), result.getThumbnailImagePath());
                 String userSessionToken = Session.getCurrentSession().getTokenInfo().getAccessToken();
                 if (BuildConfig.DEBUG) {
                     Toast.makeText(LoginActivity.this, "[DEV] onSuccess() user token: " + userSessionToken, Toast.LENGTH_SHORT).show();
                 }
 
                 disposables.add(
-                        PromissuApplication.getRetrofit()
+                        PromissuApplication.Companion.getRetrofit()
                                 .create(AuthAPI.class)
                                 .loginKakao(new Login.Request(userSessionToken))
                                 .doOnNext(next -> {
-                                    PromissuApplication.getDiskCache().setUserData(result.getNickname(), result.getId(), result.getThumbnailImagePath());
-                                    PromissuApplication.getDiskCache().setUserToken(next.getToken());
+                                    PromissuApplication.Companion.getDiskCache().setUserData(result.getNickname(), result.getId(), result.getThumbnailImagePath());
+                                    PromissuApplication.Companion.getDiskCache().setUserToken(next.getToken());
                                 })
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
