@@ -74,7 +74,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         binding.detailBottomRv.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = DetailUserStatusAdapter(this@PromiseDetailActivity)
+            adapter = DetailUserStatusAdapter(this@PromiseDetailActivity,this@PromiseDetailActivity.viewModel)
         }
 
 
