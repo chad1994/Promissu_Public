@@ -1,6 +1,7 @@
 package com.simsimhan.promissu.detail
 
 import android.view.View
+import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kakao.kakaolink.v2.KakaoLinkResponse
@@ -14,9 +15,13 @@ import com.kakao.network.callback.ResponseCallback
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.NaverMap
 import com.simsimhan.promissu.BaseViewModel
+import com.simsimhan.promissu.PromissuApplication
+import com.simsimhan.promissu.network.AuthAPI
 import com.simsimhan.promissu.network.model.Participant
 import com.simsimhan.promissu.network.model.Promise
 import com.simsimhan.promissu.util.SingleLiveEvent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import org.joda.time.DateTime
 import timber.log.Timber
 import java.util.*
@@ -24,7 +29,7 @@ import java.util.*
 class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEventListener {
 
     private val _response = MutableLiveData<Promise.Response>() // 전체 데이터 리스트
-    val reponse: LiveData<Promise.Response>
+    val response: LiveData<Promise.Response>
         get() = _response
 
     private val _naverMap = MutableLiveData<NaverMap>()
@@ -47,34 +52,28 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     val participants: LiveData<List<Participant.Response>>
         get() = _participants
 
+    private val _isSpread = MutableLiveData<Boolean>()
+    val isSpread: LiveData<Boolean>
+        get() = _isSpread
+
+    val title = ObservableField<String>()
+    val startDate = ObservableField<String>()
+    val locationName = ObservableField<String>()
+    val participantNum = ObservableField<String>()
 
     init {
         _trackingMode.postValue(1)
         _response.postValue(promise)
-
         val meetingLatLng = LatLng(promise.location_lat.toDouble(), promise.location_lon.toDouble())
         _meetingLocation.postValue(meetingLatLng)
+        initRoomInfo()
+        fetchParticipants()
+    }
 
-//        addDisposable(PromissuApplication.getRetrofit()
-//                .create(AuthAPI::class.java)
-//                .getParticipants("Bearer " + PromissuApplication.getDiskCache().userToken, promise.id)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(
-//                        { onNext -> _participants.postValue(onNext) },
-//                        { onError ->
-//                            Timber.e(onError)
-//                        }
-//                ))
-
-        val list = listOf(Participant.Response(1, "태성"),
-                Participant.Response(2, "준영"),
-                Participant.Response(2, "지미"),
-                Participant.Response(2, "태준"),
-                Participant.Response(2, "영니"),
-                Participant.Response(0, "초대"))
-
-        _participants.postValue(list)
+    private fun initRoomInfo(){
+        title.set(promise.title)
+        startDate.set("" + (promise.start_datetime.month + 1) + "월 " + promise.start_datetime.date + "일 " + promise.start_datetime.hours + "시 " + promise.start_datetime.minutes + "분")
+        locationName.set((promise.location_name))
     }
 
     fun onClickedCurrentLocation() {
@@ -98,6 +97,24 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
 
     }
 
+    private fun fetchParticipants(){
+        addDisposable(PromissuApplication.retrofit!!
+                .create(AuthAPI::class.java)
+                .getParticipants("Bearer " + PromissuApplication.diskCache!!.userToken, promise.id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { onNext ->
+                            _participants.value = onNext
+                            participantNum.set((onNext.size).toString() + " 명")
+                        },
+                        { onError ->
+                            Timber.e(onError)
+                        }
+                ))
+
+    }
+
     override fun onClickInviteButton(view: View) {
         Timber.d("@@@@invite clicked")
         val promiseDate = DateTime(promise.start_datetime)
@@ -110,7 +127,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                                 .setMobileWebUrl("https://developers.kakao.com")
                                 .build())
                         .setDescrption(
-                                ""+ promiseDate.getYear() + "년 "
+                                "" + promiseDate.getYear() + "년 "
                                         + promiseDate.getMonthOfYear() + "월 "
                                         + promiseDate.getDayOfMonth() + "일 "
                                         + promise.description)
@@ -139,6 +156,10 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
             }
         })
 
+    }
+
+    fun setSpreadState(bool:Boolean){
+        _isSpread.value = bool
     }
 
 }
