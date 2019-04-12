@@ -2,7 +2,6 @@ package com.simsimhan.promissu.view;
 
 import android.os.Bundle;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 
 import com.simsimhan.promissu.R;
 

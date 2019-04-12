@@ -14,9 +14,9 @@ public interface DaumAPI {
     })
     @GET("local/search/keyword.json?radius=20000")
     Observable<Document> searchMapWithKeyword(@Header("Authorization") String daumToken,
-                                                          @Query("y") double lan,
-                                                          @Query("x") double lon,
-                                                          @Query("query") String query);
+                                              @Query("y") double lan,
+                                              @Query("x") double lon,
+                                              @Query("query") String query);
 
 
 }

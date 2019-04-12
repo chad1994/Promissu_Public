@@ -1,7 +1,5 @@
 package com.simsimhan.promissu.promise.create
 
-import android.app.Activity.RESULT_OK
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.naver.maps.map.overlay.InfoWindow
@@ -10,7 +8,6 @@ import com.simsimhan.promissu.BaseViewModel
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.network.AuthAPI
 import com.simsimhan.promissu.network.model.Promise
-import com.simsimhan.promissu.util.NavigationUtil
 import com.simsimhan.promissu.util.SingleLiveEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -123,7 +120,7 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
                     _response.postValue(it)
                     // TODO: do something here
 //                    NavigationUtil.enterRoom(CreatePromiseActivity.this, onNext);
-                },{
+                }, {
                     Timber.e(it)
                 }))
     }

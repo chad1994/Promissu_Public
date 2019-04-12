@@ -22,7 +22,7 @@ public class DiskCache {
     }
 
     public boolean setUserToken(String token) {
-        return this.pref.edit().putString(USER_TOKEN_TAG,  token).commit();
+        return this.pref.edit().putString(USER_TOKEN_TAG, token).commit();
     }
 
     public boolean setUserData(String name, long id, String thumbnailUrl) {
@@ -58,6 +58,7 @@ public class DiskCache {
     public long getUserId() {
         return this.pref.getLong(USER_NAME_LONG_ID, -1L);
     }
+
     @NonNull
     public String getUserToken() {
         return this.pref.getString(USER_TOKEN_TAG, "");

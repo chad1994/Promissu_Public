@@ -26,7 +26,6 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.simsimhan.promissu.BuildConfig
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityDetailPromiseBinding
-import com.simsimhan.promissu.databinding.BottomSheetDetailPromiseBinding
 import com.simsimhan.promissu.detail.adapter.DetailUserStatusAdapter
 import com.simsimhan.promissu.network.model.Promise
 import timber.log.Timber
@@ -67,7 +66,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
-        
+
         binding.apply {
             viewModel = this@PromiseDetailActivity.viewModel
             lifecycleOwner = this@PromiseDetailActivity
@@ -75,16 +74,16 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         binding.detailBottomRv.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = DetailUserStatusAdapter(this@PromiseDetailActivity,this@PromiseDetailActivity.viewModel)
+            adapter = DetailUserStatusAdapter(this@PromiseDetailActivity, this@PromiseDetailActivity.viewModel)
         }
 
 
         val bottomSheetBehavior = BottomSheetBehavior.from(binding.detailActivityBottomSheet.root)
         bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if(newState==4){
+                if (newState == 4) {
                     viewModel.setSpreadState(false)
-                }else if(newState==3){
+                } else if (newState == 3) {
                     viewModel.setSpreadState(true)
                 }
             }

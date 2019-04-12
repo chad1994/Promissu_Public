@@ -8,7 +8,7 @@ import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
 
 public class SelectedDayDecorator implements DayViewDecorator {
-//    private final int color;
+    //    private final int color;
     private CalendarDay daySelected;
 
     public SelectedDayDecorator(CalendarDay daySelected) {

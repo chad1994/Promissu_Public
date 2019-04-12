@@ -6,8 +6,6 @@ import com.simsimhan.promissu.network.model.Promise;
 import java.util.List;
 
 import io.reactivex.Observable;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;

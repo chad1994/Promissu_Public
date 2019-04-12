@@ -1,8 +1,8 @@
 package com.simsimhan.promissu
 
+import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import androidx.lifecycle.ViewModel
 
 open class BaseViewModel : ViewModel() {
 

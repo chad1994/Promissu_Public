@@ -13,17 +13,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.simsimhan.promissu.BuildConfig
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityCreatePromiseBinding
 import com.simsimhan.promissu.util.NavigationUtil
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.androidx.viewmodel.ext.android.viewModelByClass
-import timber.log.Timber
 
-class CreateActivity : AppCompatActivity(){
+class CreateActivity : AppCompatActivity() {
     private val NUM_ITEMS = 3
     private val DEBUG = BuildConfig.DEBUG
     private val TAG = "PromiseCreateActivity"
@@ -56,7 +53,7 @@ class CreateActivity : AppCompatActivity(){
         }
 
         viewModel.toastMessage.observe(this, Observer {
-            Toast.makeText(this,it,Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
         })
 
         viewModel.response.observe(this, Observer {
@@ -82,7 +79,7 @@ class CreateActivity : AppCompatActivity(){
     inner class CreateFragmentPagerAdapter internal constructor(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
         override fun getItem(position: Int): Fragment {
-            val fragment : Fragment? = null
+            val fragment: Fragment? = null
             return when (position) {
                 0, 1, 2 -> CreateFragment.newInstance(position, (getPageTitle(position) as String?)!!)
                 else -> fragment!!

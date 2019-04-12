@@ -11,7 +11,6 @@ import android.os.Build;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Base64;
-import android.util.Log;
 
 import com.simsimhan.promissu.BuildConfig;
 

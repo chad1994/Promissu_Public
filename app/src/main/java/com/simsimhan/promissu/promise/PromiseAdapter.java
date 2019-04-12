@@ -50,7 +50,7 @@ public class PromiseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolder) {
-            ((ItemViewHolder )holder).setItem(items.get(position), isPastPromise, now, appCompatActivity);
+            ((ItemViewHolder) holder).setItem(items.get(position), isPastPromise, now, appCompatActivity);
         }
     }
 
@@ -84,6 +84,7 @@ public class PromiseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     static class ItemViewHolder extends RecyclerView.ViewHolder {
         private ConstraintLayout container;
         private TextView dateLeft, title, dateLeftLabel;
+
         ItemViewHolder(@NonNull View itemView) {
             super(itemView);
             container = itemView.findViewById(R.id.container);

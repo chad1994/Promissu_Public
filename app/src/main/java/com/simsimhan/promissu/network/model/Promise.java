@@ -22,7 +22,7 @@ public class Promise {
 //    }
 
     public static class Response implements Parcelable {
-//        private final int id;
+        //        private final int id;
 //        private final String title;
 //        private final int participants;
 //        private final int waiting_time;
@@ -38,7 +38,7 @@ public class Promise {
         private final int status;
         private final int id;
         private final String title;
-        private final String  description;
+        private final String description;
         private final Date start_datetime;
         private final Date end_datetime;
         private final String location;

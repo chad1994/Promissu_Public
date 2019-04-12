@@ -70,7 +70,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         fetchParticipants()
     }
 
-    private fun initRoomInfo(){
+    private fun initRoomInfo() {
         title.set(promise.title)
         startDate.set("" + (promise.start_datetime.month + 1) + "월 " + promise.start_datetime.date + "일 " + promise.start_datetime.hours + "시 " + promise.start_datetime.minutes + "분")
         locationName.set((promise.location_name))
@@ -97,7 +97,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
 
     }
 
-    private fun fetchParticipants(){
+    private fun fetchParticipants() {
         addDisposable(PromissuApplication.retrofit!!
                 .create(AuthAPI::class.java)
                 .getParticipants("Bearer " + PromissuApplication.diskCache!!.userToken, promise.id)
@@ -158,7 +158,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
 
     }
 
-    fun setSpreadState(bool:Boolean){
+    fun setSpreadState(bool: Boolean) {
         _isSpread.value = bool
     }
 

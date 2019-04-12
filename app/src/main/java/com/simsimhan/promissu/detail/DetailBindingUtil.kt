@@ -17,10 +17,10 @@ fun setRvItems(recyclerView: RecyclerView, itemList: List<Participant.Response>?
 }
 
 @BindingAdapter("setBottomSheetIcon")
-fun setBottomSheetIcon(imageButton: ImageButton, isSpread:Boolean){
-    if(isSpread){
+fun setBottomSheetIcon(imageButton: ImageButton, isSpread: Boolean) {
+    if (isSpread) {
         imageButton.setImageResource(R.drawable.ic_arrow_down)
-    }else{
+    } else {
         imageButton.setImageResource(R.drawable.ic_arrow_up)
     }
 }

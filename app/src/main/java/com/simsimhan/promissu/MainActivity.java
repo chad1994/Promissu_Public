@@ -1,7 +1,6 @@
 package com.simsimhan.promissu;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,10 +25,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.kakao.auth.Session;
-import com.simsimhan.promissu.login.LoginActivity;
 import com.simsimhan.promissu.network.AuthAPI;
-import com.simsimhan.promissu.network.Login;
-import com.simsimhan.promissu.promise.PendingPromiseActivity;
 import com.simsimhan.promissu.promise.PromiseFragment;
 import com.simsimhan.promissu.util.DialogUtil;
 import com.simsimhan.promissu.util.NavigationUtil;
@@ -84,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(Session.getCurrentSession().getTokenInfo().getRemainingExpireTime()<=0){ //토큰 유효기간이 만료되었을 때
+        if (Session.getCurrentSession().getTokenInfo().getRemainingExpireTime() <= 0) { //토큰 유효기간이 만료되었을 때
             Objects.requireNonNull(PromissuApplication.Companion.getDiskCache()).clearUserData();
             NavigationUtil.replaceWithLoginView(MainActivity.this);
         }
