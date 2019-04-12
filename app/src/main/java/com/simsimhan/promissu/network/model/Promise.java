@@ -45,11 +45,11 @@ public class Promise {
         private final String location_name;
         private final Double location_lat;
         private final Double location_lon;
-        private final int admin_id;
+        private final long admin_id;
         private final Date updatedAt;
         private final Date createdAt;
 
-        public Response(int status, int id, String title, String description, Date start_datetime, Date end_datetime, String location, String location_name, Double location_lat, Double location_lon, int admin_id, Date updatedAt, Date createdAt) {
+        public Response(int status, int id, String title, String description, Date start_datetime, Date end_datetime, String location, String location_name, Double location_lat, Double location_lon, long admin_id, Date updatedAt, Date createdAt) {
             this.status = status;
             this.id = id;
             this.title = title;
@@ -76,7 +76,7 @@ public class Promise {
             location_name = in.readString();
             location_lat = in.readDouble();
             location_lon = in.readDouble();
-            admin_id = in.readInt();
+            admin_id = in.readLong();
             updatedAt = new Date(in.readLong());
             createdAt = new Date(in.readLong());
         }
@@ -93,7 +93,7 @@ public class Promise {
             dest.writeString(location_name);
             dest.writeDouble(location_lat);
             dest.writeDouble(location_lon);
-            dest.writeInt(admin_id);
+            dest.writeLong(admin_id);
             dest.writeLong(updatedAt.getTime());
             dest.writeLong(createdAt.getTime());
         }
@@ -155,7 +155,7 @@ public class Promise {
             return location_lon;
         }
 
-        public int getAdmin_id() {
+        public Long getAdmin_id() {
             return admin_id;
         }
 
