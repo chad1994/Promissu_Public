@@ -25,11 +25,7 @@ import kotlinx.android.synthetic.main.fragment_create_promise_1.view.*
 import kotlinx.android.synthetic.main.fragment_create_promise_2.view.*
 import kotlinx.android.synthetic.main.fragment_create_promise_3.view.*
 import org.joda.time.DateTime
-import org.joda.time.Days
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.util.*
 
@@ -50,11 +46,11 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
     private var locationText: String? = null
     private var startSelectedDate: DateTime? = null
     private var startSelectedDateTime: DateTime? = null
-    private var endSelectedDate : DateTime? = null
-    private var endSelectedDateTime : DateTime? = null
+    private var endSelectedDate: DateTime? = null
+    private var endSelectedDateTime: DateTime? = null
     private lateinit var binding: ViewDataBinding
-//    private lateinit var viewModel: CreateViewModel
-    private val viewModel : CreateViewModel by sharedViewModel()
+    //    private lateinit var viewModel: CreateViewModel
+    private val viewModel: CreateViewModel by sharedViewModel()
 
     companion object {
         fun newInstance(position: Int, title: String): Fragment {
@@ -119,9 +115,9 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
                         now.get(Calendar.MONTH),
                         now.get(Calendar.DAY_OF_MONTH))
                 datePickerDialog.minDate = now
-                if(endSelectedDate != null) {
+                if (endSelectedDate != null) {
                     val maxDate = Calendar.getInstance()
-                    maxDate.set(endSelectedDate!!.year,endSelectedDate!!.monthOfYear-1,endSelectedDate!!.dayOfMonth)
+                    maxDate.set(endSelectedDate!!.year, endSelectedDate!!.monthOfYear - 1, endSelectedDate!!.dayOfMonth)
                     datePickerDialog.maxDate = maxDate
                 }
                 datePickerDialog.showYearPickerFirst(true)
@@ -131,9 +127,9 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
 
         startTimeEditText = binding.root.promise_start_time_edit_text.apply {
             setOnClickListener {
-                if(startSelectedDate==null){
-                    Toast.makeText(requireContext(),"시작 일자를 먼저 선택 해주세요",Toast.LENGTH_SHORT).show()
-                }else {
+                if (startSelectedDate == null) {
+                    Toast.makeText(requireContext(), "시작 일자를 먼저 선택 해주세요", Toast.LENGTH_SHORT).show()
+                } else {
                     val timePickerDialog = TimePickerDialog.newInstance(this@CreateFragment,
                             now!!.hourOfDay,
                             now!!.minuteOfHour,
@@ -146,9 +142,9 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
 
         endDateEditText = binding.root.promise_end_date.apply {
             setOnClickListener {
-                if(startSelectedDateTime==null){
-                    Toast.makeText(requireContext(),"약속 시작시간을 먼저 선택 해주세요",Toast.LENGTH_SHORT).show()
-                }else {
+                if (startSelectedDateTime == null) {
+                    Toast.makeText(requireContext(), "약속 시작시간을 먼저 선택 해주세요", Toast.LENGTH_SHORT).show()
+                } else {
                     val now = Calendar.getInstance()
                     val datePickerDialog = DatePickerDialog.newInstance(
                             this@CreateFragment,
@@ -157,7 +153,7 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
                             now.get(Calendar.DAY_OF_MONTH))
 
                     val startCalendar = Calendar.getInstance()
-                    startCalendar.set(startSelectedDate!!.year,startSelectedDate!!.monthOfYear-1, startSelectedDate!!.dayOfMonth)
+                    startCalendar.set(startSelectedDate!!.year, startSelectedDate!!.monthOfYear - 1, startSelectedDate!!.dayOfMonth)
                     datePickerDialog.minDate = startCalendar
                     datePickerDialog.showYearPickerFirst(true)
                     datePickerDialog.show(fragmentManager!!, "EndDatePickerDialog")
@@ -167,9 +163,9 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
 
         endTimeEditText = binding.root.promise_end_time_edit_text.apply {
             setOnClickListener {
-                if(endSelectedDate==null){
-                    Toast.makeText(requireContext(),"종료 일자를 먼저 선택 해주세요",Toast.LENGTH_SHORT).show()
-                }else {
+                if (endSelectedDate == null) {
+                    Toast.makeText(requireContext(), "종료 일자를 먼저 선택 해주세요", Toast.LENGTH_SHORT).show()
+                } else {
                     val timePickerDialog = TimePickerDialog.newInstance(this@CreateFragment,
                             now!!.hourOfDay,
                             now!!.minuteOfHour,
@@ -205,9 +201,9 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
             if (resultCode == Activity.RESULT_OK && data != null) {
                 val location = data.getStringExtra("location")
                 val locationName = data.getStringExtra("locationName")
-                val x = data.getDoubleExtra("x",0.0)
-                val y = data.getDoubleExtra("y",0.0)
-                viewModel.setCreateInfo(y,x,location,locationName)
+                val x = data.getDoubleExtra("x", 0.0)
+                val y = data.getDoubleExtra("y", 0.0)
+                viewModel.setCreateInfo(y, x, location, locationName)
                 setPromisePlace(location)
             } else {
                 Toast.makeText(context, "약속 장소를 선택해주세요.", Toast.LENGTH_LONG).show()
@@ -224,13 +220,13 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
     }
 
     override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
-        if(view!!.tag == "StartDatePickerDialog") {
+        if (view!!.tag == "StartDatePickerDialog") {
             startSelectedDate = now!!.withYear(year).withMonthOfYear(monthOfYear + 1).withDayOfMonth(dayOfMonth)
             // get date shit shit and set
             if (startDateEditText != null) {
                 startDateEditText!!.setText(year.toString() + "년 " + (monthOfYear + 1) + "월 " + dayOfMonth + "일")
             }
-        }else{
+        } else {
             endSelectedDate = now!!.withYear(year).withMonthOfYear(monthOfYear + 1).withDayOfMonth(dayOfMonth)
             // get date shit shit and set
             if (endDateEditText != null) {
@@ -240,7 +236,7 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
     }
 
     override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute: Int, second: Int) {
-        if(view!!.tag=="StartTimePickerDialog") {
+        if (view!!.tag == "StartTimePickerDialog") {
             startSelectedDateTime = now!!.withHourOfDay(hourOfDay)
                     .withMinuteOfHour(minute)
             if (startTimeEditText != null) {
@@ -248,12 +244,12 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
             }
             val requestStartDateTime = startSelectedDate!!.withHourOfDay(startSelectedDateTime!!.getHourOfDay()).withMinuteOfHour(startSelectedDateTime!!.getMinuteOfHour()).toDate()
             viewModel.setStartDateTime(requestStartDateTime)
-        }else{
+        } else {
             endSelectedDateTime = now!!.withHourOfDay(hourOfDay)
                     .withMinuteOfHour(minute)
-            if((startSelectedDate == endSelectedDate)&&(endSelectedDateTime!!.isBefore(startSelectedDateTime))){ //시작 종료일이 같고 종료시간이 시작시간보다 빠르다면
-                    Toast.makeText(requireContext(),"시작 시간보다 종료 시간이 늦도록 설정해주세요",Toast.LENGTH_SHORT).show()
-            }else {
+            if ((startSelectedDate == endSelectedDate) && (endSelectedDateTime!!.isBefore(startSelectedDateTime))) { //시작 종료일이 같고 종료시간이 시작시간보다 빠르다면
+                Toast.makeText(requireContext(), "시작 시간보다 종료 시간이 늦도록 설정해주세요", Toast.LENGTH_SHORT).show()
+            } else {
                 if (endTimeEditText != null) {
                     endTimeEditText!!.setText(StringUtil.addPaddingIfSingleDigit(hourOfDay) + ":" + StringUtil.addPaddingIfSingleDigit(minute))
                 }

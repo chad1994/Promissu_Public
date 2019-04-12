@@ -49,16 +49,5 @@
                 android:layout_height="wrap_content" />
         </FrameLayout>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floating_action_button"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_gravity="bottom|end"
-            android:layout_marginRight="24dp"
-            android:layout_marginBottom="24dp"
-            android:src="@drawable/ic_mylocation"
-            app:backgroundTint="@color/white"
-            app:elevation="8dp"
-            app:pressedTranslationZ="12dp" />
     </FrameLayout>
 </layout>

@@ -11,17 +11,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.simsimhan.promissu.MainActivity;
 import com.simsimhan.promissu.PromissuApplication;
 import com.simsimhan.promissu.R;
 import com.simsimhan.promissu.network.AuthAPI;
-import com.simsimhan.promissu.network.model.Promise;
 import com.simsimhan.promissu.util.NavigationUtil;
 
-import org.joda.time.DateTime;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,7 +27,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;

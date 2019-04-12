@@ -146,7 +146,7 @@ public class PendingPromiseActivity extends AppCompatActivity {
         inviteButton.setOnClickListener(v -> {
             DateTime promiseDate = new DateTime(promise.getStart_datetime());
 
-            LocationTemplate params = LocationTemplate.newBuilder(promise.getLocation() +" 좌표: (" + promise.getLocation_lat() + ", " + promise.getLocation_lon() + ")",
+            LocationTemplate params = LocationTemplate.newBuilder(promise.getLocation() + " 좌표: (" + promise.getLocation_lat() + ", " + promise.getLocation_lon() + ")",
                     ContentObject.newBuilder(promise.getTitle(),
                             "https://i.pinimg.com/originals/92/e4/43/92e443862a7ae5db7cf74b41db2f5e37.jpg",
                             LinkObject.newBuilder()
@@ -155,9 +155,9 @@ public class PendingPromiseActivity extends AppCompatActivity {
                                     .build())
                             .setDescrption(
                                     promiseDate.getYear() + "년 "
-                                    + promiseDate.getMonthOfYear()  + "월 "
-                                    + promiseDate.getDayOfMonth() + "일 "
-                                    + promise.getDescription())
+                                            + promiseDate.getMonthOfYear() + "월 "
+                                            + promiseDate.getDayOfMonth() + "일 "
+                                            + promise.getDescription())
                             .build())
                     .setAddressTitle(promise.getLocation() + " 좌표: (" + promise.getLocation_lat() + ", " + promise.getLocation_lon() + ")")
                     .addButton(new ButtonObject("앱에서 보기", LinkObject.newBuilder()
@@ -184,7 +184,6 @@ public class PendingPromiseActivity extends AppCompatActivity {
                     Timber.d("onSuccess(): " + result.toString());
                 }
             });
-
 
 
 //                This is kakao friends service

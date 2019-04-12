@@ -3,7 +3,6 @@ package com.simsimhan.promissu.promise.create
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.LiveData
 import com.google.android.material.textfield.TextInputEditText
 
 //@BindingAdapter("setSearchView")

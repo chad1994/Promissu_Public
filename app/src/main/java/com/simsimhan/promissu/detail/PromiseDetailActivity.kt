@@ -74,14 +74,18 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         binding.detailBottomRv.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = DetailUserStatusAdapter(this@PromiseDetailActivity)
+            adapter = DetailUserStatusAdapter(this@PromiseDetailActivity, this@PromiseDetailActivity.viewModel)
         }
 
 
         val bottomSheetBehavior = BottomSheetBehavior.from(binding.detailActivityBottomSheet.root)
         bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-
+                if (newState == 4) {
+                    viewModel.setSpreadState(false)
+                } else if (newState == 3) {
+                    viewModel.setSpreadState(true)
+                }
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -100,7 +104,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
         })
-
     }
 
     override fun onMapReady(naverMap: NaverMap) {

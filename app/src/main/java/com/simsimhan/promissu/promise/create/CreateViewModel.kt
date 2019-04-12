@@ -1,7 +1,5 @@
 package com.simsimhan.promissu.promise.create
 
-import android.app.Activity.RESULT_OK
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.naver.maps.map.overlay.InfoWindow
@@ -10,7 +8,6 @@ import com.simsimhan.promissu.BaseViewModel
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.network.AuthAPI
 import com.simsimhan.promissu.network.model.Promise
-import com.simsimhan.promissu.util.NavigationUtil
 import com.simsimhan.promissu.util.SingleLiveEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -107,7 +104,7 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
         } else if (location.value.isNullOrEmpty() || locationName.value.isNullOrEmpty()) {
             _toastMessage.postValue("약속장소를 확인해주세요")
         } else {
-            val request = Promise.Request(title.value, description.value, startTime.value, endTime.value, locationName.value, location.value, lon.value, lat.value)
+            val request = Promise.Request(title.value, description.value, startTime.value, endTime.value, location.value, locationName.value, lat.value, lon.value)
             createRoom(request)
             _toastMessage.postValue("완료")
         }
@@ -123,7 +120,7 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
                     _response.postValue(it)
                     // TODO: do something here
 //                    NavigationUtil.enterRoom(CreatePromiseActivity.this, onNext);
-                },{
+                }, {
                     Timber.e(it)
                 }))
     }

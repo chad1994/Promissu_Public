@@ -45,11 +45,11 @@ class LocationSearchActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.
     private lateinit var searchView: MaterialSearchView
     private lateinit var toolbar: Toolbar
     private lateinit var suggestionAdapter: FullListAdapter
-    private var location : String? = null
-    private var locationName : String? = null
-    private var x : Double? = null
-    private var y : Double? = null
-    private val viewModel : CreateViewModel by viewModel()
+    private var location: String? = null
+    private var locationName: String? = null
+    private var x: Double? = null
+    private var y: Double? = null
+    private val viewModel: CreateViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -187,9 +187,9 @@ class LocationSearchActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.
             if (!location.isNullOrEmpty()) {
                 val intent = Intent()
                 intent.putExtra("location", location)
-                intent.putExtra("locationName",locationName)
-                intent.putExtra("x",x)
-                intent.putExtra("y",y)
+                intent.putExtra("locationName", locationName)
+                intent.putExtra("x", x)
+                intent.putExtra("y", y)
                 setResult(RESULT_OK, intent)
                 finish()
             } else {

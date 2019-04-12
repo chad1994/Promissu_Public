@@ -1,7 +1,5 @@
 package com.simsimhan.promissu.network
 
-import com.naver.maps.geometry.LatLng
-import com.simsimhan.promissu.map.search.Document
 import com.simsimhan.promissu.model.LocationSearch
 import io.reactivex.Observable
 import retrofit2.http.GET
