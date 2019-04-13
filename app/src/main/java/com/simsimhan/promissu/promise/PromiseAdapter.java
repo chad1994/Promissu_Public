@@ -11,6 +11,7 @@ import com.simsimhan.promissu.util.NavigationUtil;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.joda.time.Hours;
 
 import java.util.List;
 
@@ -108,11 +109,19 @@ public class PromiseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 DateTime promiseStartDate = new DateTime(response.getStart_datetime());
                 Days daysDifference = Days.daysBetween(now, promiseStartDate);
                 if (daysDifference.getDays() == 0) {
-                    dateLeft.setText("");
-                    dateLeftLabel.setText("대기중");
-                    dateLeftLabel.setTextColor(ContextCompat.getColor(appCompatActivity, R.color.sub_color));
+                    Hours hoursDifference = Hours.hoursBetween(now,promiseStartDate);
+                    if(hoursDifference.getHours()<=1) {
+                        dateLeft.setText("");
+                        dateLeftLabel.setText("대기중");
+                        dateLeftLabel.setTextColor(ContextCompat.getColor(appCompatActivity, R.color.sub_color));
+                    }else{
+                        dateLeft.setText(""+hoursDifference.getHours());
+                        dateLeftLabel.setText("시간 남음");
+                        dateLeftLabel.setTextColor(ContextCompat.getColor(appCompatActivity, R.color.sub_color));
+                    }
                 } else {
-                    dateLeft.setText("" + response.getStart_datetime().getDay());
+//                    dateLeft.setText("" + response.getStart_datetime().getDay());
+                    dateLeft.setText(""+ daysDifference.getDays());
                     dateLeftLabel.setText("일 남음");
                     dateLeftLabel.setTextColor(ContextCompat.getColor(appCompatActivity, R.color.black));
                 }
