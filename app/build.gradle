@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
@@ -38,6 +39,7 @@ android {
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'SERVER_URL', '"http://api.promissu.com"'
+            buildConfigField 'String', 'SOCKET_URL', keystoreProperties.getProperty("socketServerURL")
             buildConfigField "String", "NaverClientId", keystoreProperties.getProperty("naverClientId")
             buildConfigField "String", "NaverClientSecret", keystoreProperties.getProperty("naverClientSecret")
         }
@@ -47,6 +49,7 @@ android {
             minifyEnabled false
             debuggable true
             buildConfigField 'String', 'SERVER_URL', '"http://api.promissu.com"'
+            buildConfigField 'String', 'SOCKET_URL', keystoreProperties.getProperty("socketServerURL")
             buildConfigField "String", "NaverClientId", keystoreProperties.getProperty("naverClientId")
             buildConfigField "String", "NaverClientSecret", keystoreProperties.getProperty("naverClientSecret")
         }
@@ -123,8 +126,8 @@ dependencies {
     implementation 'com.miguelcatalan:materialsearchview:1.4.0'
 
     // google location integration
-    implementation 'com.google.android.gms:play-services-location:16.0.0'
-    implementation 'com.google.android.gms:play-services-places:16.0.0'
+//    implementation 'com.google.android.gms:play-services-location:16.0.0'
+//    implementation 'com.google.android.gms:play-services-places:16.0.0'
 
 
     implementation 'gun0912.ted:tedbottompicker:2.0.0-alpha1'
@@ -149,5 +152,15 @@ dependencies {
 
     //네이버 지도
     implementation 'com.naver.maps:map-sdk:3.2.1'
-    implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
+
+    //소켓io
+    implementation ('io.socket:socket.io-client:1.0.0') {
+        // excluding org.json which is provided by Android
+        exclude group: 'org.json', module: 'json'
+    }
+
+    //fcm
+    implementation 'com.google.firebase:firebase-core:16.0.4'
+    implementation 'com.google.firebase:firebase-messaging:17.3.3'
 }
