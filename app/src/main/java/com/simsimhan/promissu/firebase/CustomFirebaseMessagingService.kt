@@ -7,11 +7,13 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.depromeet.universalnotice.MainActivity
-import com.depromeet.universalnotice.R
-import com.depromeet.universalnotice.common.PreferencesManager
+import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.simsimhan.promissu.MainActivity
+import com.simsimhan.promissu.PromissuApplication
+import com.simsimhan.promissu.R
+import timber.log.Timber
 
 
 class CustomFirebaseMessagingService : FirebaseMessagingService(){
@@ -19,8 +21,14 @@ class CustomFirebaseMessagingService : FirebaseMessagingService(){
     private val TAG = "FirebaseService"
 
     override fun onNewToken(token: String) {
+        Timber.d("@@@@ONNEWTOKEN")
         super.onNewToken(token)
-        PreferencesManager.setFcmToken(token)
+        PromissuApplication.diskCache!!.fcmToken = token
+
+        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener {
+            PromissuApplication.diskCache!!.fcmToken = it.result!!.token
+            Timber.d("Register Fcm Token : ${it.result!!.token}")
+        }
         Log.d(TAG, "new Token: $token")
     }
 
