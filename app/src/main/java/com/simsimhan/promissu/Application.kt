@@ -5,6 +5,8 @@ import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.facebook.stetho.Stetho
 import com.facebook.stetho.okhttp3.StethoInterceptor
+import com.google.firebase.FirebaseApp
+import com.google.firebase.iid.FirebaseInstanceId
 import com.google.gson.GsonBuilder
 import com.kakao.auth.*
 import com.naver.maps.map.NaverMapSdk
@@ -52,6 +54,7 @@ class PromissuApplication : MultiDexApplication() {
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)
         }
+
         startKoin(this, appModules)
         JodaTimeAndroid.init(this)
         val lumberYard = LumberYard.getInstance(this)
@@ -92,6 +95,7 @@ class PromissuApplication : MultiDexApplication() {
                 .build()
 
         diskCache = DiskCache(getSharedPreferences("USER_DISK_CACHE", Context.MODE_PRIVATE))
+
     }
 
     override fun onTerminate() {

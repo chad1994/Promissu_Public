@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,9 +22,13 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.kakao.auth.Session;
 import com.simsimhan.promissu.network.AuthAPI;
 import com.simsimhan.promissu.promise.PromiseFragment;
@@ -90,6 +95,17 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
             NavigationUtil.replaceWithLoginView(this);
         }
 
+        if(PromissuApplication.Companion.getDiskCache().getFcmToken().isEmpty()){
+            FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(task -> {
+                if (!task.isSuccessful()) {
+                    Log.w(TAG, "getInstanceId failed", task.getException());
+                    return;
+                }
+                PromissuApplication.Companion.getDiskCache().setFcmToken(Objects.requireNonNull(task.getResult()).getToken());
+                Timber.d("Register Fcm Token : %s",task.getResult().getToken());
+            });
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -97,6 +113,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         Uri uri = intent.getData();
 
         Timber.d("@@@Token: %s", PromissuApplication.Companion.getDiskCache().getUserToken());
+        Timber.d("@@@UserId: %s", PromissuApplication.Companion.getDiskCache().getUserId());
+        Timber.d("@@@FCM TOKEN: %s", PromissuApplication.Companion.getDiskCache().getFcmToken());
         if (uri != null) {
             String execparamkey1 = uri.getQueryParameter("roomID");
 
