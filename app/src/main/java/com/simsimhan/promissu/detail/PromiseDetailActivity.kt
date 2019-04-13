@@ -72,6 +72,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             lifecycleOwner = this@PromiseDetailActivity
         }
 
+
+
         binding.detailBottomRv.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = DetailUserStatusAdapter(this@PromiseDetailActivity, this@PromiseDetailActivity.viewModel)
@@ -99,10 +101,9 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         })
 
         viewModel.participants.observe(this, Observer {
-            it.forEach {
-                Timber.d("participants: " + it.nickname)
-            }
-
+                if(promise.status == 1){
+                    viewModel.setSocketReady(true)
+                }
         })
     }
 
