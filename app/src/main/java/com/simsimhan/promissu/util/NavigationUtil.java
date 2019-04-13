@@ -24,7 +24,7 @@ public class NavigationUtil {
 
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9991;
 
-    enum PROMISE_STATUS {
+    public enum PROMISE_STATUS {
         // 현재 사람들을 초대중인 상태
         INVITING(0),
 
@@ -109,9 +109,10 @@ public class NavigationUtil {
     }
 
     public static void enterRoom(AppCompatActivity appCompatActivity, Promise.Response promise) {
-        if (promise.getStatus() == PROMISE_STATUS.PENDING.getValue()) {
-            openPendingScreen(appCompatActivity, promise);
-        } else if (promise.getStatus() == PROMISE_STATUS.DELETED.getValue()) {
+//        if (promise.getStatus() == PROMISE_STATUS.PENDING.getValue()) {
+//            openPendingScreen(appCompatActivity, promise);
+//        } else
+        if (promise.getStatus() == PROMISE_STATUS.DELETED.getValue()) {
             Toast.makeText(appCompatActivity, "삭제된 방입니다.", Toast.LENGTH_SHORT).show();
         } else {
             openPromiseDetailScreen(appCompatActivity, promise);

@@ -242,7 +242,7 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
             if (startTimeEditText != null) {
                 startTimeEditText!!.setText(StringUtil.addPaddingIfSingleDigit(hourOfDay) + ":" + StringUtil.addPaddingIfSingleDigit(minute))
             }
-            val requestStartDateTime = startSelectedDate!!.withHourOfDay(startSelectedDateTime!!.getHourOfDay()).withMinuteOfHour(startSelectedDateTime!!.getMinuteOfHour()).toDate()
+            val requestStartDateTime = startSelectedDate!!.withHourOfDay(startSelectedDateTime!!.hourOfDay).withMinuteOfHour(startSelectedDateTime!!.minuteOfHour).withSecondOfMinute(0).toDate()
             viewModel.setStartDateTime(requestStartDateTime)
         } else {
             endSelectedDateTime = now!!.withHourOfDay(hourOfDay)
@@ -253,7 +253,7 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
                 if (endTimeEditText != null) {
                     endTimeEditText!!.setText(StringUtil.addPaddingIfSingleDigit(hourOfDay) + ":" + StringUtil.addPaddingIfSingleDigit(minute))
                 }
-                val requestEndDateTime = endSelectedDate!!.withHourOfDay(endSelectedDateTime!!.getHourOfDay()).withMinuteOfHour(endSelectedDateTime!!.getMinuteOfHour()).toDate()
+                val requestEndDateTime = endSelectedDate!!.withHourOfDay(endSelectedDateTime!!.hourOfDay).withMinuteOfHour(endSelectedDateTime!!.minuteOfHour).toDate()
                 viewModel.setEndDateTime(requestEndDateTime)
             }
         }
