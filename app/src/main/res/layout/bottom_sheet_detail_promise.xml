@@ -7,6 +7,9 @@
         <variable
             name="viewModel"
             type="com.simsimhan.promissu.detail.DetailViewModel" />
+        <variable
+            name="listener"
+            type="com.simsimhan.promissu.detail.DetailEventListener"/>
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -53,6 +56,17 @@
                     android:textSize="24sp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageButton
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/detail_bs_title"
+                    app:layout_constraintBottom_toBottomOf="@id/detail_bs_title"
+                    android:layout_marginRight="28dp"
+                    android:onClick="@{listener.onClickInviteButton}"
+                    android:src="@drawable/kakaotalk_icon"
+                    android:background="@null"/>
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/detail_bs_time_iv"

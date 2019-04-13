@@ -73,7 +73,8 @@
                 app:behavior_hideable="false"
                 app:behavior_peekHeight="30dp"
                 app:layout_behavior="@string/bottom_sheet_behavior"
-                bind:viewModel="@{viewModel}"/>
+                bind:viewModel="@{viewModel}"
+                bind:listener="@{viewModel}"/>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
         <!--<View-->
             <!--android:id="@+id/ll_shadow"-->
