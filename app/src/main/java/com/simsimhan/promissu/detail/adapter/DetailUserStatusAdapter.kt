@@ -28,18 +28,22 @@ class DetailUserStatusAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            TYPE_INVITE -> {
-                val binding = ItemDetailInviteBinding
-                        .inflate(LayoutInflater.from(parent.context), parent, false)
-                DetailInviteStatusViewHolder(binding)
-            }
-            else -> {
-                val binding = ItemDetailUserStatusBinding
-                        .inflate(LayoutInflater.from(parent.context), parent, false)
-                DetailUserStatusViewHolder(binding)
-            }
-        }
+//        when (viewType) {
+//            TYPE_INVITE -> {
+//                val binding = ItemDetailInviteBinding
+//                        .inflate(LayoutInflater.from(parent.context), parent, false)
+//                return DetailInviteStatusViewHolder(binding)
+//            }
+//            else -> {
+//                val binding = ItemDetailUserStatusBinding
+//                        .inflate(LayoutInflater.from(parent.context), parent, false)
+//                return DetailUserStatusViewHolder(binding)
+//            }
+//        }
+        val binding = ItemDetailUserStatusBinding
+                .inflate(LayoutInflater.from(parent.context), parent, false)
+        return DetailUserStatusViewHolder(binding)
+
     }
 
     override fun getItemCount(): Int {
@@ -47,21 +51,23 @@ class DetailUserStatusAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (holder) {
-            is DetailUserStatusViewHolder -> {
-                holder.bind(lifecycleOwner, list[position])
-            }
-            is DetailInviteStatusViewHolder -> {
-                holder.bind(lifecycleOwner, listener)
-            }
-        }
+//        when (holder) {
+//            is DetailUserStatusViewHolder -> {
+//                holder.bind(lifecycleOwner, list[position])
+//            }
+//            is DetailInviteStatusViewHolder -> {
+//                holder.bind(lifecycleOwner, listener)
+//            }
+//        }
+        (holder as DetailUserStatusViewHolder).bind(lifecycleOwner, list[position])
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (position) {
-            list.size - 1 -> TYPE_INVITE
-            else -> TYPE_USER
-        }
+//        return when (position) {
+//            list.size - 1 -> TYPE_INVITE
+//            else -> TYPE_USER
+//        }
+        return TYPE_USER
     }
 
     class DetailUserStatusViewHolder(private val itemBinding: ItemDetailUserStatusBinding
