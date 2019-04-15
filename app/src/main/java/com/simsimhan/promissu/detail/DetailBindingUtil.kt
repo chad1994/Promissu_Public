@@ -1,10 +1,15 @@
 package com.simsimhan.promissu.detail
 
+import android.view.View
 import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import androidx.databinding.ObservableField
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.detail.adapter.DetailUserStatusAdapter
+import com.simsimhan.promissu.network.model.LocationEvent
 import com.simsimhan.promissu.network.model.Participant
 
 @BindingAdapter("setRvItems")
@@ -22,5 +27,27 @@ fun setBottomSheetIcon(imageButton: ImageButton, isSpread: Boolean) {
         imageButton.setImageResource(R.drawable.ic_arrow_down)
     } else {
         imageButton.setImageResource(R.drawable.ic_arrow_up)
+    }
+}
+
+@BindingAdapter("setUserItemStatus")
+fun setUserItemStatus(imageview: ImageView, status:Int) {
+    when (status) {
+        0 -> imageview.visibility = View.GONE
+        1 -> {
+            imageview.visibility = View.VISIBLE
+            imageview.setImageResource(R.drawable.ic_icon_status_ing)
+        }
+        2 -> {
+            imageview.visibility = View.VISIBLE
+            imageview.setImageResource(R.drawable.ic_icon_status_x)
+        }
+        3 -> {
+            imageview.visibility = View.VISIBLE
+            imageview.setImageResource(R.drawable.ic_icon_status_check)
+        }
+        4 -> {
+            imageview.visibility = View.GONE
+        }
     }
 }
