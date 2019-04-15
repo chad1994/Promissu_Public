@@ -1,12 +1,16 @@
 package com.simsimhan.promissu.detail
 
 import android.annotation.SuppressLint
+import android.app.Dialog
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.Window
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -28,7 +32,6 @@ import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityDetailPromiseBinding
 import com.simsimhan.promissu.detail.adapter.DetailUserStatusAdapter
 import com.simsimhan.promissu.network.model.Promise
-import timber.log.Timber
 
 
 class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -49,6 +52,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var promise: Promise.Response
     private lateinit var locationSource: FusedLocationSource
     private lateinit var mapView: com.naver.maps.map.MapView
+    private lateinit var naverMap: NaverMap
     private var meetingMarker = Marker()
     private var meetingCircle = CircleOverlay()
 
@@ -73,10 +77,9 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
 
-
         binding.detailBottomRv.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = DetailUserStatusAdapter(this@PromiseDetailActivity, this@PromiseDetailActivity.viewModel)
+            adapter = DetailUserStatusAdapter(this@PromiseDetailActivity, this@PromiseDetailActivity.viewModel, this@PromiseDetailActivity.viewModel)
         }
 
 
@@ -101,13 +104,28 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         })
 
         viewModel.participants.observe(this, Observer {
-                if(promise.status == 1){
-                    viewModel.setSocketReady(true)
-                }
+            if (promise.status == 1) {
+                viewModel.setSocketReady(true)
+            }
+        })
+
+        viewModel.locationEvents.observe(this, Observer {
+            viewModel.notifyEventInfo()
+        })
+
+        viewModel.dialogResponse.observe(this, Observer {
+            //TODO : 나에게 온 요청일때 처리.
+            buildResponseDialog()
+        })
+
+        viewModel.sendLocationRequest.observe(this, Observer {
+            //TODO : 상대방에게 요청 클릭 시
+            buildRequestDialog(it.nickname, it.partId)
         })
     }
 
     override fun onMapReady(naverMap: NaverMap) {
+        this.naverMap = naverMap
         naverMap.locationSource = locationSource
         viewModel.setNaverMap(naverMap)
         naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BUILDING, true)
@@ -161,6 +179,48 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         location.anchor = PointF(0.5f, 1f)
     }
 
+    private fun buildRequestDialog(nickname: String, partId: Int) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_request)
+        val text1 = dialog.findViewById<TextView>(R.id.dialog_text1)
+        val text2 = dialog.findViewById<TextView>(R.id.dialog_text2)
+        val btnCancel = dialog.findViewById<TextView>(R.id.dialog_button_cancel)
+        val btnAccept = dialog.findViewById<TextView>(R.id.dialog_button_accept)
+        text1.text = nickname + "님에게 위치를"
+        text2.text = "요청하시겠습니까?"
+        btnAccept.setOnClickListener {
+            viewModel.sendLocationRequest(partId)
+            dialog.dismiss()
+        }
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun buildResponseDialog(){
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_request)
+        val text1 = dialog.findViewById<TextView>(R.id.dialog_text1)
+        val text2 = dialog.findViewById<TextView>(R.id.dialog_text2)
+        val btnCancel = dialog.findViewById<TextView>(R.id.dialog_button_cancel)
+        val btnAccept = dialog.findViewById<TextView>(R.id.dialog_button_accept)
+        text1.text = "누군가 위치를 요청해요!"
+        text2.text = "수락하시겠습니까?"
+        btnAccept.text = "수락"
+        btnCancel.text = "거절"
+        btnAccept.setOnClickListener {
+            viewModel.sendLocationResponse(naverMap.locationOverlay.position.longitude,naverMap.locationOverlay.position.latitude)
+            dialog.dismiss()
+        }
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
     override fun onStart() {
         super.onStart()
         mapView.onStart()
@@ -201,6 +261,11 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             grantResults: IntArray
     ) {
         if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
+            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                Toast.makeText(this, "사용을 위해 설정 -> 애플리케이션에서 권한 속성에서 위치 권한에 동의 해주세요.", Toast.LENGTH_LONG).show()
+                finish()
+                return
+            }
             return
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
