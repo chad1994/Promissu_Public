@@ -32,9 +32,9 @@ import io.socket.client.IO
 import org.joda.time.DateTime
 import org.json.JSONObject
 import timber.log.Timber
-import java.util.*
 
 class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEventListener {
+
 
     private val _response = MutableLiveData<Promise.Response>() // 전체 데이터 리스트
     val response: LiveData<Promise.Response>
@@ -70,20 +70,34 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
 
     private val socket by lazy { IO.socket(BuildConfig.SOCKET_URL) }
 
+    private val _locationEvents = MutableLiveData<HashMap<Int, LocationEvent>>()
+    val locationEvents: LiveData<HashMap<Int, LocationEvent>>
+        get() = _locationEvents
+
+    private val _dialogResponse = SingleLiveEvent<Any>()
+    val dialogResponse: LiveData<Any>
+        get() = _dialogResponse
+
+    private val _sendLocationRequest = MutableLiveData<Participant.Request>()
+    val sendLocationRequest: LiveData<Participant.Request>
+        get() = _sendLocationRequest
+
     val title = ObservableField<String>()
     val startDate = ObservableField<String>()
     val locationName = ObservableField<String>()
     val participantNum = ObservableField<String>()
-
     val myParticipation = ObservableField<Int>()
 
+
     init {
-        _trackingMode.postValue(1)
-        _response.postValue(promise)
+        _trackingMode.value = 1
+        _response.value = promise
+        _isSocketOpen.value = false
         val meetingLatLng = LatLng(promise.location_lat.toDouble(), promise.location_lon.toDouble())
         _meetingLocation.postValue(meetingLatLng)
         initRoomInfo()
         fetchParticipants()
+
     }
 
     private fun initRoomInfo() {
@@ -109,10 +123,6 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         _naverMap.postValue(naverMap)
     }
 
-    fun setMyMarker() {
-
-    }
-
     private fun fetchParticipants() {
         addDisposable(PromissuApplication.retrofit!!
                 .create(AuthAPI::class.java)
@@ -135,6 +145,95 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                 ))
 
     }
+
+    fun setSpreadState(bool: Boolean) {
+        _isSpread.value = bool
+    }
+
+    fun setSocketReady(bool: Boolean) {
+        _isSocketOpen.value = bool
+
+        val jsonObject = JsonObject().apply {
+            addProperty("appointment", promise.id)
+            addProperty("participation", myParticipation.get())
+            addProperty("token", PromissuApplication.diskCache!!.userToken)
+            Timber.d("@@@LOGLOG:" + promise.id + "/" + myParticipation.get() + "/" + PromissuApplication.diskCache!!.userToken)
+        }
+        val jsonReq = JSONObject(jsonObject.toString())
+
+        socket.on("connect") {
+            socket.emit("location.join", jsonReq)
+            Timber.d("@@@Connect on")
+        }
+        socket.on("location.info") {
+            val jsonParser = JsonParser()
+            val data = jsonParser.parse("" + it[0]) as JsonArray
+            val gson = Gson()
+            val locationEvent = gson.fromJson(data, Array<LocationEvent>::class.java)
+            val map = HashMap<Int, LocationEvent>()
+            locationEvent.forEach { event ->
+                map[event.partId] = event
+            }
+            _locationEvents.postValue(map)
+            map.forEach { map ->
+                Timber.d("@@@Data: " + map.toString())
+            }
+            //TODO: info 조건 세분화 : 요청에 대해 나에게 온 요청인지 확인 후 응답, 응답에 대해 다른 인원에 대한 위치 변경 내용 갱신, 응답에 대해 거절된 경우 인지에 따른 view 갱신
+        }
+        socket.on("location.error") {
+            Timber.d("@@@LOCATION INFO%s", it[0].toString())
+        }
+        socket.connect()
+    }
+
+    fun notifyEventInfo() {
+        checkIsRequestToMe()
+    }
+
+    private fun checkIsRequestToMe() {
+        if (_locationEvents.value!![myParticipation.get()]!!.status == 1) {
+            _dialogResponse.call()
+        }
+    }
+
+    fun sendLocationRequest(partId: Int) {
+        val jsonObject = JsonObject().apply {
+            addProperty("appointment", promise.id)
+            addProperty("participation", partId)
+        }
+        val jsonReq = JSONObject(jsonObject.toString())
+        socket.emit("location.request",jsonReq)
+    }
+
+    fun sendLocationResponse(lon: Double, lat: Double) {
+        val jsonObject = JsonObject().apply {
+            addProperty("appointment", promise.id)
+            addProperty("participation", myParticipation.get())
+            addProperty("lon", lon)
+            addProperty("lat", lat)
+        }
+        val jsonReq = JSONObject(jsonObject.toString())
+        socket.emit("location.response", jsonReq)
+    }
+
+    fun sendLocationReject() {
+        val jsonObject = JsonObject().apply {
+            addProperty("appointment", promise.id)
+            addProperty("participation", myParticipation.get())
+        }
+        val jsonReq = JSONObject(jsonObject.toString())
+        socket.emit("location.reject", jsonReq)
+    }
+
+    fun sendLocationAttend() {
+        val jsonObject = JsonObject().apply {
+            addProperty("appointment", promise.id)
+            addProperty("participation", myParticipation.get())
+        }
+        val jsonReq = JSONObject(jsonObject.toString())
+        socket.emit("location.attend", jsonReq)
+    }
+
 
     override fun onClickInviteButton(view: View) {
         Timber.d("@@@@invite clicked")
@@ -179,48 +278,14 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
 
     }
 
-    fun setSpreadState(bool: Boolean) {
-        _isSpread.value = bool
+    override fun onClickRequestLocation(partId: Int, nickname: String) {
+        if (isSocketOpen.value!!&&partId!=myParticipation.get())
+            _sendLocationRequest.postValue(Participant.Request(partId, nickname))
     }
-
-    fun setSocketReady(bool: Boolean) {
-        _isSocketOpen.value = bool
-
-        val jsonObject = JsonObject().apply {
-            addProperty("appointment", promise.id)
-            addProperty("participation", myParticipation.get())
-            addProperty("token", PromissuApplication.diskCache!!.userToken)
-            Timber.d("@@@LOGLOG:" + promise.id + "/" + myParticipation.get() + "/" + PromissuApplication.diskCache!!.userToken)
-        }
-        val Json = JSONObject(jsonObject.toString())
-
-        socket.on("connect") {
-            socket.emit("location.join", Json)
-        }
-        socket.on("location.info") {
-            val jsonParser = JsonParser()
-            val data = jsonParser.parse(""+it[0])as JsonArray
-            val gson = Gson()
-            Timber.d("@@@Data: "+ data.toString())
-//            val locationEvent = gson.fromJson(data,LocationEvent::class.java)
-//            Timber.d("@@@status :" + data[0]+data[1]+data[2])
-        //TODO: info 조건 세분화 : 요청에 대해 나에게 온 요청인지 확인 후 응답, 응답에 대해 다른 인원에 대한 위치 변경 내용 갱신, 응답에 대해 거절된 경우 인지에 따른 view 갱신
-        }
-        socket.on("location.error") {
-            Timber.d("@@@LOCATION INFO%s", it[0].toString())
-        }
-        socket.connect()
-
-    }
-
-    fun setOtherCoordinate(){
-        //TODO 다른 사람의 위치를 수정,표시
-    }
-
-
 
 }
 
 interface DetailEventListener {
     fun onClickInviteButton(view: View)
+    fun onClickRequestLocation(partId: Int, nickname: String)
 }
