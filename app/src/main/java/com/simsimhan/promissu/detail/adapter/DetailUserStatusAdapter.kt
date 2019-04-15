@@ -7,17 +7,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.simsimhan.promissu.databinding.ItemDetailInviteBinding
 import com.simsimhan.promissu.databinding.ItemDetailUserStatusBinding
 import com.simsimhan.promissu.detail.DetailEventListener
+import com.simsimhan.promissu.detail.DetailViewModel
 import com.simsimhan.promissu.network.model.Participant
 
 class DetailUserStatusAdapter(
         private val lifecycleOwner: LifecycleOwner,
-        private val listener: DetailEventListener
+        private val listener: DetailEventListener,
+        private val viewModel: DetailViewModel
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
     companion object {
         const val TYPE_USER = 1
-        const val TYPE_INVITE = 2
+//        const val TYPE_INVITE = 2
     }
 
     private var list = listOf<Participant.Response>()
@@ -59,7 +61,7 @@ class DetailUserStatusAdapter(
 //                holder.bind(lifecycleOwner, listener)
 //            }
 //        }
-        (holder as DetailUserStatusViewHolder).bind(lifecycleOwner, list[position])
+        (holder as DetailUserStatusViewHolder).bind(lifecycleOwner, list[position],listener,viewModel)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -72,23 +74,25 @@ class DetailUserStatusAdapter(
 
     class DetailUserStatusViewHolder(private val itemBinding: ItemDetailUserStatusBinding
     ) : RecyclerView.ViewHolder(itemBinding.root) {
-        fun bind(_lifecycleOwner: LifecycleOwner, _participant: Participant.Response) {
+        fun bind(_lifecycleOwner: LifecycleOwner, _participant: Participant.Response, _listener: DetailEventListener, _viewModel: DetailViewModel) {
             itemBinding.apply {
                 lifecycleOwner = _lifecycleOwner
                 participants = _participant
+                listener = _listener
+                viewModel = _viewModel
                 executePendingBindings()
             }
         }
     }
 
-    class DetailInviteStatusViewHolder(private val itemBinding: ItemDetailInviteBinding
-    ) : RecyclerView.ViewHolder(itemBinding.root) {
-        fun bind(_lifecycleOwner: LifecycleOwner, _listener: DetailEventListener) {
-            itemBinding.apply {
-                lifecycleOwner = _lifecycleOwner
-                listener = _listener
-                executePendingBindings()
-            }
-        }
-    }
+//    class DetailInviteStatusViewHolder(private val itemBinding: ItemDetailInviteBinding
+//    ) : RecyclerView.ViewHolder(itemBinding.root) {
+//        fun bind(_lifecycleOwner: LifecycleOwner, _listener: DetailEventListener) {
+//            itemBinding.apply {
+//                lifecycleOwner = _lifecycleOwner
+//                listener = _listener
+//                executePendingBindings()
+//            }
+//        }
+//    }
 }
