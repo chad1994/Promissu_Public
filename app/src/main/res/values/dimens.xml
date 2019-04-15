@@ -32,7 +32,7 @@
     <dimen name="placeholder_text_height_small">18dp</dimen>
 
 
-    <dimen name="detail_ll_height">86dp</dimen>
+    <dimen name="detail_ll_height">100dp</dimen>
     <dimen name="dropbar_header">187dp</dimen>
 
 </resources>

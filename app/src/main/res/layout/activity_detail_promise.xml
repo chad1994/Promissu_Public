@@ -59,12 +59,14 @@
                 android:src="@drawable/ic_icon_mylocation"
                 android:background="@drawable/round_button"/>
 
-            <!--<View-->
-                <!--android:id="@+id/bs_shadow"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="16dp"-->
-                <!--android:background="@drawable/shape_gradient_top_shadow"-->
-                <!--app:layout_anchor="@id/detail_activity_bottom_sheet" />-->
+            <View
+                android:id="@+id/bs_shadow"
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:background="@drawable/shape_gradient_top_shadow"
+                app:layout_anchor="@id/detail_activity_bottom_sheet"
+                app:layout_anchorGravity="bottom"
+                />
             <include
                 android:id="@+id/detail_activity_bottom_sheet"
                 layout="@layout/bottom_sheet_detail_promise"
@@ -97,7 +99,7 @@
                 android:orientation="horizontal"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginTop="17dp"
+                android:layout_marginTop="25dp"
                 setRvItems="@{viewModel.participants}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">

@@ -36,9 +36,9 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:background="@drawable/style_round_top_square"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white"
                 android:paddingTop="37dp"
                 android:paddingBottom="37dp"
                 app:layout_constraintBottom_toBottomOf="parent"
