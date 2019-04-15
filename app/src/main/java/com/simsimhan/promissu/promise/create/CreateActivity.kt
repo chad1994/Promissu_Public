@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.Observer
+import androidx.viewpager.widget.ViewPager
 import com.simsimhan.promissu.BuildConfig
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
@@ -35,7 +36,10 @@ class CreateActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_promise)
-
+        binding.apply {
+            viewModel = this@CreateActivity.viewModel
+            lifecycleOwner = this@CreateActivity
+        }
         if (!PromissuApplication.diskCache!!.isUploadedPromiseBefore) {
             Toast.makeText(this, "좌우로 미세요.", Toast.LENGTH_LONG).show()
         }
@@ -43,6 +47,11 @@ class CreateActivity : AppCompatActivity() {
         adapterViewPager = CreateFragmentPagerAdapter(supportFragmentManager)
         binding.toolbar.setTitleTextColor(resources.getColor(R.color.black))
         binding.vpPager.adapter = adapterViewPager
+        binding.vpPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageSelected(position: Int) { viewModel.setToolbarTitle(position) }
+        })
         setSupportActionBar(binding.toolbar)
         changeStatusBarColor()
 
@@ -81,7 +90,7 @@ class CreateActivity : AppCompatActivity() {
         override fun getItem(position: Int): Fragment {
             val fragment: Fragment? = null
             return when (position) {
-                0, 1, 2 -> CreateFragment.newInstance(position, (getPageTitle(position) as String?)!!)
+                0, 1, 2 -> CreateFragment.newInstance(position)
                 else -> fragment!!
             }
         }
@@ -101,9 +110,6 @@ class CreateActivity : AppCompatActivity() {
         override fun getCount(): Int {
             return NUM_ITEMS
         }
-
-        override fun getPageTitle(position: Int): CharSequence? {
-            return (position + 1).toString() + " 단계"
-        }
     }
+
 }

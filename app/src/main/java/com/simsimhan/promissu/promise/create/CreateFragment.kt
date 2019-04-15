@@ -53,11 +53,10 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
     private val viewModel: CreateViewModel by sharedViewModel()
 
     companion object {
-        fun newInstance(position: Int, title: String): Fragment {
+        fun newInstance(position: Int): Fragment {
             val fragment = CreateFragment()
             val args = Bundle()
             args.putInt("Page_key", position)
-            args.putString("Title_key", title)
             fragment.arguments = args
             return fragment
         }
@@ -85,7 +84,6 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
 
         return binding.root
     }
-
 
     private fun setupTitleView(inflater: LayoutInflater, container: ViewGroup?) {
         binding = FragmentCreatePromise1Binding.inflate(inflater, container, false).apply {
@@ -244,6 +242,12 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
             }
             val requestStartDateTime = startSelectedDate!!.withHourOfDay(startSelectedDateTime!!.hourOfDay).withMinuteOfHour(startSelectedDateTime!!.minuteOfHour).withSecondOfMinute(0).toDate()
             viewModel.setStartDateTime(requestStartDateTime)
+            // end 시간을 설정 후 start 변경 시 end 초기화
+            endTimeEditText!!.text = null
+            endDateEditText!!.text = null
+            endSelectedDate = null
+            endSelectedDateTime = null
+            viewModel.setEndDateTime(null)
         } else {
             endSelectedDateTime = now!!.withHourOfDay(hourOfDay)
                     .withMinuteOfHour(minute)
