@@ -3,9 +3,10 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
     <ImageView
+        android:id="@+id/user_marker_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/ic_icon_marker_default_png"/>
+        />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/user_marker_name"

@@ -73,7 +73,7 @@
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:layout_marginTop="50dp"
-                    android:background="@color/colorStrong"
+                    android:background="@drawable/icon_time_mini"
                     app:layout_constraintLeft_toLeftOf="@id/detail_bs_title"
                     app:layout_constraintTop_toBottomOf="@id/detail_bs_title" />
 
@@ -92,10 +92,10 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/detail_bs_location_iv"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_width="17dp"
+                    android:layout_height="22dp"
                     android:layout_marginTop="8dp"
-                    android:background="@color/colorStrong"
+                    android:background="@drawable/ic_icon_location_mini"
                     app:layout_constraintLeft_toLeftOf="@id/detail_bs_title"
                     app:layout_constraintTop_toBottomOf="@id/detail_bs_time_iv" />
 
@@ -103,6 +103,7 @@
                     android:id="@+id/detail_bs_location_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
                     android:layout_marginLeft="19dp"
                     android:includeFontPadding="false"
                     android:lineSpacingExtra="16sp"
@@ -116,8 +117,8 @@
                     android:id="@+id/detail_bs_user_iv"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@color/colorStrong"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/ic_icon_user_mini"
                     app:layout_constraintLeft_toLeftOf="@id/detail_bs_title"
                     app:layout_constraintTop_toBottomOf="@id/detail_bs_location_iv" />
 
