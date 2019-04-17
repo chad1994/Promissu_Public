@@ -18,6 +18,7 @@ import com.kakao.network.ErrorResult
 import com.kakao.network.callback.ResponseCallback
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.NaverMap
+import com.naver.maps.map.overlay.Marker
 import com.simsimhan.promissu.BaseViewModel
 import com.simsimhan.promissu.BuildConfig
 import com.simsimhan.promissu.PromissuApplication
@@ -43,6 +44,14 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     private val _naverMap = MutableLiveData<NaverMap>()
     val naverMap: LiveData<NaverMap>
         get() = _naverMap
+
+    private val _isArrive = MutableLiveData<Boolean>()
+    val isArrive: LiveData<Boolean>
+        get() = _isArrive
+
+    private val _userMarkers = MutableLiveData<List<Marker>>()
+    val userMarkers: LiveData<List<Marker>>
+        get() = _userMarkers
 
     private val _trackingMode = MutableLiveData<Int>()
     val trackingMode: LiveData<Int> // 1:nothing ,2: tracking ,
@@ -82,6 +91,10 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     val sendLocationRequest: LiveData<Participant.Request>
         get() = _sendLocationRequest
 
+    private val _toastMsg = MutableLiveData<String>()
+    val toastMsg: LiveData<String>
+        get() = _toastMsg
+
     val title = ObservableField<String>()
     val startDate = ObservableField<String>()
     val locationName = ObservableField<String>()
@@ -93,11 +106,11 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         _trackingMode.value = 1
         _response.value = promise
         _isSocketOpen.value = false
+        _isArrive.value = false
         val meetingLatLng = LatLng(promise.location_lat.toDouble(), promise.location_lon.toDouble())
         _meetingLocation.postValue(meetingLatLng)
         initRoomInfo()
         fetchParticipants()
-
     }
 
     private fun initRoomInfo() {
@@ -181,13 +194,18 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
             //TODO: info 조건 세분화 : 요청에 대해 나에게 온 요청인지 확인 후 응답, 응답에 대해 다른 인원에 대한 위치 변경 내용 갱신, 응답에 대해 거절된 경우 인지에 따른 view 갱신
         }
         socket.on("location.error") {
-            Timber.d("@@@LOCATION INFO%s", it[0].toString())
+            Timber.d("@@@LOCATION ERROR: %s", it[0].toString())
         }
         socket.connect()
     }
 
     fun notifyEventInfo() {
         checkIsRequestToMe()
+        updateUserMarkers()
+    }
+
+    fun checkArrive(bool: Boolean){
+        _isArrive.postValue(bool)
     }
 
     private fun checkIsRequestToMe() {
@@ -196,13 +214,25 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         }
     }
 
+    private fun updateUserMarkers() {
+        val list = ArrayList<Marker>()
+        _locationEvents.value!!.filterNot { it.value.partId == myParticipation.get() }.forEach {
+            val marker = Marker()
+            marker.position = LatLng(it.value.lat, it.value.lon)
+            marker.tag = it.value.nickname
+            Timber.d("@@@Update Marker: " + it.value.partId + "/")
+            list.add(marker)
+        }
+        _userMarkers.postValue(list)
+    }
+
     fun sendLocationRequest(partId: Int) {
         val jsonObject = JsonObject().apply {
             addProperty("appointment", promise.id)
-            addProperty("participation", partId)
+            addProperty("target", partId)
         }
         val jsonReq = JSONObject(jsonObject.toString())
-        socket.emit("location.request",jsonReq)
+        socket.emit("location.request", jsonReq)
     }
 
     fun sendLocationResponse(lon: Double, lat: Double) {
@@ -233,7 +263,6 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         val jsonReq = JSONObject(jsonObject.toString())
         socket.emit("location.attend", jsonReq)
     }
-
 
     override fun onClickInviteButton(view: View) {
         Timber.d("@@@@invite clicked")
@@ -279,8 +308,11 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     }
 
     override fun onClickRequestLocation(partId: Int, nickname: String) {
-        if (isSocketOpen.value!!&&partId!=myParticipation.get())
-            _sendLocationRequest.postValue(Participant.Request(partId, nickname))
+        if (isSocketOpen.value!! && partId != myParticipation.get())
+            if (_locationEvents.value!![partId]!!.point <= 0)
+                _toastMsg.postValue("해당 사용자에게 더 이상 위치를 요청할 수 없습니다.")
+            else
+                _sendLocationRequest.postValue(Participant.Request(partId, nickname))
     }
 
 }
