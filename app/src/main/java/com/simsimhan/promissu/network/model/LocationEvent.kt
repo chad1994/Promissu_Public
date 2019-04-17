@@ -9,6 +9,7 @@ data class LocationEvent(
         val lon: Double,
         val partId: Int,
         val point: Int,
+        val nickname : String,
         val status: Int,
         val timestamp: Date
 )
