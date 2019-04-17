@@ -4,12 +4,9 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import androidx.databinding.ObservableField
-import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.detail.adapter.DetailUserStatusAdapter
-import com.simsimhan.promissu.network.model.LocationEvent
 import com.simsimhan.promissu.network.model.Participant
 
 @BindingAdapter("setRvItems")
@@ -31,7 +28,7 @@ fun setBottomSheetIcon(imageButton: ImageButton, isSpread: Boolean) {
 }
 
 @BindingAdapter("setUserItemStatus")
-fun setUserItemStatus(imageview: ImageView, status:Int) {
+fun setUserItemStatus(imageview: ImageView, status: Int) {
     when (status) {
         0 -> imageview.visibility = View.GONE
         1 -> {
@@ -47,6 +44,9 @@ fun setUserItemStatus(imageview: ImageView, status:Int) {
             imageview.setImageResource(R.drawable.ic_icon_status_check)
         }
         4 -> {
+            imageview.visibility = View.GONE
+        }
+        else -> {
             imageview.visibility = View.GONE
         }
     }
