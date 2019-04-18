@@ -52,6 +52,7 @@ class PromissuApplication : MultiDexApplication() {
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)
         }
+
         startKoin(this, appModules)
         JodaTimeAndroid.init(this)
         val lumberYard = LumberYard.getInstance(this)
@@ -92,6 +93,7 @@ class PromissuApplication : MultiDexApplication() {
                 .build()
 
         diskCache = DiskCache(getSharedPreferences("USER_DISK_CACHE", Context.MODE_PRIVATE))
+
     }
 
     override fun onTerminate() {

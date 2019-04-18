@@ -1,9 +1,14 @@
 package com.simsimhan.promissu.detail
 
+import android.os.CountDownTimer
 import android.view.View
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import com.kakao.kakaolink.v2.KakaoLinkResponse
 import com.kakao.kakaolink.v2.KakaoLinkService
 import com.kakao.message.template.ButtonObject
@@ -14,19 +19,26 @@ import com.kakao.network.ErrorResult
 import com.kakao.network.callback.ResponseCallback
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.NaverMap
+import com.naver.maps.map.overlay.Marker
 import com.simsimhan.promissu.BaseViewModel
+import com.simsimhan.promissu.BuildConfig
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.network.AuthAPI
+import com.simsimhan.promissu.network.model.LocationEvent
 import com.simsimhan.promissu.network.model.Participant
 import com.simsimhan.promissu.network.model.Promise
 import com.simsimhan.promissu.util.SingleLiveEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import io.socket.client.IO
 import org.joda.time.DateTime
+import org.joda.time.Seconds
+import org.json.JSONObject
 import timber.log.Timber
 import java.util.*
 
 class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEventListener {
+
 
     private val _response = MutableLiveData<Promise.Response>() // 전체 데이터 리스트
     val response: LiveData<Promise.Response>
@@ -35,6 +47,14 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     private val _naverMap = MutableLiveData<NaverMap>()
     val naverMap: LiveData<NaverMap>
         get() = _naverMap
+
+    private val _isArrive = MutableLiveData<Boolean>()
+    val isArrive: LiveData<Boolean>
+        get() = _isArrive
+
+    private val _userMarkers = MutableLiveData<List<Marker>>()
+    val userMarkers: LiveData<List<Marker>>
+        get() = _userMarkers
 
     private val _trackingMode = MutableLiveData<Int>()
     val trackingMode: LiveData<Int> // 1:nothing ,2: tracking ,
@@ -56,18 +76,54 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     val isSpread: LiveData<Boolean>
         get() = _isSpread
 
+    private val _isSocketOpen = MutableLiveData<Boolean>()
+    val isSocketOpen: LiveData<Boolean>
+        get() = _isSocketOpen
+
+    private val socket by lazy { IO.socket(BuildConfig.SOCKET_URL) }
+
+    private val _locationEvents = MutableLiveData<HashMap<Int, LocationEvent>>()
+    val locationEvents: LiveData<HashMap<Int, LocationEvent>>
+        get() = _locationEvents
+
+    private val _dialogResponse = SingleLiveEvent<Any>()
+    val dialogResponse: LiveData<Any>
+        get() = _dialogResponse
+
+    private val _sendLocationRequest = MutableLiveData<Participant.Request>()
+    val sendLocationRequest: LiveData<Participant.Request>
+        get() = _sendLocationRequest
+
+    private val _attendMyMarker = MutableLiveData<Boolean>()
+    val attendMyMarker: LiveData<Boolean>
+        get() = _attendMyMarker
+
+    private val _timerString = MutableLiveData<String>()
+    val timerString: LiveData<String>
+        get() = _timerString
+
+    private val _toastMsg = MutableLiveData<String>()
+    val toastMsg: LiveData<String>
+        get() = _toastMsg
+
     val title = ObservableField<String>()
     val startDate = ObservableField<String>()
     val locationName = ObservableField<String>()
     val participantNum = ObservableField<String>()
+    val myParticipation = ObservableField<Int>()
+    lateinit var countDownTimer: CountDownTimer
 
     init {
-        _trackingMode.postValue(1)
-        _response.postValue(promise)
+        _trackingMode.value = 1
+        _response.value = promise
+        _isSocketOpen.value = false
+        _attendMyMarker.value = false
+        _isArrive.value = false
         val meetingLatLng = LatLng(promise.location_lat.toDouble(), promise.location_lon.toDouble())
         _meetingLocation.postValue(meetingLatLng)
         initRoomInfo()
         fetchParticipants()
+        setupTimer()
     }
 
     private fun initRoomInfo() {
@@ -93,10 +149,6 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         _naverMap.postValue(naverMap)
     }
 
-    fun setMyMarker() {
-
-    }
-
     private fun fetchParticipants() {
         addDisposable(PromissuApplication.retrofit!!
                 .create(AuthAPI::class.java)
@@ -105,14 +157,163 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { onNext ->
-                            _participants.value = onNext
                             participantNum.set((onNext.size).toString() + " 명")
+                            onNext.forEach {
+                                if (it.kakao_id == PromissuApplication.diskCache!!.userId.toInt()) {
+                                    myParticipation.set(it.participation)
+                                }
+                            }
+                            _participants.value = onNext
                         },
                         { onError ->
                             Timber.e(onError)
                         }
                 ))
 
+    }
+
+    fun setSpreadState(bool: Boolean) {
+        _isSpread.value = bool
+    }
+
+    fun setSocketReady(bool: Boolean) {
+        _isSocketOpen.value = bool
+
+        val jsonObject = JsonObject().apply {
+            addProperty("appointment", promise.id)
+            addProperty("participation", myParticipation.get())
+            addProperty("token", PromissuApplication.diskCache!!.userToken)
+            Timber.d("@@@LOGLOG:" + promise.id + "/" + myParticipation.get() + "/" + PromissuApplication.diskCache!!.userToken)
+        }
+        val jsonReq = JSONObject(jsonObject.toString())
+
+        socket.on("connect") {
+            socket.emit("location.join", jsonReq)
+            Timber.d("@@@Connect on")
+        }
+        socket.on("location.info") {
+            val jsonParser = JsonParser()
+            val data = jsonParser.parse("" + it[0]) as JsonArray
+            val gson = Gson()
+            val locationEvent = gson.fromJson(data, Array<LocationEvent>::class.java)
+            val map = HashMap<Int, LocationEvent>()
+            locationEvent.forEach { event ->
+                map[event.partId] = event
+            }
+            _locationEvents.postValue(map)
+            map.forEach { map ->
+                Timber.d("@@@Data: " + map.toString())
+            }
+            //TODO: info 조건 세분화 : 요청에 대해 나에게 온 요청인지 확인 후 응답, 응답에 대해 다른 인원에 대한 위치 변경 내용 갱신, 응답에 대해 거절된 경우 인지에 따른 view 갱신
+        }
+        socket.on("location.error") {
+            Timber.d("@@@LOCATION ERROR: %s", it[0].toString())
+        }
+        socket.connect()
+    }
+
+    fun notifyEventInfo() {
+        checkIsMyData()
+        updateUserMarkers()
+    }
+
+    fun checkArrive(bool: Boolean) {
+        _isArrive.postValue(bool)
+    }
+
+    private fun checkIsMyData() {
+        if (_locationEvents.value!!.keys.contains(myParticipation.get())) { //내 키를 가지고 있고
+            if (_locationEvents.value!![myParticipation.get()]!!.status == 1) { //내 상태가 요청이 온 상태라면
+                _dialogResponse.call()
+            }
+            if (_locationEvents.value!![myParticipation.get()]!!.status == 4) {
+                _attendMyMarker.postValue(true)
+            }
+        }
+    }
+
+    private fun updateUserMarkers() {
+        val list = ArrayList<Marker>()
+        _locationEvents.value!!
+                .filterNot { it.value.partId == myParticipation.get() }
+                .filterNot { it.value.status == 4 }
+                .filterNot { it.value.lat == 0.0 && it.value.lon == 0.0 }
+                .forEach {
+                    val marker = Marker()
+                    marker.position = LatLng(it.value.lat, it.value.lon)
+                    marker.tag = it.value.nickname
+                    Timber.d("@@@Update Marker: " + it.value.partId + "/")
+                    list.add(marker)
+                }
+        _userMarkers.postValue(list)
+    }
+
+    fun sendLocationRequest(partId: Int) {
+        val jsonObject = JsonObject().apply {
+            addProperty("appointment", promise.id)
+            addProperty("target", partId)
+        }
+        val jsonReq = JSONObject(jsonObject.toString())
+        socket.emit("location.request", jsonReq)
+    }
+
+    fun sendLocationResponse(lon: Double, lat: Double) {
+        val jsonObject = JsonObject().apply {
+            addProperty("appointment", promise.id)
+            addProperty("participation", myParticipation.get())
+            addProperty("lon", lon)
+            addProperty("lat", lat)
+        }
+        val jsonReq = JSONObject(jsonObject.toString())
+        socket.emit("location.response", jsonReq)
+    }
+
+    fun sendLocationReject() {
+        val jsonObject = JsonObject().apply {
+            addProperty("appointment", promise.id)
+            addProperty("participation", myParticipation.get())
+        }
+        val jsonReq = JSONObject(jsonObject.toString())
+        socket.emit("location.reject", jsonReq)
+    }
+
+    fun sendLocationAttend(lon: Double, lat: Double) {
+        val jsonObject = JsonObject().apply {
+            addProperty("appointment", promise.id)
+            addProperty("participation", myParticipation.get())
+            addProperty("lon", lon)
+            addProperty("lat", lat)
+        }
+        val jsonReq = JSONObject(jsonObject.toString())
+        socket.emit("location.attend", jsonReq)
+    }
+
+    private fun setupTimer() {
+        val now = DateTime()
+        val start = DateTime(promise.start_datetime)
+        val betweenSeconds = Seconds.secondsBetween(now, start)
+        var remainSeconds = betweenSeconds.seconds
+        countDownTimer = object : CountDownTimer(3600000, 1000) {
+            override fun onFinish() {
+            }
+
+            override fun onTick(millisUntilFinished: Long) {
+                remainSeconds -= 1
+                if (remainSeconds % 60 < 10) {
+                    _timerString.postValue("약속 시작까지 " + remainSeconds / 60 + "분 0" + remainSeconds % 60 + "초 남았습니다")
+                } else {
+                    _timerString.postValue("약속 시작까지 " + remainSeconds / 60 + "분 " + remainSeconds % 60 + "초 남았습니다")
+                }
+            }
+        }
+    }
+
+    fun startTimer() {
+        countDownTimer.start()
+    }
+
+    fun removeTimer() {
+        countDownTimer.cancel()
     }
 
     override fun onClickInviteButton(view: View) {
@@ -158,12 +359,17 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
 
     }
 
-    fun setSpreadState(bool: Boolean) {
-        _isSpread.value = bool
+    override fun onClickRequestLocation(partId: Int, nickname: String) {
+        if (isSocketOpen.value!! && partId != myParticipation.get())
+            if (_locationEvents.value!![partId]!!.point <= 0)
+                _toastMsg.postValue("해당 사용자에게 더 이상 위치를 요청할 수 없습니다.")
+            else
+                _sendLocationRequest.postValue(Participant.Request(partId, nickname))
     }
 
 }
 
 interface DetailEventListener {
     fun onClickInviteButton(view: View)
+    fun onClickRequestLocation(partId: Int, nickname: String)
 }

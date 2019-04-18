@@ -1,12 +1,17 @@
 package com.simsimhan.promissu.detail
 
 import android.annotation.SuppressLint
+import android.app.Dialog
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.PointF
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.Window
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -20,6 +25,7 @@ import com.naver.maps.map.LocationTrackingMode
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.CircleOverlay
+import com.naver.maps.map.overlay.LocationOverlay
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
@@ -49,6 +55,10 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var promise: Promise.Response
     private lateinit var locationSource: FusedLocationSource
     private lateinit var mapView: com.naver.maps.map.MapView
+    private lateinit var naverMap: NaverMap
+    private lateinit var location: LocationOverlay
+    private lateinit var arriveView: View
+    private lateinit var notArriveView: View
     private var meetingMarker = Marker()
     private var meetingCircle = CircleOverlay()
 
@@ -72,9 +82,10 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             lifecycleOwner = this@PromiseDetailActivity
         }
 
+
         binding.detailBottomRv.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = DetailUserStatusAdapter(this@PromiseDetailActivity, this@PromiseDetailActivity.viewModel)
+            adapter = DetailUserStatusAdapter(this@PromiseDetailActivity, this@PromiseDetailActivity.viewModel, this@PromiseDetailActivity.viewModel)
         }
 
 
@@ -98,15 +109,47 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             onBackPressed()
         })
 
-        viewModel.participants.observe(this, Observer {
-            it.forEach {
-                Timber.d("participants: " + it.nickname)
-            }
+        viewModel.toastMsg.observe(this, Observer {
+            ToastMessage(it)
+        })
 
+        viewModel.participants.observe(this, Observer {
+            if (promise.status == 1) {
+                viewModel.setSocketReady(true)
+            }
+        })
+
+        viewModel.locationEvents.observe(this, Observer {
+            viewModel.notifyEventInfo()
+        })
+
+        viewModel.dialogResponse.observe(this, Observer {
+            //TODO : 나에게 온 요청일때 처리.
+            buildResponseDialog()
+        })
+
+        viewModel.sendLocationRequest.observe(this, Observer {
+            //TODO : 상대방에게 요청 클릭 시
+            buildRequestDialog(it.nickname, it.partId)
+        })
+
+        viewModel.userMarkers.observe(this, Observer {
+            updateUserMarkers(it)
+        })
+
+        viewModel.isSocketOpen.observe(this, Observer {
+            if (it) {
+                viewModel.startTimer()
+                binding.detailTimer.visibility = View.VISIBLE
+            } else {
+                viewModel.removeTimer()
+                binding.detailTimer.visibility = View.GONE
+            }
         })
     }
 
     override fun onMapReady(naverMap: NaverMap) {
+        this.naverMap = naverMap
         naverMap.locationSource = locationSource
         viewModel.setNaverMap(naverMap)
         naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BUILDING, true)
@@ -119,6 +162,14 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 //        tv.text = "태성"
 //        marker.icon = OverlayImage.fromView(view)
         initMyLocation(naverMap)
+        naverMap.addOnLocationChangeListener {
+            val myLatlng = LatLng(it.latitude, it.longitude)
+            if (myLatlng.distanceTo(meetingMarker.position) <= 100) {
+                viewModel.checkArrive(true)
+            } else {
+                viewModel.checkArrive(false)
+            }
+        }
 
         viewModel.meetingLocation.observe(this, Observer {
             initTargetLocation(it, naverMap)
@@ -139,6 +190,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         meetingMarker.apply {
             position = it
             map = naverMap
+            icon = OverlayImage.fromResource(R.drawable.ic_icon_location)
+            anchor = PointF(0.1f, 1.0f)
         }
         meetingCircle.apply {
             center = it
@@ -148,16 +201,114 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         val cameraUpdate = CameraUpdate.scrollAndZoomTo(it, 16.0)
         naverMap.moveCamera(cameraUpdate)
+    }
 
+    private fun initMyLocationView() {
+        arriveView = LayoutInflater.from(this).inflate(R.layout.user_marker, null)
+        val tv = arriveView.findViewById(R.id.user_marker_name) as TextView
+        val img = arriveView.findViewById(R.id.user_marker_image) as ImageView
+        tv.text = "출석하기"
+        tv.setTextColor(Color.parseColor("#5F6CCC"))
+        img.setImageResource(R.drawable.ic_icon_marker_attend)
+
+        notArriveView = LayoutInflater.from(this).inflate(R.layout.user_marker, null)
+        val ntv = notArriveView.findViewById(R.id.user_marker_name) as TextView
+        val nImg = notArriveView.findViewById(R.id.user_marker_image) as ImageView
+        ntv.text = "나"
+        nImg.setImageResource(R.drawable.ic_icon_marker_default)
     }
 
     private fun initMyLocation(naverMap: NaverMap) {
-        val location = naverMap.locationOverlay
-        val myView = LayoutInflater.from(this).inflate(R.layout.user_marker, null)
-        val tv = myView.findViewById(R.id.user_marker_name) as TextView
-        tv.text = "나"
-        location.icon = OverlayImage.fromView(myView)
+        initMyLocationView()
+        location = naverMap.locationOverlay
+//        val myView = LayoutInflater.from(this).inflate(R.layout.user_marker, null)
+//        val tv = myView.findViewById(R.id.user_marker_name) as TextView
+//        tv.text = "나"
+        location.icon = OverlayImage.fromView(notArriveView)
         location.anchor = PointF(0.5f, 1f)
+        location.setOnClickListener {
+            if (viewModel.isArrive.value == true && viewModel.isSocketOpen.value == true) {
+                Timber.d("@@@send Attend")
+                viewModel.sendLocationAttend(location.position.longitude, location.position.latitude)
+            }
+            false
+        }
+
+        viewModel.isArrive.observe(this, Observer {
+            if (it && viewModel.isSocketOpen.value!!) {
+                location.icon = OverlayImage.fromView(arriveView)
+            } else {
+                location.icon = OverlayImage.fromView(notArriveView)
+            }
+        })
+
+        viewModel.attendMyMarker.observe(this, Observer {
+            // 내가 출석을 했을 때.
+//            location.isVisible = false
+//            Timber.d("@@@@VISIBLE IN")
+            // TODO : 내가 출석 했을 때 내 위치 마커 없애기.
+        })
+
+    }
+
+    private fun updateUserMarkers(markers: List<Marker>) {
+        markers.forEach {
+            val myView = LayoutInflater.from(this).inflate(R.layout.user_marker, null)
+            val tv = myView.findViewById(R.id.user_marker_name) as TextView
+            val bg = myView.findViewById(R.id.user_marker_image) as ImageView
+            bg.setImageResource(R.drawable.ic_icon_marker_default)
+            it.map = naverMap
+            tv.text = it.tag.toString()
+            it.icon = OverlayImage.fromView(myView)
+            it.anchor = PointF(0.5f, 1f)
+        }
+    }
+
+    private fun buildRequestDialog(nickname: String, partId: Int) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_request)
+        val text1 = dialog.findViewById<TextView>(R.id.dialog_text1)
+        val text2 = dialog.findViewById<TextView>(R.id.dialog_text2)
+        val btnCancel = dialog.findViewById<TextView>(R.id.dialog_button_cancel)
+        val btnAccept = dialog.findViewById<TextView>(R.id.dialog_button_accept)
+        text1.text = nickname + "님에게 위치를"
+        text2.text = "요청하시겠습니까?"
+        btnAccept.setOnClickListener {
+            viewModel.sendLocationRequest(partId)
+            dialog.dismiss()
+        }
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun buildResponseDialog() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_request)
+        val text1 = dialog.findViewById<TextView>(R.id.dialog_text1)
+        val text2 = dialog.findViewById<TextView>(R.id.dialog_text2)
+        val btnCancel = dialog.findViewById<TextView>(R.id.dialog_button_cancel)
+        val btnAccept = dialog.findViewById<TextView>(R.id.dialog_button_accept)
+        text1.text = "누군가 위치를 요청해요!"
+        text2.text = "수락하시겠습니까?"
+        btnAccept.text = "수락"
+        btnCancel.text = "거절"
+        btnAccept.setOnClickListener {
+            viewModel.sendLocationResponse(naverMap.locationOverlay.position.longitude, naverMap.locationOverlay.position.latitude)
+            dialog.dismiss()
+        }
+        btnCancel.setOnClickListener {
+            viewModel.sendLocationReject()
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun ToastMessage(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
     override fun onStart() {
@@ -188,6 +339,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onDestroy() {
         super.onDestroy()
         mapView.onDestroy()
+        viewModel.removeTimer()
+        binding.detailTimer.visibility = View.GONE
     }
 
     override fun onLowMemory() {
@@ -200,6 +353,11 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             grantResults: IntArray
     ) {
         if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
+            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                Toast.makeText(this, "사용을 위해 설정 -> 애플리케이션에서 권한 속성에서 위치 권한에 동의 해주세요.", Toast.LENGTH_LONG).show()
+                finish()
+                return
+            }
             return
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)

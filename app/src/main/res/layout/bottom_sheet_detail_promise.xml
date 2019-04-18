@@ -7,6 +7,9 @@
         <variable
             name="viewModel"
             type="com.simsimhan.promissu.detail.DetailViewModel" />
+        <variable
+            name="listener"
+            type="com.simsimhan.promissu.detail.DetailEventListener"/>
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -33,9 +36,9 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:background="@drawable/style_round_top_square"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white"
                 android:paddingTop="37dp"
                 android:paddingBottom="37dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -54,12 +57,23 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <ImageButton
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/detail_bs_title"
+                    app:layout_constraintBottom_toBottomOf="@id/detail_bs_title"
+                    android:layout_marginRight="28dp"
+                    android:onClick="@{listener.onClickInviteButton}"
+                    android:src="@drawable/kakaotalk_icon"
+                    android:background="@null"/>
+
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/detail_bs_time_iv"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:layout_marginTop="50dp"
-                    android:background="@color/colorStrong"
+                    android:background="@drawable/icon_time_mini"
                     app:layout_constraintLeft_toLeftOf="@id/detail_bs_title"
                     app:layout_constraintTop_toBottomOf="@id/detail_bs_title" />
 
@@ -78,10 +92,10 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/detail_bs_location_iv"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_width="17dp"
+                    android:layout_height="22dp"
                     android:layout_marginTop="8dp"
-                    android:background="@color/colorStrong"
+                    android:background="@drawable/ic_icon_location_mini"
                     app:layout_constraintLeft_toLeftOf="@id/detail_bs_title"
                     app:layout_constraintTop_toBottomOf="@id/detail_bs_time_iv" />
 
@@ -89,6 +103,7 @@
                     android:id="@+id/detail_bs_location_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
                     android:layout_marginLeft="19dp"
                     android:includeFontPadding="false"
                     android:lineSpacingExtra="16sp"
@@ -102,8 +117,8 @@
                     android:id="@+id/detail_bs_user_iv"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@color/colorStrong"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/ic_icon_user_mini"
                     app:layout_constraintLeft_toLeftOf="@id/detail_bs_title"
                     app:layout_constraintTop_toBottomOf="@id/detail_bs_location_iv" />
 

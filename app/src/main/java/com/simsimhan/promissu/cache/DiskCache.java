@@ -11,6 +11,7 @@ public class DiskCache {
     private String TAG = BuildConfig.APPLICATION_ID;
     private String USER_TOKEN_TAG = TAG + ".userToken";
     private String USER_NAME_TAG = TAG + ".userName";
+    private String FCM_TOKEN_PROPERTY_NAME = TAG + ".fcmToken";
     private String USER_NAME_LONG_ID = TAG + ".id";
     private String USER_PROFILE_THUMBNAIL = TAG + ".userProfileThumbnail";
     private String USER_IS_UPLOADED_BEFORE_TAG = TAG + ".isUploadedBefore";
@@ -30,6 +31,12 @@ public class DiskCache {
                 .putString(USER_NAME_TAG, name)
                 .putLong(USER_NAME_LONG_ID, id)
                 .putString(USER_PROFILE_THUMBNAIL, thumbnailUrl)
+                .commit();
+    }
+
+    public boolean setFcmToken(String token) {
+        return this.pref.edit()
+                .putString(FCM_TOKEN_PROPERTY_NAME, token)
                 .commit();
     }
 
@@ -62,6 +69,12 @@ public class DiskCache {
     @NonNull
     public String getUserToken() {
         return this.pref.getString(USER_TOKEN_TAG, "");
+    }
+
+    @NonNull
+    public String getFcmToken() {
+        return this.pref.getString(FCM_TOKEN_PROPERTY_NAME, "");
+
     }
 
     @NonNull
