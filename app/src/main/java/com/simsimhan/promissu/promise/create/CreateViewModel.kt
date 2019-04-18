@@ -81,8 +81,8 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
         Timber.d("@@@Token: $token")
     }
 
-    fun setToolbarTitle(position:Int){
-            _toolbarTitle.postValue(""+(position+1)+"단계")
+    fun setToolbarTitle(position: Int) {
+        _toolbarTitle.postValue("" + (position + 1) + "단계")
     }
 
     fun onClickCreateBtn() {

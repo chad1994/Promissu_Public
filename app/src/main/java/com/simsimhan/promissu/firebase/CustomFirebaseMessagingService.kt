@@ -16,7 +16,7 @@ import com.simsimhan.promissu.R
 import timber.log.Timber
 
 
-class CustomFirebaseMessagingService : FirebaseMessagingService(){
+class CustomFirebaseMessagingService : FirebaseMessagingService() {
 
     private val TAG = "FirebaseService"
 
@@ -36,7 +36,7 @@ class CustomFirebaseMessagingService : FirebaseMessagingService(){
 
         Log.d(TAG, "From: " + p0.from)
 
-        if(p0.notification != null) {
+        if (p0.notification != null) {
             Log.d(TAG, "Notification Message Body: ${p0.notification?.body}")
             sendNotification(p0.notification?.body)
         }
@@ -51,13 +51,13 @@ class CustomFirebaseMessagingService : FirebaseMessagingService(){
         var pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT)
         val notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
-        var notificationBuilder = NotificationCompat.Builder(this,"Notification")
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle("Push Notification FCM")
-            .setContentText(body)
-            .setAutoCancel(true)
-            .setSound(notificationSound)
-            .setContentIntent(pendingIntent)
+        var notificationBuilder = NotificationCompat.Builder(this, "Notification")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("Push Notification FCM")
+                .setContentText(body)
+                .setAutoCancel(true)
+                .setSound(notificationSound)
+                .setContentIntent(pendingIntent)
 
         var notificationManager: NotificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(0, notificationBuilder.build())

@@ -5,7 +5,7 @@ public class Participant {
         private final int kakao_id;
         private final String nickname;
         private final int participation;
-        private int status =0 ;
+        private int status = 0;
 
         public Response(int kakao_id, String nickname, int participation, int status) {
             this.kakao_id = kakao_id;
@@ -25,6 +25,7 @@ public class Participant {
         public int getParticipation() {
             return participation;
         }
+
         public int getStatus() {
             return status;
         }
@@ -35,8 +36,8 @@ public class Participant {
     }
 
     public static class Request {
-        private  int partId;
-        private  String nickname;
+        private int partId;
+        private String nickname;
 
         public Request(int partId, String nickname) {
             this.partId = partId;

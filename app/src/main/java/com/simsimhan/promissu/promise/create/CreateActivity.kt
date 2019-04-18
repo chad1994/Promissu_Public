@@ -50,7 +50,9 @@ class CreateActivity : AppCompatActivity() {
         binding.vpPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-            override fun onPageSelected(position: Int) { viewModel.setToolbarTitle(position) }
+            override fun onPageSelected(position: Int) {
+                viewModel.setToolbarTitle(position)
+            }
         })
         setSupportActionBar(binding.toolbar)
         changeStatusBarColor()

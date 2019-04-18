@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.Point
 import android.graphics.PointF
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -35,7 +34,6 @@ import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityDetailPromiseBinding
 import com.simsimhan.promissu.detail.adapter.DetailUserStatusAdapter
 import com.simsimhan.promissu.network.model.Promise
-import org.koin.ext.checkedStringValue
 import timber.log.Timber
 
 
@@ -59,7 +57,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mapView: com.naver.maps.map.MapView
     private lateinit var naverMap: NaverMap
     private lateinit var location: LocationOverlay
-    private lateinit var arriveView : View
+    private lateinit var arriveView: View
     private lateinit var notArriveView: View
     private var meetingMarker = Marker()
     private var meetingCircle = CircleOverlay()
@@ -140,10 +138,10 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         })
 
         viewModel.isSocketOpen.observe(this, Observer {
-            if(it){
+            if (it) {
                 viewModel.startTimer()
                 binding.detailTimer.visibility = View.VISIBLE
-            }else{
+            } else {
                 viewModel.removeTimer()
                 binding.detailTimer.visibility = View.GONE
             }
@@ -164,11 +162,11 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 //        tv.text = "태성"
 //        marker.icon = OverlayImage.fromView(view)
         initMyLocation(naverMap)
-        naverMap.addOnLocationChangeListener{
-            val myLatlng = LatLng(it.latitude,it.longitude)
-            if(myLatlng.distanceTo(meetingMarker.position)<=100){
+        naverMap.addOnLocationChangeListener {
+            val myLatlng = LatLng(it.latitude, it.longitude)
+            if (myLatlng.distanceTo(meetingMarker.position) <= 100) {
                 viewModel.checkArrive(true)
-            }else{
+            } else {
                 viewModel.checkArrive(false)
             }
         }
@@ -193,7 +191,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             position = it
             map = naverMap
             icon = OverlayImage.fromResource(R.drawable.ic_icon_location)
-            anchor = PointF(0.1f,1.0f)
+            anchor = PointF(0.1f, 1.0f)
         }
         meetingCircle.apply {
             center = it
@@ -205,7 +203,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         naverMap.moveCamera(cameraUpdate)
     }
 
-    private fun initMyLocationView(){
+    private fun initMyLocationView() {
         arriveView = LayoutInflater.from(this).inflate(R.layout.user_marker, null)
         val tv = arriveView.findViewById(R.id.user_marker_name) as TextView
         val img = arriveView.findViewById(R.id.user_marker_image) as ImageView
@@ -229,22 +227,23 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         location.icon = OverlayImage.fromView(notArriveView)
         location.anchor = PointF(0.5f, 1f)
         location.setOnClickListener {
-                if(viewModel.isArrive.value==true && viewModel.isSocketOpen.value==true){
-                    Timber.d("@@@send Attend")
-                    viewModel.sendLocationAttend(location.position.longitude,location.position.latitude)
-                }
-                false
+            if (viewModel.isArrive.value == true && viewModel.isSocketOpen.value == true) {
+                Timber.d("@@@send Attend")
+                viewModel.sendLocationAttend(location.position.longitude, location.position.latitude)
+            }
+            false
         }
 
         viewModel.isArrive.observe(this, Observer {
-            if(it&&viewModel.isSocketOpen.value!!){
+            if (it && viewModel.isSocketOpen.value!!) {
                 location.icon = OverlayImage.fromView(arriveView)
-            }else{
+            } else {
                 location.icon = OverlayImage.fromView(notArriveView)
             }
         })
 
-        viewModel.attendMyMarker.observe(this, Observer { // 내가 출석을 했을 때.
+        viewModel.attendMyMarker.observe(this, Observer {
+            // 내가 출석을 했을 때.
 //            location.isVisible = false
 //            Timber.d("@@@@VISIBLE IN")
             // TODO : 내가 출석 했을 때 내 위치 마커 없애기.
@@ -254,14 +253,14 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun updateUserMarkers(markers: List<Marker>) {
         markers.forEach {
-                val myView = LayoutInflater.from(this).inflate(R.layout.user_marker, null)
-                val tv = myView.findViewById(R.id.user_marker_name) as TextView
-                val bg = myView.findViewById(R.id.user_marker_image) as ImageView
-                bg.setImageResource(R.drawable.ic_icon_marker_default)
-                it.map = naverMap
-                tv.text = it.tag.toString()
-                it.icon = OverlayImage.fromView(myView)
-                it.anchor = PointF(0.5f, 1f)
+            val myView = LayoutInflater.from(this).inflate(R.layout.user_marker, null)
+            val tv = myView.findViewById(R.id.user_marker_name) as TextView
+            val bg = myView.findViewById(R.id.user_marker_image) as ImageView
+            bg.setImageResource(R.drawable.ic_icon_marker_default)
+            it.map = naverMap
+            tv.text = it.tag.toString()
+            it.icon = OverlayImage.fromView(myView)
+            it.anchor = PointF(0.5f, 1f)
         }
     }
 
@@ -308,8 +307,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         dialog.show()
     }
 
-    private fun ToastMessage(msg: String){
-        Toast.makeText(this,msg,Toast.LENGTH_SHORT).show()
+    private fun ToastMessage(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
     override fun onStart() {

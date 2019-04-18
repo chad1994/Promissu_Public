@@ -5,8 +5,6 @@ import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.facebook.stetho.Stetho
 import com.facebook.stetho.okhttp3.StethoInterceptor
-import com.google.firebase.FirebaseApp
-import com.google.firebase.iid.FirebaseInstanceId
 import com.google.gson.GsonBuilder
 import com.kakao.auth.*
 import com.naver.maps.map.NaverMapSdk

@@ -32,8 +32,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.socket.client.IO
 import org.joda.time.DateTime
-import org.joda.time.Hours
-import org.joda.time.Minutes
 import org.joda.time.Seconds
 import org.json.JSONObject
 import timber.log.Timber
@@ -100,7 +98,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     val attendMyMarker: LiveData<Boolean>
         get() = _attendMyMarker
 
-    private val _timerString =  MutableLiveData<String>()
+    private val _timerString = MutableLiveData<String>()
     val timerString: LiveData<String>
         get() = _timerString
 
@@ -113,7 +111,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     val locationName = ObservableField<String>()
     val participantNum = ObservableField<String>()
     val myParticipation = ObservableField<Int>()
-    lateinit var countDownTimer : CountDownTimer
+    lateinit var countDownTimer: CountDownTimer
 
     init {
         _trackingMode.value = 1
@@ -228,7 +226,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
             if (_locationEvents.value!![myParticipation.get()]!!.status == 1) { //내 상태가 요청이 온 상태라면
                 _dialogResponse.call()
             }
-            if( _locationEvents.value!![myParticipation.get()]!!.status == 4){
+            if (_locationEvents.value!![myParticipation.get()]!!.status == 4) {
                 _attendMyMarker.postValue(true)
             }
         }
@@ -279,41 +277,42 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         socket.emit("location.reject", jsonReq)
     }
 
-    fun sendLocationAttend(lon:Double,lat:Double) {
+    fun sendLocationAttend(lon: Double, lat: Double) {
         val jsonObject = JsonObject().apply {
             addProperty("appointment", promise.id)
             addProperty("participation", myParticipation.get())
-            addProperty("lon",lon)
-            addProperty("lat",lat)
+            addProperty("lon", lon)
+            addProperty("lat", lat)
         }
         val jsonReq = JSONObject(jsonObject.toString())
         socket.emit("location.attend", jsonReq)
     }
 
-    private fun setupTimer(){
+    private fun setupTimer() {
         val now = DateTime()
         val start = DateTime(promise.start_datetime)
-        val betweenSeconds = Seconds.secondsBetween(now,start)
+        val betweenSeconds = Seconds.secondsBetween(now, start)
         var remainSeconds = betweenSeconds.seconds
-        countDownTimer = object : CountDownTimer(3600000,1000){
+        countDownTimer = object : CountDownTimer(3600000, 1000) {
             override fun onFinish() {
             }
+
             override fun onTick(millisUntilFinished: Long) {
                 remainSeconds -= 1
-                if(remainSeconds%60 < 10){
-                    _timerString.postValue("약속 시작까지 "+remainSeconds/60+"분 0"+remainSeconds%60+"초 남았습니다")
-                }else {
+                if (remainSeconds % 60 < 10) {
+                    _timerString.postValue("약속 시작까지 " + remainSeconds / 60 + "분 0" + remainSeconds % 60 + "초 남았습니다")
+                } else {
                     _timerString.postValue("약속 시작까지 " + remainSeconds / 60 + "분 " + remainSeconds % 60 + "초 남았습니다")
                 }
             }
         }
     }
 
-    fun startTimer(){
+    fun startTimer() {
         countDownTimer.start()
     }
 
-    fun removeTimer(){
+    fun removeTimer() {
         countDownTimer.cancel()
     }
 

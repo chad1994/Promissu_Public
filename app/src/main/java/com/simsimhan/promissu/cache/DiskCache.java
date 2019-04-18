@@ -34,9 +34,9 @@ public class DiskCache {
                 .commit();
     }
 
-    public boolean setFcmToken(String token){
+    public boolean setFcmToken(String token) {
         return this.pref.edit()
-                .putString(FCM_TOKEN_PROPERTY_NAME,token)
+                .putString(FCM_TOKEN_PROPERTY_NAME, token)
                 .commit();
     }
 
@@ -72,7 +72,7 @@ public class DiskCache {
     }
 
     @NonNull
-    public String getFcmToken(){
+    public String getFcmToken() {
         return this.pref.getString(FCM_TOKEN_PROPERTY_NAME, "");
 
     }

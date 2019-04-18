@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
-import com.simsimhan.promissu.databinding.ItemDetailInviteBinding
 import com.simsimhan.promissu.databinding.ItemDetailUserStatusBinding
 import com.simsimhan.promissu.detail.DetailEventListener
 import com.simsimhan.promissu.detail.DetailViewModel
@@ -61,7 +60,7 @@ class DetailUserStatusAdapter(
 //                holder.bind(lifecycleOwner, listener)
 //            }
 //        }
-        (holder as DetailUserStatusViewHolder).bind(lifecycleOwner, list[position],listener,viewModel)
+        (holder as DetailUserStatusViewHolder).bind(lifecycleOwner, list[position], listener, viewModel)
     }
 
     override fun getItemViewType(position: Int): Int {
