@@ -1,5 +1,6 @@
 package com.simsimhan.promissu.detail
 
+import android.os.CountDownTimer
 import android.view.View
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
@@ -31,8 +32,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.socket.client.IO
 import org.joda.time.DateTime
+import org.joda.time.Hours
+import org.joda.time.Minutes
+import org.joda.time.Seconds
 import org.json.JSONObject
 import timber.log.Timber
+import java.util.*
 
 class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEventListener {
 
@@ -91,6 +96,14 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     val sendLocationRequest: LiveData<Participant.Request>
         get() = _sendLocationRequest
 
+    private val _attendMyMarker = MutableLiveData<Boolean>()
+    val attendMyMarker: LiveData<Boolean>
+        get() = _attendMyMarker
+
+    private val _timerString =  MutableLiveData<String>()
+    val timerString: LiveData<String>
+        get() = _timerString
+
     private val _toastMsg = MutableLiveData<String>()
     val toastMsg: LiveData<String>
         get() = _toastMsg
@@ -100,17 +113,19 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     val locationName = ObservableField<String>()
     val participantNum = ObservableField<String>()
     val myParticipation = ObservableField<Int>()
-
+    lateinit var countDownTimer : CountDownTimer
 
     init {
         _trackingMode.value = 1
         _response.value = promise
         _isSocketOpen.value = false
+        _attendMyMarker.value = false
         _isArrive.value = false
         val meetingLatLng = LatLng(promise.location_lat.toDouble(), promise.location_lon.toDouble())
         _meetingLocation.postValue(meetingLatLng)
         initRoomInfo()
         fetchParticipants()
+        setupTimer()
     }
 
     private fun initRoomInfo() {
@@ -200,29 +215,38 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     }
 
     fun notifyEventInfo() {
-        checkIsRequestToMe()
+        checkIsMyData()
         updateUserMarkers()
     }
 
-    fun checkArrive(bool: Boolean){
+    fun checkArrive(bool: Boolean) {
         _isArrive.postValue(bool)
     }
 
-    private fun checkIsRequestToMe() {
-        if (_locationEvents.value!![myParticipation.get()]!!.status == 1) {
-            _dialogResponse.call()
+    private fun checkIsMyData() {
+        if (_locationEvents.value!!.keys.contains(myParticipation.get())) { //내 키를 가지고 있고
+            if (_locationEvents.value!![myParticipation.get()]!!.status == 1) { //내 상태가 요청이 온 상태라면
+                _dialogResponse.call()
+            }
+            if( _locationEvents.value!![myParticipation.get()]!!.status == 4){
+                _attendMyMarker.postValue(true)
+            }
         }
     }
 
     private fun updateUserMarkers() {
         val list = ArrayList<Marker>()
-        _locationEvents.value!!.filterNot { it.value.partId == myParticipation.get() }.forEach {
-            val marker = Marker()
-            marker.position = LatLng(it.value.lat, it.value.lon)
-            marker.tag = it.value.nickname
-            Timber.d("@@@Update Marker: " + it.value.partId + "/")
-            list.add(marker)
-        }
+        _locationEvents.value!!
+                .filterNot { it.value.partId == myParticipation.get() }
+                .filterNot { it.value.status == 4 }
+                .filterNot { it.value.lat == 0.0 && it.value.lon == 0.0 }
+                .forEach {
+                    val marker = Marker()
+                    marker.position = LatLng(it.value.lat, it.value.lon)
+                    marker.tag = it.value.nickname
+                    Timber.d("@@@Update Marker: " + it.value.partId + "/")
+                    list.add(marker)
+                }
         _userMarkers.postValue(list)
     }
 
@@ -255,13 +279,42 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         socket.emit("location.reject", jsonReq)
     }
 
-    fun sendLocationAttend() {
+    fun sendLocationAttend(lon:Double,lat:Double) {
         val jsonObject = JsonObject().apply {
             addProperty("appointment", promise.id)
             addProperty("participation", myParticipation.get())
+            addProperty("lon",lon)
+            addProperty("lat",lat)
         }
         val jsonReq = JSONObject(jsonObject.toString())
         socket.emit("location.attend", jsonReq)
+    }
+
+    private fun setupTimer(){
+        val now = DateTime()
+        val start = DateTime(promise.start_datetime)
+        val betweenSeconds = Seconds.secondsBetween(now,start)
+        var remainSeconds = betweenSeconds.seconds
+        countDownTimer = object : CountDownTimer(3600000,1000){
+            override fun onFinish() {
+            }
+            override fun onTick(millisUntilFinished: Long) {
+                remainSeconds -= 1
+                if(remainSeconds%60 < 10){
+                    _timerString.postValue("약속 시작까지 "+remainSeconds/60+"분 0"+remainSeconds%60+"초 남았습니다")
+                }else {
+                    _timerString.postValue("약속 시작까지 " + remainSeconds / 60 + "분 " + remainSeconds % 60 + "초 남았습니다")
+                }
+            }
+        }
+    }
+
+    fun startTimer(){
+        countDownTimer.start()
+    }
+
+    fun removeTimer(){
+        countDownTimer.cancel()
     }
 
     override fun onClickInviteButton(view: View) {
