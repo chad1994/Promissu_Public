@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.Point
 import android.graphics.PointF
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -137,6 +138,16 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         viewModel.userMarkers.observe(this, Observer {
             updateUserMarkers(it)
         })
+
+        viewModel.isSocketOpen.observe(this, Observer {
+            if(it){
+                viewModel.startTimer()
+                binding.detailTimer.visibility = View.VISIBLE
+            }else{
+                viewModel.removeTimer()
+                binding.detailTimer.visibility = View.GONE
+            }
+        })
     }
 
     override fun onMapReady(naverMap: NaverMap) {
@@ -181,6 +192,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         meetingMarker.apply {
             position = it
             map = naverMap
+            icon = OverlayImage.fromResource(R.drawable.ic_icon_location)
+            anchor = PointF(0.1f,1.0f)
         }
         meetingCircle.apply {
             center = it
@@ -218,24 +231,29 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         location.setOnClickListener {
                 if(viewModel.isArrive.value==true && viewModel.isSocketOpen.value==true){
                     Timber.d("@@@send Attend")
-                    viewModel.sendLocationAttend()
+                    viewModel.sendLocationAttend(location.position.longitude,location.position.latitude)
                 }
                 false
         }
 
         viewModel.isArrive.observe(this, Observer {
-            if(it){
+            if(it&&viewModel.isSocketOpen.value!!){
                 location.icon = OverlayImage.fromView(arriveView)
             }else{
                 location.icon = OverlayImage.fromView(notArriveView)
             }
         })
 
+        viewModel.attendMyMarker.observe(this, Observer { // 내가 출석을 했을 때.
+//            location.isVisible = false
+//            Timber.d("@@@@VISIBLE IN")
+            // TODO : 내가 출석 했을 때 내 위치 마커 없애기.
+        })
+
     }
 
     private fun updateUserMarkers(markers: List<Marker>) {
         markers.forEach {
-            if(it.position.latitude!=0.0) {
                 val myView = LayoutInflater.from(this).inflate(R.layout.user_marker, null)
                 val tv = myView.findViewById(R.id.user_marker_name) as TextView
                 val bg = myView.findViewById(R.id.user_marker_image) as ImageView
@@ -244,7 +262,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 tv.text = it.tag.toString()
                 it.icon = OverlayImage.fromView(myView)
                 it.anchor = PointF(0.5f, 1f)
-            }
         }
     }
 
@@ -323,6 +340,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onDestroy() {
         super.onDestroy()
         mapView.onDestroy()
+        viewModel.removeTimer()
+        binding.detailTimer.visibility = View.GONE
     }
 
     override fun onLowMemory() {
