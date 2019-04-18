@@ -57,6 +57,7 @@ class CreateActivity : AppCompatActivity() {
 
         val actionBar = supportActionBar
         if (actionBar != null) {
+            actionBar.setDisplayShowHomeEnabled(true)
             actionBar.setDisplayHomeAsUpEnabled(true)
             actionBar.setDisplayShowTitleEnabled(false)
         }
@@ -83,7 +84,6 @@ class CreateActivity : AppCompatActivity() {
             window.statusBarColor = ContextCompat.getColor(this, R.color.statusBarColor)
         }
     }
-
 
     inner class CreateFragmentPagerAdapter internal constructor(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
