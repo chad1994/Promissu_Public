@@ -253,7 +253,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
                             NavigationUtil.enterRoom(this, onNext);
                         }, onError -> {
                             if (BuildConfig.DEBUG) {
-                                Toast.makeText(MainActivity.this, "[DEV] enterPromiseRoom() check log", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, "이미 시작했거나, 끝난 모임입니다.", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(this, "이미 시작했거나, 끝난 모임입니다.", Toast.LENGTH_SHORT).show();
                             }
 
                             Timber.e("enterPromiseRoom(): %s", onError.toString());
