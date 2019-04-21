@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.simsimhan.promissu.PromissuApplication;
@@ -41,6 +42,7 @@ public class PromiseFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private RecyclerView recyclerView;
     private Toolbar toolbar;
     private ImageView emptyImageView;
+    private TextView emptyTextView;
     private boolean isPastPromise;
     private ConstraintLayout emptyHolder;
 
@@ -70,6 +72,12 @@ public class PromiseFragment extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        fetch();
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_promise_list, container, false);
 
@@ -77,6 +85,7 @@ public class PromiseFragment extends Fragment implements SwipeRefreshLayout.OnRe
         swipeContainer = view.findViewById(R.id.swipe_container);
         emptyHolder = view.findViewById(R.id.empty_view_holder);
         emptyImageView = view.findViewById(R.id.empty_view_image);
+        emptyTextView = view.findViewById(R.id.empty_view_text);
 
         emptyHolder.setVisibility(View.GONE);
         swipeContainer.setOnRefreshListener(this);
@@ -103,7 +112,7 @@ public class PromiseFragment extends Fragment implements SwipeRefreshLayout.OnRe
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Timber.d("onActivityResult(): " + requestCode + " " + resultCode);
+//        Timber.d("onActivityResult(): " + requestCode + " " + resultCode);
 
     }
 
@@ -140,12 +149,13 @@ public class PromiseFragment extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     private void setEmptyViewVisible(boolean setVisible) {
-        if (emptyHolder != null && recyclerView != null && emptyImageView != null) {
+        if (emptyHolder != null && recyclerView != null && emptyImageView != null && emptyTextView != null) {
 //            if (setVisible) recyclerView.scrollTo(0, 0);
             emptyHolder.setVisibility(setVisible ? View.VISIBLE : View.INVISIBLE);
             recyclerView.setBackgroundColor(ContextCompat.getColor(recyclerView.getContext(), isPastPromise ? R.color.past_background_color : R.color.background_grey));
             emptyImageView.setImageDrawable(ContextCompat.getDrawable(emptyImageView.getContext(), isPastPromise ? R.drawable.no_appointment_red : R.drawable.no_appointment_blue));
             emptyHolder.setBackgroundColor(ContextCompat.getColor(emptyHolder.getContext(), isPastPromise ? R.color.past_background_color : R.color.background_grey));
+            emptyTextView.setTextColor(ContextCompat.getColor(emptyHolder.getContext(), isPastPromise ? R.color.past_background_dark : R.color.colorStrong));
         }
     }
 

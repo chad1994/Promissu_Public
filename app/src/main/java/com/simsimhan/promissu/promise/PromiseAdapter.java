@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.simsimhan.promissu.MainActivity;
 import com.simsimhan.promissu.R;
 import com.simsimhan.promissu.network.model.Promise;
 import com.simsimhan.promissu.util.NavigationUtil;
@@ -12,6 +13,7 @@ import com.simsimhan.promissu.util.NavigationUtil;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Hours;
+import org.joda.time.Minutes;
 
 import java.util.List;
 
@@ -110,10 +112,17 @@ public class PromiseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 Days daysDifference = Days.daysBetween(now, promiseStartDate);
                 if (daysDifference.getDays() == 0) {
                     Hours hoursDifference = Hours.hoursBetween(now, promiseStartDate);
+                    Minutes minuteDifference = Minutes.minutesBetween(now,promiseStartDate);
                     if (hoursDifference.getHours() <= 1) {
-                        dateLeft.setText("");
-                        dateLeftLabel.setText("대기중");
-                        dateLeftLabel.setTextColor(ContextCompat.getColor(appCompatActivity, R.color.sub_color));
+                        if(minuteDifference.getMinutes() <= 60){
+                            dateLeft.setText("");
+                            dateLeftLabel.setText("대기중");
+                            dateLeftLabel.setTextColor(ContextCompat.getColor(appCompatActivity, R.color.sub_color));
+                        }else {
+                            dateLeft.setText("" + minuteDifference.getMinutes());
+                            dateLeftLabel.setText("분 남음");
+                            dateLeftLabel.setTextColor(ContextCompat.getColor(appCompatActivity, R.color.sub_color));
+                        }
                     } else {
                         dateLeft.setText("" + hoursDifference.getHours());
                         dateLeftLabel.setText("시간 남음");
@@ -127,6 +136,10 @@ public class PromiseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
 
                 container.setOnClickListener(v -> NavigationUtil.enterRoom(appCompatActivity, response));
+                container.setOnLongClickListener(v -> {
+                    ((MainActivity)appCompatActivity).buildDeleteDialog(response.getId());
+                    return true;
+                });
             }
 
         }
