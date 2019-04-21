@@ -51,13 +51,13 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var viewModel: DetailViewModel
     private lateinit var factory: DetailViewModelFactory
     private lateinit var binding: ActivityDetailPromiseBinding
-    private lateinit var currentFragment: Fragment
+//    private lateinit var currentFragment: Fragment
     private lateinit var promise: Promise.Response
     private lateinit var locationSource: FusedLocationSource
     private lateinit var mapView: com.naver.maps.map.MapView
     private lateinit var naverMap: NaverMap
     private lateinit var location: LocationOverlay
-    private lateinit var arriveView: View
+//    private lateinit var arriveView: View
     private lateinit var notArriveView: View
     private var meetingMarker = Marker()
     private var meetingCircle = CircleOverlay()
@@ -103,6 +103,13 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
             }
         })
+        binding.detailActivityBottomSheet.bsScrollBtn.setOnClickListener {
+            if(bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED){
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            }else{
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }
 
 
         viewModel.onBackPressed.observe(this, Observer {
@@ -114,7 +121,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         })
 
         viewModel.participants.observe(this, Observer {
-            if (promise.status == 1) {
+            if (promise.status == 1&&viewModel.myParticipation.get()!=null) { //방이 pending 되고 참여자 정보를 받아왔을 때
                 viewModel.setSocketReady(true)
             }
         })
@@ -140,10 +147,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         viewModel.isSocketOpen.observe(this, Observer {
             if (it) {
                 viewModel.startTimer()
-                binding.detailTimer.visibility = View.VISIBLE
             } else {
                 viewModel.removeTimer()
-                binding.detailTimer.visibility = View.GONE
             }
         })
     }
@@ -154,13 +159,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         viewModel.setNaverMap(naverMap)
         naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BUILDING, true)
 
-//        val marker = Marker()
-//        marker.position = LatLng(37.5670135, 126.9783740)
-//        marker.map = naverMap
-//        val view = LayoutInflater.from(this).inflate(R.layout.user_marker, null)
-//        val tv = view.findViewById(R.id.user_marker_name) as TextView
-//        tv.text = "태성"
-//        marker.icon = OverlayImage.fromView(view)
         initMyLocation(naverMap)
         naverMap.addOnLocationChangeListener {
             val myLatlng = LatLng(it.latitude, it.longitude)
@@ -203,13 +201,17 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         naverMap.moveCamera(cameraUpdate)
     }
 
-    private fun initMyLocationView() {
-        arriveView = LayoutInflater.from(this).inflate(R.layout.user_marker, null)
-        val tv = arriveView.findViewById(R.id.user_marker_name) as TextView
-        val img = arriveView.findViewById(R.id.user_marker_image) as ImageView
-        tv.text = "출석하기"
-        tv.setTextColor(Color.parseColor("#5F6CCC"))
-        img.setImageResource(R.drawable.ic_icon_marker_attend)
+    private fun initMyLocationViewResource() {
+//        arriveView = LayoutInflater.from(this).inflate(R.layout.user_marker, null)
+//        arriveView.setOnTouchListener { v, event ->
+//            Toast.makeText(this,"asdf",Toast.LENGTH_SHORT).show()
+//            false
+//        }
+//        val tv = arriveView.findViewById(R.id.user_marker_name) as TextView
+//        val img = arriveView.findViewById(R.id.user_marker_image) as ImageView
+//        tv.text = "출석하기"
+//        tv.setTextColor(Color.parseColor("#5F6CCC"))
+//        img.setImageResource(R.drawable.ic_icon_marker_attend)
 
         notArriveView = LayoutInflater.from(this).inflate(R.layout.user_marker, null)
         val ntv = notArriveView.findViewById(R.id.user_marker_name) as TextView
@@ -219,36 +221,21 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun initMyLocation(naverMap: NaverMap) {
-        initMyLocationView()
+//        initMyLocationViewResource()
         location = naverMap.locationOverlay
+        location.icon = OverlayImage.fromResource(R.drawable.ic_icon_mylocation_overlay)
+        location.circleColor = Color.parseColor("#48ef006d")
 //        val myView = LayoutInflater.from(this).inflate(R.layout.user_marker, null)
 //        val tv = myView.findViewById(R.id.user_marker_name) as TextView
 //        tv.text = "나"
-        location.icon = OverlayImage.fromView(notArriveView)
-        location.anchor = PointF(0.5f, 1f)
-        location.setOnClickListener {
+//        location.icon = OverlayImage.fromView(notArriveView)
+//        location.anchor = PointF(0.5f, 1f)
+
+        binding.detailAttendButton.setOnClickListener {
             if (viewModel.isArrive.value == true && viewModel.isSocketOpen.value == true) {
-                Timber.d("@@@send Attend")
-                viewModel.sendLocationAttend(location.position.longitude, location.position.latitude)
+                buildAttendDialog(location.position.longitude, location.position.latitude)
             }
-            false
         }
-
-        viewModel.isArrive.observe(this, Observer {
-            if (it && viewModel.isSocketOpen.value!!) {
-                location.icon = OverlayImage.fromView(arriveView)
-            } else {
-                location.icon = OverlayImage.fromView(notArriveView)
-            }
-        })
-
-        viewModel.attendMyMarker.observe(this, Observer {
-            // 내가 출석을 했을 때.
-//            location.isVisible = false
-//            Timber.d("@@@@VISIBLE IN")
-            // TODO : 내가 출석 했을 때 내 위치 마커 없애기.
-        })
-
     }
 
     private fun updateUserMarkers(markers: List<Marker>) {
@@ -302,6 +289,28 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         btnCancel.setOnClickListener {
             viewModel.sendLocationReject()
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun buildAttendDialog(lon : Double,lat : Double) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_request)
+        val text1 = dialog.findViewById<TextView>(R.id.dialog_text1)
+        val text2 = dialog.findViewById<TextView>(R.id.dialog_text2)
+        val btnCancel = dialog.findViewById<TextView>(R.id.dialog_button_cancel)
+        val btnAccept = dialog.findViewById<TextView>(R.id.dialog_button_accept)
+        text1.text = "지금 바로"
+        text2.text = "출석하시겠습니까?"
+        btnAccept.text = "출석"
+        btnCancel.text = "취소"
+        btnAccept.setOnClickListener {
+            viewModel.sendLocationAttend(lon,lat)
+            dialog.dismiss()
+        }
+        btnCancel.setOnClickListener {
             dialog.dismiss()
         }
         dialog.show()

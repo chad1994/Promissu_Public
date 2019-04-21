@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:foregroundGravity="bottom"
+        android:elevation="15dp"
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,6 +42,7 @@
                 android:layout_height="match_parent"
                 android:paddingTop="37dp"
                 android:paddingBottom="37dp"
+                android:elevation="15dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/bs_guideline">
 
@@ -63,10 +65,11 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="@id/detail_bs_title"
                     app:layout_constraintBottom_toBottomOf="@id/detail_bs_title"
+                    android:layout_marginTop="5dp"
                     android:layout_marginRight="28dp"
                     android:onClick="@{listener.onClickInviteButton}"
-                    android:src="@drawable/kakaotalk_icon"
-                    android:background="@null"/>
+                    android:src="@drawable/ic_icon_invite"
+                    android:background="@drawable/kakao_invite_round_button"/>
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/detail_bs_time_iv"
@@ -155,7 +158,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <ImageButton
-                android:id="@+id/bs_img_btn"
+                android:id="@+id/bs_scroll_btn"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:background="@drawable/round_button"
@@ -164,7 +167,8 @@
                 app:layout_constraintBottom_toBottomOf="@id/bs_guideline"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/bs_guideline" />
+                app:layout_constraintTop_toTopOf="@id/bs_guideline"
+                android:elevation="15dp"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

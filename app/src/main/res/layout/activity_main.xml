@@ -80,8 +80,11 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:fillViewport="false"
+                    app:tabBackground="@color/zxing_transparent"
+                    app:tabRippleColor="@null"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
+                    android:paddingBottom="15dp"
                     app:tabGravity="center"
                     app:tabIndicator="@null"
                     app:tabMode="fixed" />

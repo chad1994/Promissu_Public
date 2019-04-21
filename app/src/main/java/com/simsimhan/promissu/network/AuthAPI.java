@@ -1,16 +1,21 @@
 package com.simsimhan.promissu.network;
 
+import com.simsimhan.promissu.network.model.FcmToken;
 import com.simsimhan.promissu.network.model.Participant;
 import com.simsimhan.promissu.network.model.Promise;
 
 import java.util.List;
 
 import io.reactivex.Observable;
+import okhttp3.ResponseBody;
+import retrofit2.Response;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -26,6 +31,14 @@ public interface AuthAPI {
             "Accept: application/json",
             "Content-Type: application/json"
     })
+    @PUT("user/fcm/token")
+    Observable<ResponseBody> updateFcmToken(@Header("Authorization") String token, @Body FcmToken fcm_token);
+
+
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
     @POST("appointment")
     Observable<Promise.Response> createPromise(@Header("Authorization") String token, @Body Promise.Request promiseRequest);
 
@@ -35,6 +48,14 @@ public interface AuthAPI {
     })
     @POST("participation/invite")
     Observable<Promise.Response> inviteFriends(@Header("Authorization") String token, @Body Promise.Request promiseRequest);
+
+
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
+    @DELETE("appointment/{room_id}")
+    Observable<Response<ResponseBody>> deleteAppointment(@Header("Authorization")String token, @Path("room_id") int roomId);
 
     @Headers({
             "Accept: application/json",

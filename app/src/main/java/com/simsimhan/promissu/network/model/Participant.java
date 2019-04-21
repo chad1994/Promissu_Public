@@ -1,5 +1,7 @@
 package com.simsimhan.promissu.network.model;
 
+import java.util.Comparator;
+
 public class Participant {
     public static class Response {
         private final int kakao_id;
@@ -58,6 +60,17 @@ public class Participant {
 
         public void setPartId(int partId) {
             this.partId = partId;
+        }
+    }
+
+    public static class CompareByStatus implements Comparator<Participant.Response> {
+
+        @Override
+        public int compare(Response o1, Response o2) {
+            if (o1.status > o2.status)
+                return 1;
+            else
+                return -1;
         }
     }
 }

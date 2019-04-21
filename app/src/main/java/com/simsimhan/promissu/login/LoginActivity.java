@@ -99,7 +99,7 @@ public class LoginActivity extends AppCompatActivity implements ISessionCallback
                                     NavigationUtil.replaceWithMainView(LoginActivity.this);
                                 }, onError -> {
                                     Timber.e("onSessionClosed(): %s", onError.toString());
-                                    Toast.makeText(LoginActivity.this, "서버 점검 중입니다. 나중에 다시 확인해주세요.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(LoginActivity.this, "서버 점검 중이거나, 인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show();
                                 }));
             }
 

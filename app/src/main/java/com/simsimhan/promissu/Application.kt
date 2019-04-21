@@ -1,10 +1,12 @@
 package com.simsimhan.promissu
 
 import android.content.Context
+import android.util.Log
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.facebook.stetho.Stetho
 import com.facebook.stetho.okhttp3.StethoInterceptor
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.GsonBuilder
 import com.kakao.auth.*
 import com.naver.maps.map.NaverMapSdk
@@ -48,17 +50,15 @@ class PromissuApplication : MultiDexApplication() {
             Branch.getInstance(this)
         }
 
-
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)
+            Timber.plant(Timber.DebugTree())
+        } else {
+            Timber.plant(NotifyDevelopersDebugTree())
         }
 
         startKoin(this, appModules)
         JodaTimeAndroid.init(this)
-        val lumberYard = LumberYard.getInstance(this)
-        lumberYard.cleanUp()
-        Timber.plant(lumberYard.tree())
-        Timber.plant(Timber.DebugTree())
 
         NaverMapSdk.getInstance(this).client = NaverMapSdk.NaverCloudPlatformClient(BuildConfig.NaverClientId)
         //        DatabaseSource source = new DatabaseSource(this, Models.DEFAULT, 1);
@@ -94,6 +94,7 @@ class PromissuApplication : MultiDexApplication() {
 
         diskCache = DiskCache(getSharedPreferences("USER_DISK_CACHE", Context.MODE_PRIVATE))
 
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
     }
 
     override fun onTerminate() {
@@ -156,6 +157,9 @@ class PromissuApplication : MultiDexApplication() {
             private set
         var diskCache: DiskCache? = null
             private set
+        var firebaseAnalytics : FirebaseAnalytics? = null
+            private set
+
         private var instance: PromissuApplication? = null
         private val DAUM_API_URL = "https://dapi.kakao.com/v2/"
         private val NAVER_API_URL = "https://naveropenapi.apigw.ntruss.com/map-place/v1/"
@@ -170,4 +174,12 @@ class PromissuApplication : MultiDexApplication() {
             }
     }
 
+    class NotifyDevelopersDebugTree() : Timber.Tree() {
+        override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
+            // ignore log and fire to slack or mail
+            if (priority == Log.ERROR || priority == Log.WARN) {
+                // fire to crashlytics / firebase / slack
+            }
+        }
+    }
 }

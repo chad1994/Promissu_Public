@@ -17,7 +17,6 @@
 
     <application
         android:name=".PromissuApplication"
-
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:label="@string/app_name"

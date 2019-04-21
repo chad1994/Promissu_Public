@@ -55,5 +55,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             setUserItemStatus="@{viewModel.locationEvents.get(participants.participation).status}"
             />
+        <TextView
+            android:id="@+id/item_detail_status_attend_complete_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/item_detail_circle"
+            app:layout_constraintBottom_toBottomOf="@id/item_detail_circle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"
+            setUserItemAttended="@{viewModel.locationEvents.get(participants.participation).status}"
+            android:text="출석"
+            android:textSize="8sp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

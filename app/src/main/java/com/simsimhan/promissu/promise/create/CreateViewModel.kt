@@ -1,10 +1,12 @@
 package com.simsimhan.promissu.promise.create
 
+import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.naver.maps.map.overlay.InfoWindow
 import com.naver.maps.map.overlay.Marker
 import com.simsimhan.promissu.BaseViewModel
+import com.simsimhan.promissu.BuildConfig
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.network.AuthAPI
 import com.simsimhan.promissu.network.model.Promise
@@ -119,7 +121,7 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
         }
     }
 
-    fun createRoom(request: Promise.Request) {
+    private fun createRoom(request: Promise.Request) {
         addDisposable(PromissuApplication.retrofit!!
                 .create(AuthAPI::class.java)
                 .createPromise("Bearer $token", request)
@@ -127,6 +129,10 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     _response.postValue(it)
+
+                    if(!BuildConfig.DEBUG){
+                        sendEventToAnalytics(it.id, PromissuApplication.diskCache!!.userId,"create")
+                    }
                     // TODO: do something here
 //                    NavigationUtil.enterRoom(CreatePromiseActivity.this, onNext);
                 }, {
@@ -136,7 +142,13 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
 
     override fun onTextChanged(s: String) {
         _title.postValue(s)
-        Timber.d("@@@TextChanged " + s)
+    }
+
+    private fun sendEventToAnalytics(room_id:Int,user_id:Long,event:String){
+        val eventParams = Bundle()
+        eventParams.putInt("room_id",room_id)
+        eventParams.putLong("user_id",user_id)
+        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_$event",eventParams)
     }
 }
 

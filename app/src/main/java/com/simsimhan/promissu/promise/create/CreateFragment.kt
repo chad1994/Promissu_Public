@@ -262,4 +262,5 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
             }
         }
     }
+
 }

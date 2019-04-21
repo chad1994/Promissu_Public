@@ -1,12 +1,12 @@
 package com.simsimhan.promissu;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +15,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,9 +26,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.kakao.auth.Session;
 import com.simsimhan.promissu.network.AuthAPI;
+import com.simsimhan.promissu.network.model.FcmToken;
 import com.simsimhan.promissu.promise.PromiseFragment;
 import com.simsimhan.promissu.util.DialogUtil;
 import com.simsimhan.promissu.util.NavigationUtil;
@@ -82,26 +83,26 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (Session.getCurrentSession().getTokenInfo().getRemainingExpireTime() <= 0) { //토큰 유효기간이 만료되었을 때
-            Objects.requireNonNull(PromissuApplication.Companion.getDiskCache()).clearUserData();
-            NavigationUtil.replaceWithLoginView(MainActivity.this);
-        }
 
         if (TextUtils.isEmpty(PromissuApplication.Companion.getDiskCache().getUserToken())
                 && TextUtils.isEmpty(PromissuApplication.Companion.getDiskCache().getUserName())) {
             NavigationUtil.replaceWithLoginView(this);
         }
 
-        if (PromissuApplication.Companion.getDiskCache().getFcmToken().isEmpty()) {
-            FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(task -> {
-                if (!task.isSuccessful()) {
-                    Log.w(TAG, "getInstanceId failed", task.getException());
-                    return;
-                }
-                PromissuApplication.Companion.getDiskCache().setFcmToken(Objects.requireNonNull(task.getResult()).getToken());
-                Timber.d("Register Fcm Token : %s", task.getResult().getToken());
-            });
+        if (Session.getCurrentSession().getTokenInfo().getRemainingExpireTime() <= 0) { //토큰 유효기간이 만료되었을 때
+            Objects.requireNonNull(PromissuApplication.Companion.getDiskCache()).clearUserData();
+            NavigationUtil.replaceWithLoginView(MainActivity.this);
         }
+
+        disposables.add( //TODO : fcm 토큰 업데이트. 조건 다시 생각 ( Main -> FirebaseMSG -> Main) . 현재는 실행시 무조건 적어도 한번 호출.
+                PromissuApplication.Companion.getRetrofit()
+                        .create(AuthAPI.class)
+                        .updateFcmToken("Bearer " + PromissuApplication.Companion.getDiskCache().getUserToken(), new FcmToken(PromissuApplication.Companion.getDiskCache().getFcmToken()))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(onNext -> Timber.d("Success:: Fcm Token registered "),
+                                onError -> Timber.e("fail:: %s", onError.toString())));
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -109,9 +110,15 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         Intent intent = getIntent();
         Uri uri = intent.getData();
 
-        Timber.d("@@@Token: %s", PromissuApplication.Companion.getDiskCache().getUserToken());
-        Timber.d("@@@UserId: %s", PromissuApplication.Companion.getDiskCache().getUserId());
-        Timber.d("@@@FCM TOKEN: %s", PromissuApplication.Companion.getDiskCache().getFcmToken());
+        Timber.d("@@@Token: %s", PromissuApplication.Companion.getDiskCache().
+
+                getUserToken());
+        Timber.d("@@@UserId: %s", PromissuApplication.Companion.getDiskCache().
+
+                getUserId());
+        Timber.d("@@@FCM TOKEN: %s", PromissuApplication.Companion.getDiskCache().
+
+                getFcmToken());
         if (uri != null) {
             String execparamkey1 = uri.getQueryParameter("roomID");
 
@@ -126,27 +133,47 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
             }
         }
 
-        fabOpen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
-        fabClose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+        fabOpen = AnimationUtils.loadAnimation(
 
-        vpPager = findViewById(R.id.vpPager);
-        mainText = findViewById(R.id.main_intro);
-        floatingActionButton = findViewById(R.id.floating_action_button);
+                getApplicationContext(), R.anim.fab_open);
+        fabClose = AnimationUtils.loadAnimation(
 
-        floatingActionButton.setOnClickListener(v -> {
+                getApplicationContext(), R.anim.fab_close);
+
+        vpPager =
+
+                findViewById(R.id.vpPager);
+
+        mainText =
+
+                findViewById(R.id.main_intro);
+
+        floatingActionButton =
+
+                findViewById(R.id.floating_action_button);
+
+        floatingActionButton.setOnClickListener(v ->
+
+        {
             // do something here
             NavigationUtil.openAddPromiseScreen(MainActivity.this);
         });
 
-        profileMainImage = findViewById(R.id.profile_image_main);
-        adapterViewPager = new MainFragmentPagerAdapter(getSupportFragmentManager());
+        profileMainImage =
+
+                findViewById(R.id.profile_image_main);
+
+        adapterViewPager = new
+
+                MainFragmentPagerAdapter(getSupportFragmentManager());
         vpPager.setAdapter(adapterViewPager);
 
         tabLayout = findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(vpPager);
         tabLayout.addOnTabSelectedListener(this);
 
-        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+        for (
+                int i = 0; i < tabLayout.getTabCount(); i++) {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             if (tab != null) {
                 tab.setCustomView(getCustomTabView(i));
@@ -154,16 +181,29 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.black));
+        toolbar.setTitleTextColor(
+
+                getResources().
+
+                        getColor(R.color.black));
+
         setSupportActionBar(toolbar);
 
         changeStatusBarColor();
-        frameView = findViewById(R.id.frame);
-        drawerLayout = findViewById(R.id.drawer_layout);
+
+        frameView =
+
+                findViewById(R.id.frame);
+
+        drawerLayout =
+
+                findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(
-                menuItem -> {
+                menuItem ->
+
+                {
                     // swap UI fragments here
                     switch (menuItem.getItemId()) {
                         case R.id.nav_logout:
@@ -174,36 +214,58 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
                             });
 
                             return true;
-                        case R.id.nav_my_points:
-                        case R.id.nav_promise_credit:
-                            Toast.makeText(MainActivity.this, "개발중인 기능입니다.", Toast.LENGTH_SHORT).show();
-                            drawerLayout.closeDrawers();
-                            return true;
+//                        case R.id.nav_my_points:
+//                        case R.id.nav_promise_credit:
+//                            Toast.makeText(MainActivity.this, "개발중인 기능입니다.", Toast.LENGTH_SHORT).show();
+//                            drawerLayout.closeDrawers();
+//                            return true;
                         default:
                             return false;
                     }
                 });
-        profileImage = navigationView.getHeaderView(0).findViewById(R.id.profile_image);
-        userName = navigationView.getHeaderView(0).findViewById(R.id.profile_username);
+        profileImage = navigationView.getHeaderView(0).
+
+                findViewById(R.id.profile_image);
+
+        userName = navigationView.getHeaderView(0).
+
+                findViewById(R.id.profile_username);
 
         Glide.with(this)
-                .load(PromissuApplication.Companion.getDiskCache().getProfileThumbnail())
-                .apply(RequestOptions.circleCropTransform())
-                .into(profileImage);
+                .
+
+                        load(PromissuApplication.Companion.getDiskCache().
+
+                                getProfileThumbnail())
+                .
+
+                        apply(RequestOptions.circleCropTransform())
+                .
+
+                        into(profileImage);
 
         Glide.with(this)
-                .load(PromissuApplication.Companion.getDiskCache().getProfileThumbnail())
-                .apply(RequestOptions.circleCropTransform())
-                .into(profileMainImage);
+                .
+
+                        load(PromissuApplication.Companion.getDiskCache().
+
+                                getProfileThumbnail())
+                .
+
+                        apply(RequestOptions.circleCropTransform())
+                .
+
+                        into(profileMainImage);
 
         String userNameText = PromissuApplication.Companion.getDiskCache().getUserName();
-        mainText.setText(Html.fromHtml(getString(R.string.main_dummy, userNameText)));
+        mainText.setText(Html.fromHtml(
+                getString(R.string.main_dummy, userNameText)));
         userName.setText(userNameText);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(true);
-            actionBar.setTitle(userNameText);
+            actionBar.setTitle(getString(R.string.app_name));
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
@@ -351,8 +413,52 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
                 intent.setFlags(0);
             }
         }
-
     }
+
+    public void buildDeleteDialog(int room_id){
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_request);
+        TextView text1 = dialog.findViewById(R.id.dialog_text1);
+        TextView text2 = dialog.findViewById(R.id.dialog_text2);
+        Button btnCancel = dialog.findViewById(R.id.dialog_button_cancel);
+        Button btnAccept = dialog.findViewById(R.id.dialog_button_accept);
+        text1.setText("정말 약속을");
+        text2.setText("삭제 하시겠습니까?");
+        btnAccept.setText("삭제");
+        btnCancel.setText("취소");
+        btnAccept.setOnClickListener(v->{
+            // successfully delete room
+            disposables.add(
+                    PromissuApplication.Companion.getRetrofit()
+                            .create(AuthAPI.class)
+                            .deleteAppointment("Bearer " + PromissuApplication.Companion.getDiskCache().getUserToken(), room_id)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(onNext -> {
+                                if(onNext.code()==200){
+                                    //
+                                    if(!BuildConfig.DEBUG) {
+                                        Bundle eventParams = new Bundle();
+                                        eventParams.putInt("room_id", room_id);
+                                        eventParams.putLong("user_id", PromissuApplication.Companion.getDiskCache().getUserId());
+                                        PromissuApplication.Companion.getFirebaseAnalytics().logEvent("appointment_delete", eventParams);
+                                    }
+                                } else if(onNext.code()==401){
+                                    Toast.makeText(this, "삭제 권한이 없습니다.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(this, "삭제에 실패 했습니다. 잠시후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                                }
+                            }, onError -> {
+                                if (BuildConfig.DEBUG) {
+                                    Toast.makeText(this, "삭제 에러", Toast.LENGTH_SHORT).show();
+                                }
+                            }, dialog::dismiss));
+        });
+        btnCancel.setOnClickListener(v-> dialog.dismiss());
+        dialog.show();
+    }
+
 
     public View getCustomTabView(int index) {
         View customView = LayoutInflater.from(MainActivity.this).inflate(R.layout.view_custom_tab, null);

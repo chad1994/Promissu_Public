@@ -1,5 +1,6 @@
 package com.simsimhan.promissu.detail
 
+import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import androidx.databinding.ObservableField
@@ -119,6 +120,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         _isSocketOpen.value = false
         _attendMyMarker.value = false
         _isArrive.value = false
+        _participants.value = emptyList()
         val meetingLatLng = LatLng(promise.location_lat.toDouble(), promise.location_lon.toDouble())
         _meetingLocation.postValue(meetingLatLng)
         initRoomInfo()
@@ -126,6 +128,10 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         setupTimer()
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        socketDisconnect()
+    }
     private fun initRoomInfo() {
         title.set(promise.title)
         startDate.set("" + (promise.start_datetime.month + 1) + "월 " + promise.start_datetime.date + "일 " + promise.start_datetime.hours + "시 " + promise.start_datetime.minutes + "분")
@@ -163,13 +169,14 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                                     myParticipation.set(it.participation)
                                 }
                             }
-                            _participants.value = onNext
+
+                            _participants.value = onNext.filterNot { it.participation == myParticipation.get() }.sortedWith(comparator = Participant.CompareByStatus())
+                            Timber.d("@@@PARTICIPANT: " + participants.value.isNullOrEmpty())
                         },
                         { onError ->
                             Timber.e(onError)
                         }
                 ))
-
     }
 
     fun setSpreadState(bool: Boolean) {
@@ -210,6 +217,11 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
             Timber.d("@@@LOCATION ERROR: %s", it[0].toString())
         }
         socket.connect()
+
+    }
+
+    private fun socketDisconnect(){
+        socket.disconnect()
     }
 
     fun notifyEventInfo() {
@@ -255,6 +267,10 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         }
         val jsonReq = JSONObject(jsonObject.toString())
         socket.emit("location.request", jsonReq)
+
+        if(!BuildConfig.DEBUG) {
+            sendEventToAnalytics(promise.id, PromissuApplication.diskCache!!.userId,"location_req")
+        }
     }
 
     fun sendLocationResponse(lon: Double, lat: Double) {
@@ -266,6 +282,10 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         }
         val jsonReq = JSONObject(jsonObject.toString())
         socket.emit("location.response", jsonReq)
+
+        if(!BuildConfig.DEBUG) {
+            sendEventToAnalytics(promise.id, PromissuApplication.diskCache!!.userId,"location_res")
+        }
     }
 
     fun sendLocationReject() {
@@ -275,6 +295,10 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         }
         val jsonReq = JSONObject(jsonObject.toString())
         socket.emit("location.reject", jsonReq)
+
+        if(!BuildConfig.DEBUG) {
+            sendEventToAnalytics(promise.id, PromissuApplication.diskCache!!.userId,"location_reject")
+        }
     }
 
     fun sendLocationAttend(lon: Double, lat: Double) {
@@ -286,6 +310,10 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         }
         val jsonReq = JSONObject(jsonObject.toString())
         socket.emit("location.attend", jsonReq)
+
+        if(!BuildConfig.DEBUG) {
+            sendEventToAnalytics(promise.id, PromissuApplication.diskCache!!.userId,"location_attend")
+        }
     }
 
     private fun setupTimer() {
@@ -365,6 +393,13 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                 _toastMsg.postValue("해당 사용자에게 더 이상 위치를 요청할 수 없습니다.")
             else
                 _sendLocationRequest.postValue(Participant.Request(partId, nickname))
+    }
+
+    private fun sendEventToAnalytics(room_id:Int,user_id:Long,event:String){
+        val eventParams = Bundle()
+        eventParams.putInt("room_id",room_id)
+        eventParams.putLong("user_id",user_id)
+        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_$event",eventParams)
     }
 
 }
