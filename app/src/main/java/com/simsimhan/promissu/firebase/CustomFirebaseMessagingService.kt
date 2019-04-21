@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -13,31 +14,30 @@ import com.google.firebase.messaging.RemoteMessage
 import com.simsimhan.promissu.MainActivity
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
+import com.simsimhan.promissu.network.AuthAPI
+import com.simsimhan.promissu.network.Login
+import com.simsimhan.promissu.network.model.FcmToken
+import com.simsimhan.promissu.util.NavigationUtil
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
 
 class CustomFirebaseMessagingService : FirebaseMessagingService() {
 
     private val TAG = "FirebaseService"
+    private val disposable = CompositeDisposable()
 
     override fun onNewToken(token: String) {
-        Timber.d("@@@@ONNEWTOKEN")
         super.onNewToken(token)
         PromissuApplication.diskCache!!.fcmToken = token
-
-        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener {
-            PromissuApplication.diskCache!!.fcmToken = it.result!!.token
-            Timber.d("Register Fcm Token : ${it.result!!.token}")
-        }
-        Log.d(TAG, "new Token: $token")
+        sendFcmTokenToServer(token)
     }
 
     override fun onMessageReceived(p0: RemoteMessage) {
 
-        Log.d(TAG, "From: " + p0.from)
-
         if (p0.notification != null) {
-            Log.d(TAG, "Notification Message Body: ${p0.notification?.body}")
             sendNotification(p0.notification?.body)
         }
     }
@@ -63,4 +63,20 @@ class CustomFirebaseMessagingService : FirebaseMessagingService() {
         notificationManager.notify(0, notificationBuilder.build())
     }
 
+    private fun sendFcmTokenToServer(fcmToken: String){
+        disposable.add(
+                PromissuApplication.retrofit!!
+                        .create(AuthAPI::class.java)
+                        .updateFcmToken("Bearer ${PromissuApplication.diskCache!!.userToken}",FcmToken(fcmToken))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            PromissuApplication.diskCache!!.fcmToken = fcmToken
+                            Timber.d("Success:: Fcm Token registered ")
+                            disposable.clear()
+                            // save token
+                        }, { onError ->
+                            Timber.e("fail:: %s", onError.toString())
+                        }))
+    }
 }
