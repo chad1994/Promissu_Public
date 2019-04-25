@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import com.kakao.auth.ISessionCallback
 import com.kakao.auth.Session
 import com.kakao.network.ErrorResult
-import com.kakao.usermgmt.LoginButton
 import com.kakao.usermgmt.UserManagement
 import com.kakao.usermgmt.callback.MeV2ResponseCallback
 import com.kakao.usermgmt.response.MeV2Response
@@ -17,17 +17,12 @@ import com.simsimhan.promissu.BuildConfig
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityLoginBinding
-import com.simsimhan.promissu.network.AuthAPI
-import com.simsimhan.promissu.network.Login
 import com.simsimhan.promissu.util.NavigationUtil
 import com.simsimhan.promissu.util.StringUtil
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-class LoginActivity_k : AppCompatActivity(), ISessionCallback {
+class LoginActivity : AppCompatActivity(), ISessionCallback {
 
     private val viewModel: LoginViewModel by viewModel()
     private lateinit var binding: ActivityLoginBinding
@@ -37,14 +32,24 @@ class LoginActivity_k : AppCompatActivity(), ISessionCallback {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
         binding.apply {
-            lifecycleOwner = this@LoginActivity_k
-            viewModel = this@LoginActivity_k.viewModel
+            lifecycleOwner = this@LoginActivity
+            viewModel = this@LoginActivity.viewModel
         }
 
         val actionbar = supportActionBar
         actionbar?.hide()
 
         StringUtil.getHashKey(this)
+
+        viewModel.toastMsg.observe(this, Observer {
+            toastMessage(it)
+        })
+
+        viewModel.onSuccess.observe(this, Observer {
+            if(it){
+                NavigationUtil.replaceWithMainView(this)
+            }
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -57,7 +62,6 @@ class LoginActivity_k : AppCompatActivity(), ISessionCallback {
     override fun onStart() {
         super.onStart()
         Session.getCurrentSession().addCallback(this)
-        //        Session.getCurrentSession().checkAndImplicitOpen();
     }
 
     override fun onStop() {
@@ -66,44 +70,25 @@ class LoginActivity_k : AppCompatActivity(), ISessionCallback {
     }
 
 
-
-
     override fun onSessionOpened() {
         UserManagement.getInstance().me(object : MeV2ResponseCallback() {
             override fun onSuccess(result: MeV2Response) {
                 PromissuApplication.diskCache!!.setUserData(result.nickname, result.id, result.thumbnailImagePath)
                 val userSessionToken = Session.getCurrentSession().tokenInfo.accessToken
                 if (BuildConfig.DEBUG) {
-                    Toast.makeText(this@LoginActivity_k, "[DEV] onSuccess() user token: $userSessionToken", Toast.LENGTH_SHORT).show()
+                    toastMessage("[DEV] onSuccess() user token: $userSessionToken")
                 }
 
-                disposables.add(
-                        PromissuApplication.retrofit!!
-                                .create(AuthAPI::class.java)
-                                .loginKakao(Login.Request(userSessionToken))
-                                .doOnNext { next ->
-                                    PromissuApplication.diskCache!!.setUserData(result.nickname, result.id, result.thumbnailImagePath)
-                                    PromissuApplication.diskCache!!.setUserToken(next.token)
-                                }
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe({ onNext ->
-                                    // save token
-                                    NavigationUtil.replaceWithMainView(this@LoginActivity)
-                                }, { onError ->
-                                    Timber.e("onSessionClosed(): %s", onError.toString())
-                                    Toast.makeText(this@LoginActivity_k, "서버 점검 중이거나, 인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show()
-                                }))
+                viewModel.login(userSessionToken,result)
+
             }
 
             override fun onSessionClosed(errorResult: ErrorResult) {
                 if (BuildConfig.DEBUG) {
-                    Toast.makeText(this@LoginActivity, "[DEV] onSessionClosed() check log", Toast.LENGTH_SHORT).show()
+                    toastMessage("[DEV] onSessionClosed() check log")
                 }
-
                 Timber.e("onSessionClosed(): %s", errorResult.toString())
             }
-
 
         })
     }
@@ -112,6 +97,8 @@ class LoginActivity_k : AppCompatActivity(), ISessionCallback {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    fun Toast
+    private fun toastMessage(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    }
 
 }
