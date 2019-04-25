@@ -18,7 +18,7 @@ import java.util.*
 
 class CreateViewModel : BaseViewModel(), CreateEventListener {
 
-    private lateinit var token: String
+    private val token: String
 
     private val _toolbarTitle = MutableLiveData<String>()
     val toolbarTitle: LiveData<String>
@@ -80,7 +80,6 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
         _toolbarTitle.value = "1단계"
         _description.postValue("설명 없음")
         token = PromissuApplication.diskCache!!.userToken
-        Timber.d("@@@Token: $token")
     }
 
     fun setToolbarTitle(position: Int) {
