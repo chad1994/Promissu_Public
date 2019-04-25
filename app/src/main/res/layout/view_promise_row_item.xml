@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="viewModel"
+            type="com.simsimhan.promissu.promise.PromiseViewModel"/>
+        <variable
+            name="response"
+            type="com.simsimhan.promissu.network.model.Promise.Response"/>
+        <variable
+            name="listener"
+            type="com.simsimhan.promissu.promise.PromiseItemEventListener"/>
+        <variable
+            name="isPast"
+            type="Boolean"/>
+    </data>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -73,3 +88,4 @@
         <!--android:layout_marginTop="24dp"-->
         <!--app:layout_constraintBottom_toBottomOf="parent" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
