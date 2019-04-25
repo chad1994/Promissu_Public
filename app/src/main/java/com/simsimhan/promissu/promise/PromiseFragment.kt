@@ -1,20 +1,22 @@
 package com.simsimhan.promissu.promise
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.FragmentPromiseListBinding
 import com.simsimhan.promissu.util.NavigationUtil
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class PromiseFragment_k : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class PromiseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
 
     private lateinit var binding: FragmentPromiseListBinding
@@ -23,8 +25,8 @@ class PromiseFragment_k : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private var isPastPromise = false
 
     companion object {
-        fun newInstance(position: Int, title: String, isPastPromise: Boolean): PromiseFragment_k {
-            val fragment = PromiseFragment_k()
+        fun newInstance(position: Int, title: String, isPastPromise: Boolean): PromiseFragment {
+            val fragment = PromiseFragment()
             val args = Bundle()
             args.putInt("Page_key", position)
             args.putString("Title_key", title)
@@ -44,6 +46,7 @@ class PromiseFragment_k : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         adapter = PromiseAdapter(activity as AppCompatActivity?, arrayListOf(), isPastPromise)
 
         viewModel.errToastMsg.observe(this, Observer {
+            binding.swipeContainer.isRefreshing = false
             toastMessage(it)
             NavigationUtil.replaceWithLoginView(activity as AppCompatActivity)
         })
@@ -53,11 +56,14 @@ class PromiseFragment_k : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         binding = FragmentPromiseListBinding.inflate(inflater, container, false).apply {
-            lifecycleOwner = this@PromiseFragment_k
-            viewModel = this@PromiseFragment_k.viewModel
-            promiseRecyclerView.adapter = adapter
+            lifecycleOwner = this@PromiseFragment
+            viewModel = this@PromiseFragment.viewModel
+            promiseRecyclerView.apply {
+                adapter = this@PromiseFragment.adapter
+                addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
+            }
             swipeContainer.apply {
-                setOnRefreshListener(this@PromiseFragment_k)
+                setOnRefreshListener(this@PromiseFragment)
                 setColorSchemeResources(R.color.colorPrimary, android.R.color.holo_green_dark, android.R.color.holo_orange_dark, android.R.color.holo_blue_dark)
                 setProgressViewOffset(false, 0, resources.getDimensionPixelSize(R.dimen.refresher_start))
                 post {
@@ -93,7 +99,6 @@ class PromiseFragment_k : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             emptyViewText.setTextColor(ContextCompat.getColor(emptyViewText.context, if (isPastPromise) R.color.past_background_dark else R.color.colorStrong))
         }
     }
-
 
     override fun onResume() {
         super.onResume()
