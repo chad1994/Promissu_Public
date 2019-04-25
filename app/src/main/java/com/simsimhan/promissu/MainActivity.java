@@ -512,9 +512,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return PromiseFragment.newInstance(position, "약속", false);
+                    return PromiseFragment.Companion.newInstance(position, "약속", false);
                 case 1:
-                    return PromiseFragment.newInstance(position, "지난 약속", true);
+                    return PromiseFragment.Companion.newInstance(position, "지난 약속", true);
                 default:
                     return null;
             }
