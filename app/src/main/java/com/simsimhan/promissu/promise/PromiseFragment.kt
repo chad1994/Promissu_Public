@@ -15,12 +15,13 @@ import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.FragmentPromiseListBinding
 import com.simsimhan.promissu.util.NavigationUtil
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import timber.log.Timber
 
 class PromiseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
 
     private lateinit var binding: FragmentPromiseListBinding
-    private lateinit var adapter: PromiseAdapter
+    private lateinit var adapter: PromiseAdapter_k
     private val viewModel: PromiseViewModel by sharedViewModel()
     private var isPastPromise = false
 
@@ -43,13 +44,16 @@ class PromiseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             isPastPromise = arguments!!.getBoolean("is_past_key")
         }
 
-        adapter = PromiseAdapter(activity as AppCompatActivity?, arrayListOf(), isPastPromise)
+//        adapter = PromiseAdapter(activity as AppCompatActivity?, arrayListOf(), isPastPromise)
+        adapter = PromiseAdapter_k(arrayListOf(),isPastPromise,this@PromiseFragment,this.viewModel)
 
         viewModel.errToastMsg.observe(this, Observer {
             binding.swipeContainer.isRefreshing = false
             toastMessage(it)
             NavigationUtil.replaceWithLoginView(activity as AppCompatActivity)
         })
+
+
 
     }
 
