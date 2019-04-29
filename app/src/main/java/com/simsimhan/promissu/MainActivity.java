@@ -415,51 +415,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         }
     }
 
-    public void buildDeleteDialog(int room_id){
-        Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_request);
-        TextView text1 = dialog.findViewById(R.id.dialog_text1);
-        TextView text2 = dialog.findViewById(R.id.dialog_text2);
-        Button btnCancel = dialog.findViewById(R.id.dialog_button_cancel);
-        Button btnAccept = dialog.findViewById(R.id.dialog_button_accept);
-        text1.setText("정말 약속을");
-        text2.setText("삭제 하시겠습니까?");
-        btnAccept.setText("삭제");
-        btnCancel.setText("취소");
-        btnAccept.setOnClickListener(v->{
-            // successfully delete room
-            disposables.add(
-                    PromissuApplication.Companion.getRetrofit()
-                            .create(AuthAPI.class)
-                            .deleteAppointment("Bearer " + PromissuApplication.Companion.getDiskCache().getUserToken(), room_id)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(onNext -> {
-                                if(onNext.code()==200){
-                                    //
-                                    if(!BuildConfig.DEBUG) {
-                                        Bundle eventParams = new Bundle();
-                                        eventParams.putInt("room_id", room_id);
-                                        eventParams.putLong("user_id", PromissuApplication.Companion.getDiskCache().getUserId());
-                                        PromissuApplication.Companion.getFirebaseAnalytics().logEvent("appointment_delete", eventParams);
-                                    }
-                                } else if(onNext.code()==401){
-                                    Toast.makeText(this, "삭제 권한이 없습니다.", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(this, "삭제에 실패 했습니다. 잠시후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
-                                }
-                            }, onError -> {
-                                if (BuildConfig.DEBUG) {
-                                    Toast.makeText(this, "삭제 에러", Toast.LENGTH_SHORT).show();
-                                }
-                            }, dialog::dismiss));
-        });
-        btnCancel.setOnClickListener(v-> dialog.dismiss());
-        dialog.show();
-    }
-
-
     public View getCustomTabView(int index) {
         View customView = LayoutInflater.from(MainActivity.this).inflate(R.layout.view_custom_tab, null);
         TextView text = customView.findViewById(R.id.custom_tab_textView);
