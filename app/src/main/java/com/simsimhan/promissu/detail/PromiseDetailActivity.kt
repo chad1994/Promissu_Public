@@ -223,7 +223,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         location = naverMap.locationOverlay
         location.icon = OverlayImage.fromResource(R.drawable.ic_icon_mylocation_overlay)
         location.circleColor = Color.parseColor("#48ef006d")
-//        val myView = LayoutInflater.from(this).inflate(R.layout.user_marker, null)
+//        val myView = LayoutInflater.from(this).inf
+// late(R.layout.user_marker, null)
 //        val tv = myView.findViewById(R.id.user_marker_name) as TextView
 //        tv.text = "나"
 //        location.icon = OverlayImage.fromView(notArriveView)
@@ -266,6 +267,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         btnCancel.setOnClickListener {
             dialog.dismiss()
         }
+        dialog.setCancelable(false)
         dialog.show()
     }
 
@@ -289,6 +291,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             viewModel.sendLocationReject()
             dialog.dismiss()
         }
+        dialog.setCancelable(false)
         dialog.show()
     }
 
@@ -311,6 +314,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         btnCancel.setOnClickListener {
             dialog.dismiss()
         }
+        dialog.setCancelable(false)
         dialog.show()
     }
 
