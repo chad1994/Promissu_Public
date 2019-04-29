@@ -14,7 +14,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,7 +33,6 @@ import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityDetailPromiseBinding
 import com.simsimhan.promissu.detail.adapter.DetailUserStatusAdapter
 import com.simsimhan.promissu.network.model.Promise
-import timber.log.Timber
 
 
 class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -225,7 +223,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         location = naverMap.locationOverlay
         location.icon = OverlayImage.fromResource(R.drawable.ic_icon_mylocation_overlay)
         location.circleColor = Color.parseColor("#48ef006d")
-//        val myView = LayoutInflater.from(this).inflate(R.layout.user_marker, null)
+//        val myView = LayoutInflater.from(this).inf
+// late(R.layout.user_marker, null)
 //        val tv = myView.findViewById(R.id.user_marker_name) as TextView
 //        tv.text = "나"
 //        location.icon = OverlayImage.fromView(notArriveView)
@@ -268,6 +267,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         btnCancel.setOnClickListener {
             dialog.dismiss()
         }
+        dialog.setCancelable(false)
         dialog.show()
     }
 
@@ -291,6 +291,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             viewModel.sendLocationReject()
             dialog.dismiss()
         }
+        dialog.setCancelable(false)
         dialog.show()
     }
 
@@ -313,6 +314,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         btnCancel.setOnClickListener {
             dialog.dismiss()
         }
+        dialog.setCancelable(false)
         dialog.show()
     }
 

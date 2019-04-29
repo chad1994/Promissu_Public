@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="viewModel"
+            type="com.simsimhan.promissu.promise.PromiseViewModel"/>
+        <variable
+            name="response"
+            type="com.simsimhan.promissu.network.model.Promise.Response"/>
+        <variable
+            name="listener"
+            type="com.simsimhan.promissu.promise.PromiseItemEventListener"/>
+        <variable
+            name="isPast"
+            type="Boolean"/>
+    </data>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    setContainerBg="@{isPast}"
+    android:onClick="@{(view)->listener.itemClickListener(view,response)}"
+    android:onLongClick="@{()->listener.itemLongCLickListener(response)}"
     android:background="@color/background_grey"
     android:padding="24dp">
 
@@ -22,7 +40,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:text="프라미슈와 강남에서 해커톤 하기" />
+        android:text="@{response.title}" />
 
     <TextView
         android:id="@+id/item_time"
@@ -33,6 +51,8 @@
         app:layout_constraintRight_toLeftOf="@id/item_time_label"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        setItemLeftTime1="@{isPast}"
+        setItemLeftTime2="@{response}"
         tools:text="05" />
 
     <TextView
@@ -42,6 +62,8 @@
         android:textColor="@color/black"
         android:textSize="14sp"
         android:paddingLeft="7dp"
+        setItemLeftLabel1="@{isPast}"
+        setItemLeftLabel2="@{response}"
         app:layout_constraintTop_toTopOf="@id/item_time"
         app:layout_constraintBottom_toBottomOf="@id/item_time"
         app:layout_constraintRight_toRightOf="parent"
@@ -73,3 +95,4 @@
         <!--android:layout_marginTop="24dp"-->
         <!--app:layout_constraintBottom_toBottomOf="parent" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
