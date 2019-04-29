@@ -12,7 +12,6 @@ import com.simsimhan.promissu.detail.PromiseDetailActivity;
 import com.simsimhan.promissu.login.LoginActivity;
 import com.simsimhan.promissu.map.LocationSearchActivity;
 import com.simsimhan.promissu.network.model.Promise;
-import com.simsimhan.promissu.promise.PendingPromiseActivity;
 import com.simsimhan.promissu.promise.create.CreateActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -125,9 +124,4 @@ public class NavigationUtil {
         appCompatActivity.startActivity(intent);
     }
 
-    private static void openPendingScreen(AppCompatActivity appCompatActivity, Promise.Response promise) {
-        Intent intent = new Intent(appCompatActivity, PendingPromiseActivity.class);
-        intent.putExtra("promise", promise);
-        appCompatActivity.startActivity(intent);
-    }
 }
