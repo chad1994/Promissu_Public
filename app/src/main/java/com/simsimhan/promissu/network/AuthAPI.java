@@ -61,6 +61,13 @@ public interface AuthAPI {
             "Accept: application/json",
             "Content-Type: application/json"
     })
+    @DELETE("participation/left/{room_id}")
+    Observable<Response<ResponseBody>> leftAppointment(@Header("Authorization")String token, @Path("room_id") int roomId);
+
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
     @GET("appointments")
     Observable<List<Promise.Response>> getMyPromise(@Header("Authorization") String token, @Query("offset") int offset, @Query("limit") int limit, @Query("type") String type);
 
