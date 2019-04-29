@@ -34,9 +34,9 @@ class PromiseViewModel : BaseViewModel(), PromiseItemEventListener {
 //    val enterRoom: LiveData<Promise.Response>
 //        get() = _enterRoom
 //
-//    private val _deleteRoom = MutableLiveData<Promise.Response>()
-//    val deleteRoom: LiveData<Promise.Response>
-//        get() = _deleteRoom
+    private val _deleteRoom = MutableLiveData<Promise.Response>()
+    val deleteRoom: LiveData<Promise.Response>
+        get() = _deleteRoom
 
     init {
         token = PromissuApplication.diskCache!!.userToken
@@ -66,12 +66,15 @@ class PromiseViewModel : BaseViewModel(), PromiseItemEventListener {
         NavigationUtil.enterRoom(view.context as AppCompatActivity, response)
     }
 
-    override fun itemLongCLickListener(response: Promise.Response) {
-//        _deleteRoom.postValue(response)
+    override fun itemLongCLickListener(response: Promise.Response) : Boolean{
+        if(response.status==0) {
+            _deleteRoom.postValue(response)
+        }
+        return false
     }
 }
 
 interface PromiseItemEventListener {
     fun itemClickListener(view:View,response: Promise.Response)
-    fun itemLongCLickListener(response: Promise.Response)
+    fun itemLongCLickListener(response: Promise.Response) : Boolean
 }
