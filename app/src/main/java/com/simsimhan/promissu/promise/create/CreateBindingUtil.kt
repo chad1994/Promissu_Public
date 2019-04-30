@@ -4,6 +4,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.databinding.BindingAdapter
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 //@BindingAdapter("setSearchView")
 //fun setSearchView(searchView: MaterialSearchView, viewModel:CreateViewModel){
@@ -37,4 +38,14 @@ fun onTitleChanged(textInput: TextInputEditText, listener: CreateEventListener) 
             listener.onTextChanged(s.toString())
         }
     })
+}
+
+@BindingAdapter("setErrorMessage")
+fun setErrorMessage(textInput: TextInputLayout, title : String?){
+    if(title?.length in 1..4){
+        textInput.isErrorEnabled = true
+        textInput.error = "5글자 이상 입력해주세요"
+    }else if(title.isNullOrEmpty() || title.length >=5){
+        textInput.isErrorEnabled = false
+    }
 }
