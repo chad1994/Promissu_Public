@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
             name="viewModel"
@@ -30,6 +30,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="58dp"
+            app:errorEnabled="true"
+            setErrorMessage="@{viewModel.title}"
             android:hint="@string/promise_title">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -37,7 +39,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 onTitleChanged="@{eventListener}"
-
                 android:textColor="@color/black_1"
                 android:textSize="14sp" />
 
