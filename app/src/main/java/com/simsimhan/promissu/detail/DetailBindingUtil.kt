@@ -21,7 +21,7 @@ fun setRvItems(recyclerView: RecyclerView, itemList: List<Participant.Response>?
 
 @BindingAdapter("detailEmptyTextVisible")
 fun detailEmptyTextVisible(text: TextView, list: List<Participant.Response>) {
-    if (list.isNullOrEmpty()) {
+    if (list.isEmpty()) {
         text.visibility = View.VISIBLE
     } else {
         text.visibility = View.GONE

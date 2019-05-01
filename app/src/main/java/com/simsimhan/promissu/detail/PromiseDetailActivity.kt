@@ -33,6 +33,7 @@ import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityDetailPromiseBinding
 import com.simsimhan.promissu.detail.adapter.DetailUserStatusAdapter
 import com.simsimhan.promissu.network.model.Promise
+import timber.log.Timber
 
 
 class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -57,6 +58,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var location: LocationOverlay
 //    private lateinit var arriveView: View
     private lateinit var notArriveView: View
+    private var userMarkerList =  emptyList<Marker>()
+    private var locationFlag = false //최초 현위치 갱신 시.
     private var meetingMarker = Marker()
     private var meetingCircle = CircleOverlay()
 
@@ -119,8 +122,10 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         })
 
         viewModel.participants.observe(this, Observer {
-            if (promise.status == 1&&viewModel.myParticipation.get()!=null) { //방이 pending 되고 참여자 정보를 받아왔을 때
-                viewModel.setSocketReady(true)
+            if(!it.isEmpty()) {
+                if (promise.status == 1 && viewModel.myParticipation.get() != null) { //방이 pending 되고 참여자 정보를 받아왔을 때
+                    viewModel.setSocketReady(true)
+                }
             }
         })
 
@@ -139,7 +144,11 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         })
 
         viewModel.userMarkers.observe(this, Observer {
-            updateUserMarkers(it)
+            userMarkerList.forEach { existingMarker->
+                existingMarker.map = null
+            }
+            userMarkerList = it
+            updateUserMarkers(userMarkerList)
         })
 
         viewModel.isSocketOpen.observe(this, Observer {
@@ -154,11 +163,16 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(naverMap: NaverMap) {
         this.naverMap = naverMap
         naverMap.locationSource = locationSource
+
         viewModel.setNaverMap(naverMap)
         naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BUILDING, true)
 
         initMyLocation(naverMap)
         naverMap.addOnLocationChangeListener {
+            if(!locationFlag){
+                viewModel.fetchParticipants()
+                locationFlag=true
+            }
             val myLatlng = LatLng(it.latitude, it.longitude)
             if (myLatlng.distanceTo(meetingMarker.position) <= 100) {
                 viewModel.checkArrive(true)
@@ -166,6 +180,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 viewModel.checkArrive(false)
             }
         }
+
+
 
         viewModel.meetingLocation.observe(this, Observer {
             initTargetLocation(it, naverMap)
