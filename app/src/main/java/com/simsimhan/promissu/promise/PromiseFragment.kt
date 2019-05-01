@@ -69,6 +69,10 @@ class PromiseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             })
         }
 
+        viewModel.toastMsg.observe(this, Observer {
+            toastMessage(it)
+        })
+
 
     }
 

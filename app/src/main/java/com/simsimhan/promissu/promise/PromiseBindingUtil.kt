@@ -26,7 +26,7 @@ fun setItemLeftTime(text: TextView, isPast: Boolean, response: Promise.Response)
             val hoursDifference = Hours.hoursBetween(now, promiseStartDate)
             val minuteDifference = Minutes.minutesBetween(now, promiseStartDate)
             if (hoursDifference.hours <= 1) {
-                if (minuteDifference.minutes <= 60) {
+                if (minuteDifference.minutes < 60) {
                     text.text = ""
                 } else {
                     text.text = minuteDifference.minutes.toString()
@@ -53,7 +53,7 @@ fun setItemLeftLabel(text: TextView, isPast: Boolean, response: Promise.Response
             val hoursDifference = Hours.hoursBetween(now, promiseStartDate)
             val minuteDifference = Minutes.minutesBetween(now, promiseStartDate)
             if (hoursDifference.hours <= 1) {
-                if (minuteDifference.minutes <= 60) {
+                if (minuteDifference.minutes < 60) {
                     text.text = "대기중"
                     text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
                 } else {
