@@ -144,7 +144,7 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
 
     override fun onTextChanged(s: String) {
         _title.postValue(s)
-        _titleValidate.value = s.length>=5
+        _titleValidate.value = s.length>=2
     }
 
     private fun sendEventToAnalytics(room_id:Int,user_id:Long,event:String){
