@@ -14,7 +14,6 @@ import com.simsimhan.promissu.cache.DiskCache
 import com.simsimhan.promissu.di.appModules
 import io.branch.referral.Branch
 import io.branch.referral.BranchUtil
-import io.palaima.debugdrawer.timber.data.LumberYard
 import io.requery.sql.EntityDataStore
 import net.danlew.android.joda.JodaTimeAndroid
 import okhttp3.OkHttpClient
@@ -157,7 +156,7 @@ class PromissuApplication : MultiDexApplication() {
             private set
         var diskCache: DiskCache? = null
             private set
-        var firebaseAnalytics : FirebaseAnalytics? = null
+        var firebaseAnalytics: FirebaseAnalytics? = null
             private set
 
         private var instance: PromissuApplication? = null

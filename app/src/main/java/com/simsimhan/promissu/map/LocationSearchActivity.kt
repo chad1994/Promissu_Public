@@ -23,7 +23,6 @@ import com.simsimhan.promissu.BuildConfig
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityMapSearchBinding
-import com.simsimhan.promissu.detail.PromiseDetailActivity
 import com.simsimhan.promissu.map.search.FullListAdapter
 import com.simsimhan.promissu.model.LocationSearchItem
 import com.simsimhan.promissu.network.NaverAPI
@@ -115,7 +114,7 @@ class LocationSearchActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.
 
         naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
         naverMap.addOnLocationChangeListener {
-            if(!locationFlag){
+            if (!locationFlag) {
                 val cameraUpdate = CameraUpdate.scrollAndZoomTo(locationOverlay.position, 16.0)
                 naverMap.moveCamera(cameraUpdate)
                 locationFlag = true

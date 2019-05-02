@@ -41,11 +41,11 @@ fun onTitleChanged(textInput: TextInputEditText, listener: CreateEventListener) 
 }
 
 @BindingAdapter("setErrorMessage")
-fun setErrorMessage(textInput: TextInputLayout, title : String?){
-    if(title?.length==1){
+fun setErrorMessage(textInput: TextInputLayout, title: String?) {
+    if (title?.length == 1) {
         textInput.isErrorEnabled = true
         textInput.error = "2글자 이상 입력해주세요"
-    }else if(title.isNullOrEmpty() || title.length >=2){
+    } else if (title.isNullOrEmpty() || title.length >= 2) {
         textInput.isErrorEnabled = false
     }
 }

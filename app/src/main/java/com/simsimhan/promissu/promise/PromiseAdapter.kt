@@ -34,7 +34,7 @@ class PromiseAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ItemViewHolder) {
-            holder.bind(viewModel,items[position],isPastPromise,lifecycleOwner,viewModel)
+            holder.bind(viewModel, items[position], isPastPromise, lifecycleOwner, viewModel)
         }
     }
 
@@ -55,7 +55,7 @@ class PromiseAdapter(
 
     internal class ItemViewHolder(private val itemBinding: ViewPromiseRowItemBinding) : RecyclerView.ViewHolder(itemBinding.root) {
 
-        fun bind( _viewModel: PromiseViewModel, _response: Promise.Response,_isPastPromise: Boolean,_lifecycleOwner: LifecycleOwner,  _listener: PromiseItemEventListener) {
+        fun bind(_viewModel: PromiseViewModel, _response: Promise.Response, _isPastPromise: Boolean, _lifecycleOwner: LifecycleOwner, _listener: PromiseItemEventListener) {
             itemBinding.apply {
                 response = _response
                 lifecycleOwner = _lifecycleOwner

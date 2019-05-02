@@ -46,7 +46,7 @@ class LoginActivity : AppCompatActivity(), ISessionCallback {
         })
 
         viewModel.onSuccess.observe(this, Observer {
-            if(it){
+            if (it) {
                 NavigationUtil.replaceWithMainView(this)
             }
         })
@@ -79,7 +79,7 @@ class LoginActivity : AppCompatActivity(), ISessionCallback {
                     toastMessage("[DEV] onSuccess() user token: $userSessionToken")
                 }
 
-                viewModel.login(userSessionToken,result)
+                viewModel.login(userSessionToken, result)
 
             }
 

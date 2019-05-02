@@ -11,21 +11,21 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
-class LoginViewModel : BaseViewModel(){
+class LoginViewModel : BaseViewModel() {
 
     private val _toastMsg = MutableLiveData<String>()
-    val toastMsg : LiveData<String>
+    val toastMsg: LiveData<String>
         get() = _toastMsg
 
     private val _onSuccess = MutableLiveData<Boolean>()
-    val onSuccess : LiveData<Boolean>
+    val onSuccess: LiveData<Boolean>
         get() = _onSuccess
 
     init {
         _onSuccess.value = false
     }
 
-    fun login(userSessionToken : String, result : MeV2Response){
+    fun login(userSessionToken: String, result: MeV2Response) {
         addDisposable(PromissuApplication.retrofit!!
                 .create(AuthAPI::class.java)
                 .loginKakao(Login.Request(userSessionToken))

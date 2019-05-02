@@ -33,7 +33,6 @@ import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityDetailPromiseBinding
 import com.simsimhan.promissu.detail.adapter.DetailUserStatusAdapter
 import com.simsimhan.promissu.network.model.Promise
-import timber.log.Timber
 
 
 class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -50,15 +49,15 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var viewModel: DetailViewModel
     private lateinit var factory: DetailViewModelFactory
     private lateinit var binding: ActivityDetailPromiseBinding
-//    private lateinit var currentFragment: Fragment
+    //    private lateinit var currentFragment: Fragment
     private lateinit var promise: Promise.Response
     private lateinit var locationSource: FusedLocationSource
     private lateinit var mapView: com.naver.maps.map.MapView
     private lateinit var naverMap: NaverMap
     private lateinit var location: LocationOverlay
-//    private lateinit var arriveView: View
+    //    private lateinit var arriveView: View
     private lateinit var notArriveView: View
-    private var userMarkerList =  emptyList<Marker>()
+    private var userMarkerList = emptyList<Marker>()
     private var locationFlag = false //최초 현위치 갱신 시.
     private var meetingMarker = Marker()
     private var meetingCircle = CircleOverlay()
@@ -105,9 +104,9 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         })
         binding.detailActivityBottomSheet.bsScrollBtn.setOnClickListener {
-            if(bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED){
+            if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            }else{
+            } else {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
             }
         }
@@ -122,9 +121,9 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         })
 
         viewModel.participants.observe(this, Observer {
-                if (promise.status == 1 && viewModel.myParticipation.get() != null) { //방이 pending 되고 참여자 정보를 받아왔을 때
-                    viewModel.setSocketReady(true)
-                }
+            if (promise.status == 1 && viewModel.myParticipation.get() != null) { //방이 pending 되고 참여자 정보를 받아왔을 때
+                viewModel.setSocketReady(true)
+            }
         })
 
         viewModel.locationEvents.observe(this, Observer {
@@ -142,7 +141,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         })
 
         viewModel.userMarkers.observe(this, Observer {
-            userMarkerList.forEach { existingMarker->
+            userMarkerList.forEach { existingMarker ->
                 existingMarker.map = null
             }
             userMarkerList = it
@@ -167,9 +166,9 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         initMyLocation(naverMap)
         naverMap.addOnLocationChangeListener {
-            if(!locationFlag){
+            if (!locationFlag) {
                 viewModel.fetchParticipants()
-                locationFlag=true
+                locationFlag = true
             }
             val myLatlng = LatLng(it.latitude, it.longitude)
             if (myLatlng.distanceTo(meetingMarker.position) <= 100) {
@@ -309,7 +308,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         dialog.show()
     }
 
-    private fun buildAttendDialog(lon : Double,lat : Double) {
+    private fun buildAttendDialog(lon: Double, lat: Double) {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_request)
@@ -322,7 +321,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         btnAccept.text = "출석"
         btnCancel.text = "취소"
         btnAccept.setOnClickListener {
-            viewModel.sendLocationAttend(lon,lat)
+            viewModel.sendLocationAttend(lon, lat)
             dialog.dismiss()
         }
         btnCancel.setOnClickListener {

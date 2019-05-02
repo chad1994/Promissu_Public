@@ -63,7 +63,7 @@ class PromiseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             NavigationUtil.replaceWithLoginView(activity as AppCompatActivity)
         })
 
-        if(!isPastPromise) {
+        if (!isPastPromise) {
             viewModel.deleteRoom.observe(this, Observer {
                 buildDeleteDialog(it.id)
             })

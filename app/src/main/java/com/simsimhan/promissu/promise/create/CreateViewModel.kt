@@ -13,7 +13,6 @@ import com.simsimhan.promissu.network.model.Promise
 import com.simsimhan.promissu.util.SingleLiveEvent
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import retrofit2.HttpException
 import timber.log.Timber
 import java.util.*
 
@@ -132,11 +131,11 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
                 .subscribe({
                     _response.postValue(it)
 //                    _toastMessage.postValue("약속을 생성하였습니다.")
-                    if(!BuildConfig.DEBUG){
-                        sendEventToAnalytics(it.id, PromissuApplication.diskCache!!.userId,"create")
+                    if (!BuildConfig.DEBUG) {
+                        sendEventToAnalytics(it.id, PromissuApplication.diskCache!!.userId, "create")
                     }
                 }, {
-//                    Timber.d("@@@ERROR code: "+(it as HttpException).code()) // test:: how to get http code from throwable
+                    //                    Timber.d("@@@ERROR code: "+(it as HttpException).code()) // test:: how to get http code from throwable
                     _toastMessage.postValue("해당 시간에 이미 약속이 있습니다.")
                     Timber.e(it)
                 }))
@@ -144,14 +143,14 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
 
     override fun onTextChanged(s: String) {
         _title.postValue(s)
-        _titleValidate.value = s.length>=2
+        _titleValidate.value = s.length >= 2
     }
 
-    private fun sendEventToAnalytics(room_id:Int,user_id:Long,event:String){
+    private fun sendEventToAnalytics(room_id: Int, user_id: Long, event: String) {
         val eventParams = Bundle()
-        eventParams.putInt("room_id",room_id)
-        eventParams.putLong("user_id",user_id)
-        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_$event",eventParams)
+        eventParams.putInt("room_id", room_id)
+        eventParams.putLong("user_id", user_id)
+        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_$event", eventParams)
     }
 }
 
