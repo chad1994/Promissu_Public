@@ -122,11 +122,9 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         })
 
         viewModel.participants.observe(this, Observer {
-            if(!it.isEmpty()) {
                 if (promise.status == 1 && viewModel.myParticipation.get() != null) { //방이 pending 되고 참여자 정보를 받아왔을 때
                     viewModel.setSocketReady(true)
                 }
-            }
         })
 
         viewModel.locationEvents.observe(this, Observer {
