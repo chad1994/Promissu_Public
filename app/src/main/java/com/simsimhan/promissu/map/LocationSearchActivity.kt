@@ -2,6 +2,8 @@ package com.simsimhan.promissu.map
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -11,17 +13,17 @@ import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import com.miguelcatalan.materialsearchview.MaterialSearchView
 import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.CameraUpdate
-import com.naver.maps.map.MapView
-import com.naver.maps.map.NaverMap
-import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.*
 import com.naver.maps.map.overlay.InfoWindow
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.Overlay
+import com.naver.maps.map.overlay.OverlayImage
+import com.naver.maps.map.util.FusedLocationSource
 import com.simsimhan.promissu.BuildConfig
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityMapSearchBinding
+import com.simsimhan.promissu.detail.PromiseDetailActivity
 import com.simsimhan.promissu.map.search.FullListAdapter
 import com.simsimhan.promissu.model.LocationSearchItem
 import com.simsimhan.promissu.network.NaverAPI
@@ -36,6 +38,10 @@ import java.util.concurrent.TimeUnit
 
 class LocationSearchActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickListener {
 
+    companion object {
+        //        private const val DETAIL_CONTAINER_ID = R.id.detail_activity_container
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
+    }
 
     private lateinit var binding: ActivityMapSearchBinding
     private lateinit var mapView: MapView
@@ -50,6 +56,8 @@ class LocationSearchActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.
     private var x: Double? = null
     private var y: Double? = null
     private val viewModel: CreateViewModel by viewModel()
+    private lateinit var locationSource: FusedLocationSource
+    private var locationFlag = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +70,7 @@ class LocationSearchActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.
         }
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
+        locationSource = FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE)
         searchMarker = Marker()
         searchInfo = InfoWindow()
         binding.apply {
@@ -91,9 +100,43 @@ class LocationSearchActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.
     override fun onMapReady(naverMap: NaverMap) {
         setSearchAdapter(naverMap)
         this.naverMap = naverMap
+        naverMap.locationSource = locationSource
+        naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BUILDING, true)
         searchView.setAdapter(suggestionAdapter)
+        initMyLocation(naverMap)
         setQueryListener(naverMap)
         setOnSearchListener()
+    }
+
+    private fun initMyLocation(naverMap: NaverMap) {
+        val locationOverlay = naverMap.locationOverlay
+        locationOverlay.icon = OverlayImage.fromResource(R.drawable.ic_icon_mylocation_overlay)
+        locationOverlay.circleColor = Color.parseColor("#48ef006d")
+
+        naverMap.locationTrackingMode = LocationTrackingMode.NoFollow
+        naverMap.addOnLocationChangeListener {
+            if(!locationFlag){
+                val cameraUpdate = CameraUpdate.scrollAndZoomTo(locationOverlay.position, 16.0)
+                naverMap.moveCamera(cameraUpdate)
+                locationFlag = true
+            }
+        }
+    }
+
+
+    override fun onRequestPermissionsResult(
+            requestCode: Int, permissions: Array<String>,
+            grantResults: IntArray
+    ) {
+        if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
+            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                Toast.makeText(this, "사용을 위해 설정 -> 애플리케이션에서 권한 속성에서 위치 권한에 동의 해주세요.", Toast.LENGTH_LONG).show()
+                finish()
+                return
+            }
+            return
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     private fun setSearchAdapter(naverMap: NaverMap) {
