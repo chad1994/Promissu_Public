@@ -55,14 +55,14 @@ public interface AuthAPI {
             "Content-Type: application/json"
     })
     @DELETE("appointment/{room_id}")
-    Observable<Response<ResponseBody>> deleteAppointment(@Header("Authorization")String token, @Path("room_id") int roomId);
+    Observable<Response<ResponseBody>> deleteAppointment(@Header("Authorization") String token, @Path("room_id") int roomId);
 
     @Headers({
             "Accept: application/json",
             "Content-Type: application/json"
     })
     @DELETE("participation/left/{room_id}")
-    Observable<Response<ResponseBody>> leftAppointment(@Header("Authorization")String token, @Path("room_id") int roomId);
+    Observable<Response<ResponseBody>> leftAppointment(@Header("Authorization") String token, @Path("room_id") int roomId);
 
     @Headers({
             "Accept: application/json",

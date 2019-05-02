@@ -28,6 +28,10 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
     val title: LiveData<String>
         get() = _title
 
+    private val _titleValidate = MutableLiveData<Boolean>()
+    val titleValidate: LiveData<Boolean>
+        get() = _titleValidate
+
     private val _description = MutableLiveData<String>()
     val description: LiveData<String>
         get() = _description
@@ -87,7 +91,6 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
     }
 
     fun onClickCreateBtn() {
-
         createValidation()
     }
 
@@ -107,8 +110,8 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
     }
 
     private fun createValidation() {
-        if (title.value.isNullOrEmpty()) {
-            _toastMessage.postValue("방 제목을 입력해주세요")
+        if (title.value.isNullOrEmpty() || !_titleValidate.value!!) {
+            _toastMessage.postValue("방 제목을 확인해주세요")
         } else if (startTime.value == null || endTime.value == null) {
             _toastMessage.postValue("약속 시간을 확인해주세요")
         } else if (location.value.isNullOrEmpty() || locationName.value.isNullOrEmpty()) {
@@ -116,7 +119,6 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
         } else {
             val request = Promise.Request(title.value, description.value, startTime.value, endTime.value, location.value, locationName.value, lat.value, lon.value)
             createRoom(request)
-            _toastMessage.postValue("완료")
         }
     }
 
@@ -128,26 +130,27 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     _response.postValue(it)
-
-                    if(!BuildConfig.DEBUG){
-                        sendEventToAnalytics(it.id, PromissuApplication.diskCache!!.userId,"create")
+//                    _toastMessage.postValue("약속을 생성하였습니다.")
+                    if (!BuildConfig.DEBUG) {
+                        sendEventToAnalytics(it.id, PromissuApplication.diskCache!!.userId, "create")
                     }
-                    // TODO: do something here
-//                    NavigationUtil.enterRoom(CreatePromiseActivity.this, onNext);
                 }, {
+                    //                    Timber.d("@@@ERROR code: "+(it as HttpException).code()) // test:: how to get http code from throwable
+                    _toastMessage.postValue("해당 시간에 이미 약속이 있습니다.")
                     Timber.e(it)
                 }))
     }
 
     override fun onTextChanged(s: String) {
         _title.postValue(s)
+        _titleValidate.value = s.length >= 2
     }
 
-    private fun sendEventToAnalytics(room_id:Int,user_id:Long,event:String){
+    private fun sendEventToAnalytics(room_id: Int, user_id: Long, event: String) {
         val eventParams = Bundle()
-        eventParams.putInt("room_id",room_id)
-        eventParams.putLong("user_id",user_id)
-        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_$event",eventParams)
+        eventParams.putInt("room_id", room_id)
+        eventParams.putLong("user_id", user_id)
+        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_$event", eventParams)
     }
 }
 

@@ -124,7 +124,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         val meetingLatLng = LatLng(promise.location_lat.toDouble(), promise.location_lon.toDouble())
         _meetingLocation.postValue(meetingLatLng)
         initRoomInfo()
-        fetchParticipants()
+//        fetchParticipants()
         setupTimer()
     }
 
@@ -132,6 +132,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         super.onCleared()
         socketDisconnect()
     }
+
     private fun initRoomInfo() {
         title.set(promise.title)
         startDate.set("" + (promise.start_datetime.month + 1) + "월 " + promise.start_datetime.date + "일 " + promise.start_datetime.hours + "시 " + promise.start_datetime.minutes + "분")
@@ -155,7 +156,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         _naverMap.postValue(naverMap)
     }
 
-    private fun fetchParticipants() {
+    fun fetchParticipants() {
         addDisposable(PromissuApplication.retrofit!!
                 .create(AuthAPI::class.java)
                 .getParticipants("Bearer " + PromissuApplication.diskCache!!.userToken, promise.id)
@@ -171,7 +172,6 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                             }
 
                             _participants.value = onNext.filterNot { it.participation == myParticipation.get() }.sortedWith(comparator = Participant.CompareByStatus())
-                            Timber.d("@@@PARTICIPANT: " + participants.value.isNullOrEmpty())
                         },
                         { onError ->
                             Timber.e(onError)
@@ -190,7 +190,6 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
             addProperty("appointment", promise.id)
             addProperty("participation", myParticipation.get())
             addProperty("token", PromissuApplication.diskCache!!.userToken)
-            Timber.d("@@@LOGLOG:" + promise.id + "/" + myParticipation.get() + "/" + PromissuApplication.diskCache!!.userToken)
         }
         val jsonReq = JSONObject(jsonObject.toString())
 
@@ -220,7 +219,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
 
     }
 
-    private fun socketDisconnect(){
+    private fun socketDisconnect() {
         socket.disconnect()
     }
 
@@ -268,8 +267,8 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         val jsonReq = JSONObject(jsonObject.toString())
         socket.emit("location.request", jsonReq)
 
-        if(!BuildConfig.DEBUG) {
-            sendEventToAnalytics(promise.id, PromissuApplication.diskCache!!.userId,"location_req")
+        if (!BuildConfig.DEBUG) {
+            sendEventToAnalytics(promise.id, PromissuApplication.diskCache!!.userId, "location_req")
         }
     }
 
@@ -283,8 +282,8 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         val jsonReq = JSONObject(jsonObject.toString())
         socket.emit("location.response", jsonReq)
 
-        if(!BuildConfig.DEBUG) {
-            sendEventToAnalytics(promise.id, PromissuApplication.diskCache!!.userId,"location_res")
+        if (!BuildConfig.DEBUG) {
+            sendEventToAnalytics(promise.id, PromissuApplication.diskCache!!.userId, "location_res")
         }
     }
 
@@ -296,8 +295,8 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         val jsonReq = JSONObject(jsonObject.toString())
         socket.emit("location.reject", jsonReq)
 
-        if(!BuildConfig.DEBUG) {
-            sendEventToAnalytics(promise.id, PromissuApplication.diskCache!!.userId,"location_reject")
+        if (!BuildConfig.DEBUG) {
+            sendEventToAnalytics(promise.id, PromissuApplication.diskCache!!.userId, "location_reject")
         }
     }
 
@@ -311,8 +310,8 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         val jsonReq = JSONObject(jsonObject.toString())
         socket.emit("location.attend", jsonReq)
 
-        if(!BuildConfig.DEBUG) {
-            sendEventToAnalytics(promise.id, PromissuApplication.diskCache!!.userId,"location_attend")
+        if (!BuildConfig.DEBUG) {
+            sendEventToAnalytics(promise.id, PromissuApplication.diskCache!!.userId, "location_attend")
         }
     }
 
@@ -395,11 +394,11 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                 _sendLocationRequest.postValue(Participant.Request(partId, nickname))
     }
 
-    private fun sendEventToAnalytics(room_id:Int,user_id:Long,event:String){
+    private fun sendEventToAnalytics(room_id: Int, user_id: Long, event: String) {
         val eventParams = Bundle()
-        eventParams.putInt("room_id",room_id)
-        eventParams.putLong("user_id",user_id)
-        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_$event",eventParams)
+        eventParams.putInt("room_id", room_id)
+        eventParams.putLong("user_id", user_id)
+        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_$event", eventParams)
     }
 
 }

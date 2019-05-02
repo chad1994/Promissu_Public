@@ -21,7 +21,7 @@ fun setRvItems(recyclerView: RecyclerView, itemList: List<Participant.Response>?
 
 @BindingAdapter("detailEmptyTextVisible")
 fun detailEmptyTextVisible(text: TextView, list: List<Participant.Response>) {
-    if (list.isNullOrEmpty()) {
+    if (list.isEmpty()) {
         text.visibility = View.VISIBLE
     } else {
         text.visibility = View.GONE
@@ -41,26 +41,26 @@ fun setBottomSheetIcon(imageButton: ImageButton, isSpread: Boolean) {
 fun setUserItemStatus(imageview: ImageView, status: Int) {
     when (status) {
         0 -> {
-                imageview.visibility = View.GONE
+            imageview.visibility = View.GONE
         }
         1 -> {
-                imageview.visibility = View.VISIBLE
-                imageview.setImageResource(R.drawable.ic_icon_status_ing)
+            imageview.visibility = View.VISIBLE
+            imageview.setImageResource(R.drawable.ic_icon_status_ing)
         }
         2 -> {
-                imageview.visibility = View.VISIBLE
-                imageview.setImageResource(R.drawable.ic_icon_status_x)
+            imageview.visibility = View.VISIBLE
+            imageview.setImageResource(R.drawable.ic_icon_status_x)
         }
         3 -> {
-                imageview.visibility = View.VISIBLE
-                imageview.setImageResource(R.drawable.ic_icon_status_check)
+            imageview.visibility = View.VISIBLE
+            imageview.setImageResource(R.drawable.ic_icon_status_check)
         }
         4 -> {
-                imageview.visibility = View.VISIBLE
-                imageview.setImageResource(R.drawable.ic_icon_attend_complete)
+            imageview.visibility = View.VISIBLE
+            imageview.setImageResource(R.drawable.ic_icon_attend_complete)
         }
         else -> {
-                imageview.visibility = View.GONE
+            imageview.visibility = View.GONE
         }
     }
 }
@@ -68,7 +68,7 @@ fun setUserItemStatus(imageview: ImageView, status: Int) {
 @BindingAdapter("setUserItemAttended")
 fun setUserItemAttended(text: TextView, status: Int) {
     when (status) {
-        4-> text.visibility = View.VISIBLE
+        4 -> text.visibility = View.VISIBLE
         else -> text.visibility = View.GONE
     }
 }

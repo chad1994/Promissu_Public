@@ -1,6 +1,5 @@
 package com.simsimhan.promissu.promise
 
-import android.app.Activity
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
@@ -30,13 +29,18 @@ class PromiseViewModel : BaseViewModel(), PromiseItemEventListener {
     val errToastMsg: LiveData<String>
         get() = _errToastMsg
 
-//    private val _enterRoom = MutableLiveData<Promise.Response>()
+    private val _toastMsg = MutableLiveData<String>()
+    val toastMsg: LiveData<String>
+        get() = _toastMsg
+
+    //    private val _enterRoom = MutableLiveData<Promise.Response>()
 //    val enterRoom: LiveData<Promise.Response>
 //        get() = _enterRoom
 //
     private val _deleteRoom = MutableLiveData<Promise.Response>()
     val deleteRoom: LiveData<Promise.Response>
         get() = _deleteRoom
+
 
     init {
         token = PromissuApplication.diskCache!!.userToken
@@ -62,19 +66,23 @@ class PromiseViewModel : BaseViewModel(), PromiseItemEventListener {
                 }))
     }
 
-    override fun itemClickListener(view:View,response: Promise.Response) {
+    override fun itemClickListener(view: View, response: Promise.Response) {
         NavigationUtil.enterRoom(view.context as AppCompatActivity, response)
     }
 
-    override fun itemLongCLickListener(response: Promise.Response) : Boolean{
-        if(response.status==0) {
+    override fun itemLongCLickListener(response: Promise.Response): Boolean {
+        if (response.status == 0) {
             _deleteRoom.postValue(response)
+        } else if (response.status == 1) {
+            _toastMsg.postValue("대기중인 모임은 나갈 수 없습니다.")
+        } else if (response.status == 2) {
+            _toastMsg.postValue("지난 모임은 나갈 수 없습니다.")
         }
         return false
     }
 }
 
 interface PromiseItemEventListener {
-    fun itemClickListener(view:View,response: Promise.Response)
-    fun itemLongCLickListener(response: Promise.Response) : Boolean
+    fun itemClickListener(view: View, response: Promise.Response)
+    fun itemLongCLickListener(response: Promise.Response): Boolean
 }

@@ -26,7 +26,7 @@ fun setItemLeftTime(text: TextView, isPast: Boolean, response: Promise.Response)
             val hoursDifference = Hours.hoursBetween(now, promiseStartDate)
             val minuteDifference = Minutes.minutesBetween(now, promiseStartDate)
             if (hoursDifference.hours <= 1) {
-                if (minuteDifference.minutes <= 60) {
+                if (minuteDifference.minutes < 60) {
                     text.text = ""
                 } else {
                     text.text = minuteDifference.minutes.toString()
@@ -53,9 +53,14 @@ fun setItemLeftLabel(text: TextView, isPast: Boolean, response: Promise.Response
             val hoursDifference = Hours.hoursBetween(now, promiseStartDate)
             val minuteDifference = Minutes.minutesBetween(now, promiseStartDate)
             if (hoursDifference.hours <= 1) {
-                if (minuteDifference.minutes <= 60) {
-                    text.text = "대기중"
-                    text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
+                if (minuteDifference.minutes < 60) {
+                    if (minuteDifference.minutes <= 0) {
+                        text.text = "진행중"
+                        text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
+                    } else {
+                        text.text = "대기중"
+                        text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
+                    }
                 } else {
                     text.text = "분 남음"
                     text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
@@ -72,10 +77,10 @@ fun setItemLeftLabel(text: TextView, isPast: Boolean, response: Promise.Response
 }
 
 @BindingAdapter("setContainerBg")
-fun setContainerBg(container:ConstraintLayout,isPast: Boolean){
-    if(isPast){
+fun setContainerBg(container: ConstraintLayout, isPast: Boolean) {
+    if (isPast) {
         container.setBackgroundColor(ContextCompat.getColor(container.context, R.color.past_background_color))
-    }else{
+    } else {
         container.setBackgroundColor(ContextCompat.getColor(container.context, R.color.background_grey))
     }
 }
