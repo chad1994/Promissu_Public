@@ -2,7 +2,9 @@ package com.simsimhan.promissu.detail
 
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -107,11 +109,17 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     val toastMsg: LiveData<String>
         get() = _toastMsg
 
+    private val _longPressed = MutableLiveData<Boolean>()
+    val longPressed: LiveData<Boolean>
+        get() = _longPressed
+
+
     val title = ObservableField<String>()
     val startDate = ObservableField<String>()
     val locationName = ObservableField<String>()
     val participantNum = ObservableField<String>()
     val myParticipation = ObservableField<Int>()
+    val requestMillis = ObservableField<Long>()
     lateinit var countDownTimer: CountDownTimer
 
     init {
@@ -343,6 +351,13 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         countDownTimer.cancel()
     }
 
+    private fun sendEventToAnalytics(room_id: Int, user_id: Long, event: String) {
+        val eventParams = Bundle()
+        eventParams.putInt("room_id", room_id)
+        eventParams.putLong("user_id", user_id)
+        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_$event", eventParams)
+    }
+
     override fun onClickInviteButton(view: View) {
         Timber.d("@@@@invite clicked")
         val promiseDate = DateTime(promise.start_datetime)
@@ -394,16 +409,23 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                 _sendLocationRequest.postValue(Participant.Request(partId, nickname))
     }
 
-    private fun sendEventToAnalytics(room_id: Int, user_id: Long, event: String) {
-        val eventParams = Bundle()
-        eventParams.putInt("room_id", room_id)
-        eventParams.putLong("user_id", user_id)
-        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_$event", eventParams)
+    override fun onLongPressed(view: View, participant: Participant.Response,isAction: Boolean, millis: Long) {
+        _longPressed.value = isAction
+        if(isAction) {
+            requestMillis.set(millis)
+        }else{
+            if(millis - requestMillis.get()!! > 2000){
+                _toastMsg.postValue("요청!")
+            }else{
+                _toastMsg.postValue("요청시간 미달")
+            }
+        }
     }
-
 }
 
 interface DetailEventListener {
     fun onClickInviteButton(view: View)
+    fun onLongPressed(view:View,participant: Participant.Response,isAction: Boolean,millis:Long)
     fun onClickRequestLocation(partId: Int, nickname: String)
+
 }
