@@ -167,6 +167,17 @@
             android:text="아직 아무도 없어요!"
             />
 
+        <com.airbnb.lottie.LottieAnimationView
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:lottie_fileName="anim.json"
+            app:lottie_loop="true"
+            app:lottie_autoPlay="false"
+            setLottieAnim="@{viewModel.longPressed}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
