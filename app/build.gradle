@@ -163,4 +163,7 @@ dependencies {
     //fcm
     implementation 'com.google.firebase:firebase-core:16.0.4'
     implementation 'com.google.firebase:firebase-messaging:17.3.3'
+
+    //lottie
+    implementation 'com.airbnb.android:lottie:3.0.1'
 }

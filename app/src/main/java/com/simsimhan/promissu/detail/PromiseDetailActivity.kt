@@ -155,6 +155,10 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 viewModel.removeTimer()
             }
         })
+
+        viewModel.longPressed.observe(this, Observer {
+//            TODO : ..
+        })
     }
 
     override fun onMapReady(naverMap: NaverMap) {

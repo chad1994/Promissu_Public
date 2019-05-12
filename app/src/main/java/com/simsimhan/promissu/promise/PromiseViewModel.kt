@@ -78,7 +78,7 @@ class PromiseViewModel : BaseViewModel(), PromiseItemEventListener {
         } else if (response.status == 2) {
             _toastMsg.postValue("지난 모임은 나갈 수 없습니다.")
         }
-        return false
+        return true
     }
 }
 

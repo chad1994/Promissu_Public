@@ -6,9 +6,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.detail.adapter.DetailUserStatusAdapter
 import com.simsimhan.promissu.network.model.Participant
+
 
 @BindingAdapter("setRvItems")
 fun setRvItems(recyclerView: RecyclerView, itemList: List<Participant.Response>?) {
@@ -87,5 +89,18 @@ fun visibilityByArrive(text: TextView, visibility: Boolean, attended: Boolean, i
         } else {
             text.visibility = View.VISIBLE
         }
+    }
+}
+
+@BindingAdapter("setLottieAnim")
+fun setLottieAnim(lottie:LottieAnimationView , boolean: Boolean){
+    if(boolean) {
+        lottie.visibility = View.VISIBLE
+        lottie.setAnimation("anim.json")
+        lottie.loop(true)
+        lottie.playAnimation()
+    }else{
+        lottie.cancelAnimation()
+        lottie.visibility = View.GONE
     }
 }

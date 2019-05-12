@@ -1,6 +1,8 @@
 package com.simsimhan.promissu.detail.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
@@ -71,6 +73,7 @@ class DetailUserStatusAdapter(
         return TYPE_USER
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     class DetailUserStatusViewHolder(private val itemBinding: ItemDetailUserStatusBinding
     ) : RecyclerView.ViewHolder(itemBinding.root) {
         fun bind(_lifecycleOwner: LifecycleOwner, _participant: Participant.Response, _listener: DetailEventListener, _viewModel: DetailViewModel) {
@@ -80,6 +83,22 @@ class DetailUserStatusAdapter(
                 listener = _listener
                 viewModel = _viewModel
                 executePendingBindings()
+            }
+            itemBinding.itemDetailCl.setOnTouchListener { v, event ->
+                val action = event.action
+                val time  = System.currentTimeMillis()
+                when(action){
+                    MotionEvent.ACTION_DOWN->{
+                        _listener.onLongPressed(v,_participant,true,time)
+                    }
+                    MotionEvent.ACTION_UP->{
+                        _listener.onLongPressed(v,_participant,false,time)
+                    }
+                    MotionEvent.ACTION_CANCEL->{
+                        _listener.onLongPressed(v,_participant,false,time)
+                    }
+                }
+                false
             }
         }
     }

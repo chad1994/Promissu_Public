@@ -43,6 +43,7 @@ fun setItemLeftTime(text: TextView, isPast: Boolean, response: Promise.Response)
 @BindingAdapter("setItemLeftLabel1", "setItemLeftLabel2")
 fun setItemLeftLabel(text: TextView, isPast: Boolean, response: Promise.Response) {
     if (isPast) {
+        text.setTextColor(ContextCompat.getColor(text.context, R.color.black))
         text.text = "" + (response.start_datetime.month + 1) + "." + (response.start_datetime.date)
     } else {
         val now = DateTime()
