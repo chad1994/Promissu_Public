@@ -30,8 +30,11 @@ public class NavigationUtil {
         // 사람들이 다 모이고, 약속이 시작되기를 기다리는 상태 -> (변경) 약속 시작 1시간 전
         PENDING(1),
 
-        // 약속 시간이 다 끝난 상태
-        CLOSED(2),
+        // 약속이 진행중인 상태
+        MEETING(2),
+
+        //약속 시간이 끝난 상태
+        CLOSED(3),
 
         // 약속이 삭제된 상태
         DELETED(-1);
