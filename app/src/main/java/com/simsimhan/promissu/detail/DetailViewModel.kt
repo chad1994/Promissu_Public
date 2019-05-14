@@ -218,7 +218,6 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
             map.forEach { map ->
                 Timber.d("@@@Data: " + map.toString())
             }
-            //TODO: info 조건 세분화 : 요청에 대해 나에게 온 요청인지 확인 후 응답, 응답에 대해 다른 인원에 대한 위치 변경 내용 갱신, 응답에 대해 거절된 경우 인지에 따른 view 갱신
         }
         socket.on("location.error") {
             Timber.d("@@@LOCATION ERROR: %s", it[0].toString())
@@ -270,6 +269,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     fun sendLocationRequest(partId: Int) {
         val jsonObject = JsonObject().apply {
             addProperty("appointment", promise.id)
+            addProperty("requester",myParticipation.get())
             addProperty("target", partId)
         }
         val jsonReq = JSONObject(jsonObject.toString())
@@ -335,9 +335,9 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
             override fun onTick(millisUntilFinished: Long) {
                 remainSeconds -= 1
                 if (remainSeconds % 60 < 10) {
-                    _timerString.postValue("약속 시작까지 " + remainSeconds / 60 + "분 0" + remainSeconds % 60 + "초 남았습니다")
+                    _timerString.postValue("" + remainSeconds / 60 + "분 0" + remainSeconds % 60 + "초 남았어요!")
                 } else {
-                    _timerString.postValue("약속 시작까지 " + remainSeconds / 60 + "분 " + remainSeconds % 60 + "초 남았습니다")
+                    _timerString.postValue("" + remainSeconds / 60 + "분 " + remainSeconds % 60 + "초 남았어요!")
                 }
             }
         }
@@ -410,14 +410,16 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     }
 
     override fun onLongPressed(view: View, participant: Participant.Response,isAction: Boolean, millis: Long) {
-        _longPressed.value = isAction
-        if(isAction) {
-            requestMillis.set(millis)
-        }else{
-            if(millis - requestMillis.get()!! > 2000){
-                _toastMsg.postValue("요청!")
-            }else{
-                _toastMsg.postValue("요청시간 미달")
+        if(_isSocketOpen.value!!) {
+            _longPressed.value = isAction
+            if (isAction) {
+                requestMillis.set(millis)
+            } else {
+                if (millis - requestMillis.get()!! > 2000) {
+                    _toastMsg.postValue("요청!")
+                } else {
+                    _toastMsg.postValue("요청시간 미달")
+                }
             }
         }
     }
