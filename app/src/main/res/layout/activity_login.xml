@@ -9,7 +9,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_background_gradient"
+    android:background="@color/main_03"
     android:padding="24dp">
 
     <com.airbnb.lottie.LottieAnimationView
@@ -23,7 +23,7 @@
         app:lottie_loop="false"
         app:lottie_fileName="promissu_splash.json"
         android:layout_width="150dp"
-        android:layout_height="48dp" />
+        android:layout_height="100dp" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
