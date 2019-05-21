@@ -2,9 +2,7 @@ package com.simsimhan.promissu.detail
 
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -112,6 +110,10 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     private val _longPressed = MutableLiveData<Boolean>()
     val longPressed: LiveData<Boolean>
         get() = _longPressed
+
+    private val _modifyButtonClicked = SingleLiveEvent<Any>()
+    val modifyButtonClicked : LiveData<Any>
+        get() = _modifyButtonClicked
 
 
     val title = ObservableField<String>()
@@ -269,7 +271,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     fun sendLocationRequest(partId: Int) {
         val jsonObject = JsonObject().apply {
             addProperty("appointment", promise.id)
-            addProperty("requester",myParticipation.get())
+            addProperty("requester", myParticipation.get())
             addProperty("target", partId)
         }
         val jsonReq = JSONObject(jsonObject.toString())
@@ -409,8 +411,8 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                 _sendLocationRequest.postValue(Participant.Request(partId, nickname))
     }
 
-    override fun onLongPressed(view: View, participant: Participant.Response,isAction: Boolean, millis: Long) {
-        if(_isSocketOpen.value!!) {
+    override fun onLongPressed(view: View, participant: Participant.Response, isAction: Boolean, millis: Long) {
+        if (_isSocketOpen.value!!) {
             _longPressed.value = isAction
             if (isAction) {
                 requestMillis.set(millis)
@@ -423,11 +425,16 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
             }
         }
     }
+
+    override fun onClickModifyButton(view: View) {
+        _modifyButtonClicked.call()
+    }
 }
 
 interface DetailEventListener {
     fun onClickInviteButton(view: View)
-    fun onLongPressed(view:View,participant: Participant.Response,isAction: Boolean,millis:Long)
+    fun onClickModifyButton(view: View)
+    fun onLongPressed(view: View, participant: Participant.Response, isAction: Boolean, millis: Long)
     fun onClickRequestLocation(partId: Int, nickname: String)
 
 }
