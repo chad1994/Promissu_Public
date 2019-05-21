@@ -1,5 +1,6 @@
 package com.simsimhan.promissu.promise.create
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -18,6 +19,7 @@ import com.simsimhan.promissu.BuildConfig
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityCreatePromiseBinding
+import com.simsimhan.promissu.network.model.Promise
 import com.simsimhan.promissu.util.NavigationUtil
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -30,6 +32,7 @@ class CreateActivity : AppCompatActivity() {
     private lateinit var thirdFragment: CreateFragment
     private lateinit var binding: ActivityCreatePromiseBinding
     private lateinit var adapterViewPager: CreateFragmentPagerAdapter
+    private var promise :Promise.Response? = null
     private val viewModel: CreateViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +43,12 @@ class CreateActivity : AppCompatActivity() {
             viewModel = this@CreateActivity.viewModel
             lifecycleOwner = this@CreateActivity
         }
+
+        if(intent.extras!=null){
+            promise = intent.getParcelableExtra("promise")
+            viewModel.setModify(true,promise!!.id)
+        }
+
         if (!PromissuApplication.diskCache!!.isUploadedPromiseBefore) {
             Toast.makeText(this, "좌우로 미세요.", Toast.LENGTH_LONG).show()
         }
@@ -72,6 +81,15 @@ class CreateActivity : AppCompatActivity() {
             NavigationUtil.enterRoom(this, it)
             finish()
         })
+
+        viewModel.modifyResponse.observe(this, Observer {
+            if(it){
+                val intent = Intent()
+                intent.putExtra("promise",it) // TODO : 응답 메세지를 보내는 형태로 변경 되어야 함 .
+                setResult(RESULT_OK, intent)
+                finish()
+            }
+        })
     }
 
     private fun changeStatusBarColor() {
@@ -92,8 +110,14 @@ class CreateActivity : AppCompatActivity() {
         override fun getItem(position: Int): Fragment {
             val fragment: Fragment? = null
             return when (position) {
-                0, 1, 2 -> CreateFragment.newInstance(position)
-                else -> fragment!!
+                    0, 1, 2 -> {
+                        if(promise==null){
+                        CreateFragment.newInstance(position)
+                        }else{
+                            CreateFragment.newInstance(position,promise!!)
+                        }
+                    }
+                    else -> fragment!!
             }
         }
 

@@ -3,6 +3,7 @@ package com.simsimhan.promissu.promise.create
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +18,7 @@ import com.simsimhan.promissu.databinding.FragmentCreatePromise1Binding
 import com.simsimhan.promissu.databinding.FragmentCreatePromise2Binding
 import com.simsimhan.promissu.databinding.FragmentCreatePromise3Binding
 import com.simsimhan.promissu.map.LocationSearchActivity
+import com.simsimhan.promissu.network.model.Promise
 import com.simsimhan.promissu.util.NavigationUtil
 import com.simsimhan.promissu.util.StringUtil
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
@@ -33,9 +35,9 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
 
 
     private var pageKey: Int? = null
+    private var response :Promise.Response? = null
     private var username: String? = null
     private var now: DateTime? = null
-    private var promiseTitle: TextInputEditText? = null
     private var startDateEditText: TextInputEditText? = null
     private var startTimeEditText: TextInputEditText? = null
     private var endDateEditText: TextInputEditText? = null
@@ -60,6 +62,15 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
             fragment.arguments = args
             return fragment
         }
+
+        fun newInstance(position:Int,response:Promise.Response) :Fragment{
+            val fragment = CreateFragment()
+            val args = Bundle()
+            args.putInt("Page_key", position)
+            args.putParcelable("Response",response)
+            fragment.arguments = args
+            return fragment
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +79,9 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
         if (arguments != null) {
             // get arguments and set here
             pageKey = arguments!!.getInt("Page_key")
+            response = arguments!!.getParcelable("Response")
         }
+
 
         username = PromissuApplication.diskCache!!.userName
         now = DateTime()
@@ -93,8 +106,10 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
         }
         val question = binding.root.create_question1_text
         question.text = Html.fromHtml(getString(R.string.create_question_1, username))
-        promiseTitle = binding.root.promise_title_edit_text
-
+        if(response!=null){
+            binding.root.promise_title_edit_text.setText(response!!.title)
+            viewModel.setTitle(response!!.title)
+        }
     }
 
     private fun setupWhenView(inflater: LayoutInflater, container: ViewGroup?) {
@@ -102,6 +117,7 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
             lifecycleOwner = this@CreateFragment
             viewModel = this@CreateFragment.viewModel
         }
+
         val question = binding.root.create_question2_text
         question.text = Html.fromHtml(getString(R.string.create_question_2))
         startDateEditText = binding.root.promise_start_date.apply {
@@ -114,11 +130,6 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
                         now.get(Calendar.DAY_OF_MONTH))
                 now.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH) + 1)
                 datePickerDialog.minDate = now
-                if (endSelectedDate != null) {
-                    val maxDate = Calendar.getInstance()
-                    maxDate.set(endSelectedDate!!.year, endSelectedDate!!.monthOfYear - 1, endSelectedDate!!.dayOfMonth)
-                    datePickerDialog.maxDate = maxDate
-                }
                 datePickerDialog.showYearPickerFirst(true)
                 datePickerDialog.show(fragmentManager!!, "StartDatePickerDialog")
             }
@@ -175,6 +186,19 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
             }
         }
 
+        if(response!=null){
+            startDateEditText!!.setText("${response!!.start_datetime.year+1900}년 ${response!!.start_datetime.month+1}월 ${response!!.start_datetime.date}일")
+            startTimeEditText!!.setText("${StringUtil.addPaddingIfSingleDigit(response!!.start_datetime.hours)}:${StringUtil.addPaddingIfSingleDigit(response!!.start_datetime.minutes)}")
+            endDateEditText!!.setText("${response!!.end_datetime.year+1900}년 ${response!!.end_datetime.month+1}월 ${response!!.end_datetime.date}일")
+            endTimeEditText!!.setText("${StringUtil.addPaddingIfSingleDigit(response!!.end_datetime.hours)}:${StringUtil.addPaddingIfSingleDigit(response!!.end_datetime.minutes)}")
+            viewModel.setStartDateTime(response!!.start_datetime)
+            viewModel.setEndDateTime(response!!.end_datetime)
+            startSelectedDate = now!!.withYear(response!!.start_datetime.year+1900).withMonthOfYear(response!!.start_datetime.month+1).withDayOfMonth(response!!.start_datetime.date)
+            startSelectedDateTime = DateTime(response!!.start_datetime)
+            endSelectedDate = now!!.withYear(response!!.end_datetime.year+1900).withMonthOfYear(response!!.end_datetime.month+1).withDayOfMonth(response!!.end_datetime.date)
+            endSelectedDateTime = DateTime(response!!.end_datetime)
+
+        }
 
     }
 
@@ -191,6 +215,12 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
                 val intent = Intent(activity, LocationSearchActivity::class.java)
                 startActivityForResult(intent, NavigationUtil.REQUEST_MAP_SEARCH)
             }
+        }
+
+        if(response!=null){
+            viewModel.setCreateInfo(response!!.location_lat,response!!.location_lon,response!!.location,response!!.location_name)
+            setPromisePlace(response!!.location)
+            binding.root.create_promise_button.text = "약속 수정하기"
         }
     }
 
@@ -225,6 +255,12 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
             if (startDateEditText != null) {
                 startDateEditText!!.setText(year.toString() + "년 " + (monthOfYear + 1) + "월 " + dayOfMonth + "일")
             }
+            endDateEditText!!.text = null
+            endTimeEditText!!.text = null
+            endSelectedDate = null
+            endSelectedDateTime = null
+            viewModel.setEndDateTime(null)
+
         } else {
             endSelectedDate = now!!.withYear(year).withMonthOfYear(monthOfYear + 1).withDayOfMonth(dayOfMonth)
             // get date shit shit and set
@@ -258,7 +294,7 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
                 if (endTimeEditText != null) {
                     endTimeEditText!!.setText(StringUtil.addPaddingIfSingleDigit(hourOfDay) + ":" + StringUtil.addPaddingIfSingleDigit(minute))
                 }
-                val requestEndDateTime = endSelectedDate!!.withHourOfDay(endSelectedDateTime!!.hourOfDay).withMinuteOfHour(endSelectedDateTime!!.minuteOfHour).toDate()
+                val requestEndDateTime = endSelectedDate!!.withHourOfDay(endSelectedDateTime!!.hourOfDay).withMinuteOfHour(endSelectedDateTime!!.minuteOfHour).withSecondOfMinute(0).toDate()
                 viewModel.setEndDateTime(requestEndDateTime)
             }
         }
