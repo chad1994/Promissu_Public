@@ -1,7 +1,9 @@
 package com.simsimhan.promissu.detail
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Dialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.PointF
@@ -33,6 +35,8 @@ import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityDetailPromiseBinding
 import com.simsimhan.promissu.detail.adapter.DetailUserStatusAdapter
 import com.simsimhan.promissu.network.model.Promise
+import com.simsimhan.promissu.util.NavigationUtil
+import timber.log.Timber
 
 
 class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -60,6 +64,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private var userMarkerList = emptyList<Marker>()
     private var locationFlag = false //최초 현위치 갱신 시.
     private var meetingMarker = Marker()
+    private var attendanceMarker = Marker()
     private var meetingCircle = CircleOverlay()
 
     @SuppressLint("ClickableViewAccessibility")
@@ -159,6 +164,10 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         viewModel.longPressed.observe(this, Observer {
 //            TODO : ..
         })
+
+        viewModel.modifyButtonClicked.observe(this, Observer {
+            NavigationUtil.openModifyPromiseScreen(this,promise)
+        })
     }
 
     override fun onMapReady(naverMap: NaverMap) {
@@ -186,6 +195,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         viewModel.meetingLocation.observe(this, Observer {
             initTargetLocation(it, naverMap)
+            initAttendanceMarker(it,naverMap)
         })
 
         viewModel.trackingMode.observe(this, Observer {
@@ -214,6 +224,16 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         val cameraUpdate = CameraUpdate.scrollAndZoomTo(it, 16.0)
         naverMap.moveCamera(cameraUpdate)
+    }
+
+    private fun initAttendanceMarker(it:LatLng,naverMap: NaverMap){
+        val attendMarker = LayoutInflater.from(this).inflate(R.layout.view_marker_attendance, null)
+        attendanceMarker.apply {
+            position = it
+            map = naverMap
+            icon = OverlayImage.fromView(attendMarker)
+            anchor = PointF(0.5f, 0f)
+        }
     }
 
     private fun initMyLocationViewResource() {
@@ -389,5 +409,12 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             return
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == NavigationUtil.REQUEST_MODIFY_PROMISE && resultCode == Activity.RESULT_OK) {
+            ToastMessage("수정 완료 응답 넘어옴!")
+        }
     }
 }
