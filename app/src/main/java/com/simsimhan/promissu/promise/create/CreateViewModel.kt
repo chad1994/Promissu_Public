@@ -1,6 +1,7 @@
 package com.simsimhan.promissu.promise.create
 
 import android.os.Bundle
+import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.naver.maps.map.overlay.InfoWindow
@@ -80,10 +81,21 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
     val response: LiveData<Promise.Response>
         get() = _response
 
+    private val _isModify = MutableLiveData<Boolean>()
+    val isModify: LiveData<Boolean>
+        get() = _isModify
+
+    private val _modifyResponse = MutableLiveData<Boolean>() // TODO : 서버에서 응답 형태를 수정하여 Boolean -> Promise.Response 로 변경하여야 함
+    val modifyResponse: LiveData<Boolean>
+        get() = _modifyResponse
+
+    private val room_id = ObservableField<Int>()
+
     init {
         _toolbarTitle.value = "1단계"
         _description.postValue("설명 없음")
         token = PromissuApplication.diskCache!!.userToken
+        _isModify.value = false
     }
 
     fun setToolbarTitle(position: Int) {
@@ -118,7 +130,11 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
             _toastMessage.postValue("약속장소를 확인해주세요")
         } else {
             val request = Promise.Request(title.value, description.value, startTime.value, endTime.value, location.value, locationName.value, lat.value, lon.value)
-            createRoom(request)
+            if(_isModify.value!!){
+                modifyRoom(request)
+            }else{
+                createRoom(request)
+            }
         }
     }
 
@@ -139,6 +155,32 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
                     _toastMessage.postValue("해당 시간에 이미 약속이 있습니다.")
                     Timber.e(it)
                 }))
+    }
+
+    private fun modifyRoom(request:Promise.Request){
+        addDisposable(PromissuApplication.retrofit!!
+                .create(AuthAPI::class.java)
+                .modifyPromise("Bearer $token", room_id.get()!!,request)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    _toastMessage.postValue("수정 완료")
+                    _modifyResponse.postValue(true)
+                }, {
+                    //                    Timber.d("@@@ERROR code: "+(it as HttpException).code()) // test:: how to get http code from throwable
+                    _toastMessage.postValue("수정 오류")
+                    Timber.e(it)
+                }))
+    }
+
+    fun setModify(bool:Boolean,id: Int){
+        _isModify.value = bool
+        room_id.set(id)
+    }
+
+    fun setTitle(title:String){
+        _title.value = title
+        _titleValidate.value = title.length >=2
     }
 
     override fun onTextChanged(s: String) {
