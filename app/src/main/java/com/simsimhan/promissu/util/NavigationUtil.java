@@ -20,6 +20,7 @@ public class NavigationUtil {
     public static final int REQEUSET_LOGIN = 101;
     public static final int REQUEST_MAP_SEARCH = 102;
     public static final int REQUEST_CREATE_PROMISE = 103;
+    public static final int REQUEST_MODIFY_PROMISE = 104;
 
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9991;
 
@@ -61,6 +62,12 @@ public class NavigationUtil {
 //        Intent intent = new Intent(activity, CreatePromiseActivity.class);
         Intent intent = new Intent(activity, CreateActivity.class);
         activity.startActivityForResult(intent, REQUEST_CREATE_PROMISE);
+    }
+
+    public static void openModifyPromiseScreen(AppCompatActivity activity,Promise.Response promise){
+        Intent intent = new Intent(activity, CreateActivity.class);
+        intent.putExtra("promise", promise);
+        activity.startActivityForResult(intent,REQUEST_MODIFY_PROMISE);
     }
 
     public static void openMapScreen(Activity activity) {
