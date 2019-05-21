@@ -85,4 +85,11 @@ public interface AuthAPI {
     @GET("appointment/{room_id}/participants")
     Observable<List<Participant.Response>> getParticipants(@Header("Authorization") String token, @Path("room_id") int roomId);
 
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
+    @PUT("appointment/{room_id}")
+    Observable<Response<ResponseBody>> modifyPromise(@Header("Authorization") String token,@Path("room_id") int roomId, @Body Promise.Request promiseRequest);
+
 }
