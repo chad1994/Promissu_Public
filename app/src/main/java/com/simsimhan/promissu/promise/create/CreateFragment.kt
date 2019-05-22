@@ -128,7 +128,7 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
                         now.get(Calendar.YEAR),
                         now.get(Calendar.MONTH),
                         now.get(Calendar.DAY_OF_MONTH))
-                now.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH) + 1)
+                now.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH))
                 datePickerDialog.minDate = now
                 datePickerDialog.showYearPickerFirst(true)
                 datePickerDialog.show(fragmentManager!!, "StartDatePickerDialog")
@@ -274,17 +274,21 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
         if (view!!.tag == "StartTimePickerDialog") {
             startSelectedDateTime = now!!.withHourOfDay(hourOfDay)
                     .withMinuteOfHour(minute)
-            if (startTimeEditText != null) {
-                startTimeEditText!!.setText(StringUtil.addPaddingIfSingleDigit(hourOfDay) + ":" + StringUtil.addPaddingIfSingleDigit(minute))
+            if((startSelectedDate!!.isEqual(now))&&((now!!.hourOfDay+1>hourOfDay)||((now!!.hourOfDay+1==hourOfDay)&&(now!!.minuteOfHour>=minute)))){
+                Toast.makeText(requireContext(), "최소 1시간 이후로 설정해주세요", Toast.LENGTH_SHORT).show()
+            }else {
+                if (startTimeEditText != null) {
+                    startTimeEditText!!.setText(StringUtil.addPaddingIfSingleDigit(hourOfDay) + ":" + StringUtil.addPaddingIfSingleDigit(minute))
+                }
+                val requestStartDateTime = startSelectedDate!!.withHourOfDay(startSelectedDateTime!!.hourOfDay).withMinuteOfHour(startSelectedDateTime!!.minuteOfHour).withSecondOfMinute(0).toDate()
+                viewModel.setStartDateTime(requestStartDateTime)
+                // end 시간을 설정 후 start 변경 시 end 초기화
+                endTimeEditText!!.text = null
+                endDateEditText!!.text = null
+                endSelectedDate = null
+                endSelectedDateTime = null
+                viewModel.setEndDateTime(null)
             }
-            val requestStartDateTime = startSelectedDate!!.withHourOfDay(startSelectedDateTime!!.hourOfDay).withMinuteOfHour(startSelectedDateTime!!.minuteOfHour).withSecondOfMinute(0).toDate()
-            viewModel.setStartDateTime(requestStartDateTime)
-            // end 시간을 설정 후 start 변경 시 end 초기화
-            endTimeEditText!!.text = null
-            endDateEditText!!.text = null
-            endSelectedDate = null
-            endSelectedDateTime = null
-            viewModel.setEndDateTime(null)
         } else {
             endSelectedDateTime = now!!.withHourOfDay(hourOfDay)
                     .withMinuteOfHour(minute)
