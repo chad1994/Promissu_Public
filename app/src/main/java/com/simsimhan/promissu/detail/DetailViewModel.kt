@@ -29,6 +29,7 @@ import com.simsimhan.promissu.network.model.LocationEvent
 import com.simsimhan.promissu.network.model.Participant
 import com.simsimhan.promissu.network.model.Promise
 import com.simsimhan.promissu.util.SingleLiveEvent
+import com.simsimhan.promissu.util.StringUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.socket.client.IO
@@ -37,6 +38,7 @@ import org.joda.time.Seconds
 import org.json.JSONObject
 import timber.log.Timber
 import java.util.*
+import kotlin.collections.HashMap
 
 class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEventListener {
 
@@ -87,6 +89,10 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     val locationEvents: LiveData<HashMap<Int, LocationEvent>>
         get() = _locationEvents
 
+    private val _myLocationEvent = MutableLiveData<LocationEvent>()
+    val myLocationEvent : LiveData<LocationEvent>
+        get()= _myLocationEvent
+
     private val _dialogResponse = SingleLiveEvent<Any>()
     val dialogResponse: LiveData<Any>
         get() = _dialogResponse
@@ -131,6 +137,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         _attendMyMarker.value = false
         _isArrive.value = false
         _participants.value = emptyList()
+        _myLocationEvent.value = null
         val meetingLatLng = LatLng(promise.location_lat.toDouble(), promise.location_lon.toDouble())
         _meetingLocation.postValue(meetingLatLng)
         initRoomInfo()
@@ -145,7 +152,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
 
     private fun initRoomInfo() {
         title.set(promise.title)
-        startDate.set("" + (promise.start_datetime.month + 1) + "월 " + promise.start_datetime.date + "일 " + promise.start_datetime.hours + "시 " + promise.start_datetime.minutes + "분")
+        startDate.set("" + (promise.start_datetime.month + 1) + "월 " + promise.start_datetime.date + "일 " + promise.start_datetime.hours + "시 " + StringUtil.addPaddingIfSingleDigit(promise.start_datetime.minutes) + "분")
         locationName.set((promise.location_name))
     }
 
@@ -180,7 +187,6 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                                     myParticipation.set(it.participation)
                                 }
                             }
-
                             _participants.value = onNext.filterNot { it.participation == myParticipation.get() }.sortedWith(comparator = Participant.CompareByStatus())
                         },
                         { onError ->
@@ -243,6 +249,8 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
 
     private fun checkIsMyData() {
         if (_locationEvents.value!!.keys.contains(myParticipation.get())) { //내 키를 가지고 있고
+            _myLocationEvent.postValue(_locationEvents.value!![myParticipation.get()]) // 내 locationEvent 데이터 갱신
+
             if (_locationEvents.value!![myParticipation.get()]!!.status == 1) { //내 상태가 요청이 온 상태라면
                 _dialogResponse.call()
             }
