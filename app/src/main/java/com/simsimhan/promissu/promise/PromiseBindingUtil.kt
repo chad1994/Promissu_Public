@@ -25,8 +25,8 @@ fun setItemLeftTime(text: TextView, isPast: Boolean, response: Promise.Response)
         if (daysDifference.days == 0) {
             val hoursDifference = Hours.hoursBetween(now, promiseStartDate)
             val minuteDifference = Minutes.minutesBetween(now, promiseStartDate)
-            if (hoursDifference.hours <= 1) {
-                if (minuteDifference.minutes < 60) {
+            if (hoursDifference.hours < 1) {
+                if (response.status == 1) {
                     text.text = ""
                 } else {
                     text.text = minuteDifference.minutes.toString()
@@ -52,23 +52,17 @@ fun setItemLeftLabel(text: TextView, isPast: Boolean, response: Promise.Response
 
         if (daysDifference.days == 0) {
             val hoursDifference = Hours.hoursBetween(now, promiseStartDate)
-            val minuteDifference = Minutes.minutesBetween(now, promiseStartDate)
-            if (hoursDifference.hours <= 1) {
-                if (minuteDifference.minutes < 60) {
-                    if (minuteDifference.minutes <= 0) {
-                        text.text = "진행중"
-                        text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
-                    } else {
-                        text.text = "대기중"
-                        text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
-                    }
-                } else {
-                    text.text = "분 남음"
+            if (hoursDifference.hours < 1) {
+                if (response.status==1) {
+                    text.text = "출석하세요!"
                     text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
+                }else{
+                    text.text = "분 남음"
+                    text.setTextColor(ContextCompat.getColor(text.context, R.color.black))
                 }
             } else {
                 text.text = "시간 남음"
-                text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
+                text.setTextColor(ContextCompat.getColor(text.context, R.color.black))
             }
         } else {
             text.text = "일 남음"
