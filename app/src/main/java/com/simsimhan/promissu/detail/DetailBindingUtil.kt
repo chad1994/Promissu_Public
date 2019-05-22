@@ -114,3 +114,37 @@ fun setModifyButtonVisibility(imageButton : ImageButton, id : Long){
         imageButton.visibility = View.GONE
     }
 }
+
+@BindingAdapter("setModifyButtonVisibility2")
+fun setModifyButtonVisibility2(imageButton: ImageButton, status: Int){
+    if(status==0) {
+        imageButton.visibility = View.VISIBLE
+    }else{
+        imageButton.visibility = View.GONE
+    }
+}
+
+@BindingAdapter("setPromisePointButtonVisibility")
+fun setPromisePointButtonVisibility(imageButton: ImageButton,isSocketOpen: Boolean){
+    if(isSocketOpen){
+        imageButton.visibility = View.VISIBLE
+    }else{
+        imageButton.visibility= View.GONE
+    }
+}
+
+@BindingAdapter("setPromisePointTextVisibility")
+fun setPromisePointTextVisibility(text: TextView,isSocketOpen: Boolean){
+    if(isSocketOpen){
+        text.visibility = View.VISIBLE
+    }else{
+        text.visibility= View.GONE
+    }
+}
+
+@BindingAdapter("setPromisePointText")
+fun setPromisePointText(text:TextView,point : Int?){
+    if(point!=null){
+        text.text = ""+point
+    }
+}
