@@ -56,6 +56,7 @@
                 android:elevation="8dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="80dp"
+                setPromisePointButtonVisibility="@{viewModel.isSocketOpen}"
                 android:src="@drawable/ic_icon_promissu"
                 android:background="@drawable/round_button"/>
             <TextView
@@ -70,6 +71,8 @@
                 android:background="@drawable/round_shape_bg"
                 android:backgroundTint="@color/dark_hot_pink"
                 android:textColor="@color/white"
+                setPromisePointTextVisibility="@{viewModel.isSocketOpen}"
+                setPromisePointText="@{viewModel.myLocationEvent.point}"
                 android:text="4"/>
 
             <androidx.appcompat.widget.AppCompatImageButton

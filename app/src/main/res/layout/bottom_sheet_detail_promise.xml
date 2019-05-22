@@ -91,6 +91,7 @@
                     android:layout_marginTop="8dp"
                     android:onClick="@{listener.onClickModifyButton}"
                     setModifyButtonVisibility="@{viewModel.response.admin_id}"
+                    setModifyButtonVisibility2="@{viewModel.response.status}"
                     android:src="@drawable/ic_icon_modify"
                     android:background="@drawable/detail_white_round_button"
                     />
