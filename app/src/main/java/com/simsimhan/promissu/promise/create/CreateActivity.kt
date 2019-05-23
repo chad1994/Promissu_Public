@@ -3,6 +3,7 @@ package com.simsimhan.promissu.promise.create
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -22,6 +23,7 @@ import com.simsimhan.promissu.databinding.ActivityCreatePromiseBinding
 import com.simsimhan.promissu.network.model.Promise
 import com.simsimhan.promissu.util.NavigationUtil
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 class CreateActivity : AppCompatActivity() {
     private val NUM_ITEMS = 3
@@ -68,7 +70,8 @@ class CreateActivity : AppCompatActivity() {
 
         val actionBar = supportActionBar
         if (actionBar != null) {
-            actionBar.setDisplayShowHomeEnabled(true)
+//            actionBar.setDisplayShowHomeEnabled(true)
+
             actionBar.setDisplayHomeAsUpEnabled(true)
             actionBar.setDisplayShowTitleEnabled(false)
         }
@@ -83,13 +86,21 @@ class CreateActivity : AppCompatActivity() {
         })
 
         viewModel.modifyResponse.observe(this, Observer {
-            if(it){
                 val intent = Intent()
                 intent.putExtra("promise",it) // TODO : 응답 메세지를 보내는 형태로 변경 되어야 함 .
                 setResult(RESULT_OK, intent)
                 finish()
-            }
         })
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item!!.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun changeStatusBarColor() {
