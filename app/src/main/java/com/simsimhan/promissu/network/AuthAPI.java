@@ -90,6 +90,6 @@ public interface AuthAPI {
             "Content-Type: application/json"
     })
     @PUT("appointment/{room_id}")
-    Observable<Response<ResponseBody>> modifyPromise(@Header("Authorization") String token,@Path("room_id") int roomId, @Body Promise.Request promiseRequest);
+    Observable<Promise.Response> modifyPromise(@Header("Authorization") String token,@Path("room_id") int roomId, @Body Promise.Request promiseRequest);
 
 }
