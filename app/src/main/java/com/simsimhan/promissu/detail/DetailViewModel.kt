@@ -150,10 +150,15 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         socketDisconnect()
     }
 
+    fun updateResponseData(response : Promise.Response){
+        _response.value = response
+        initRoomInfo()
+    }
+
     private fun initRoomInfo() {
-        title.set(promise.title)
-        startDate.set("" + (promise.start_datetime.month + 1) + "월 " + promise.start_datetime.date + "일 " + promise.start_datetime.hours + "시 " + StringUtil.addPaddingIfSingleDigit(promise.start_datetime.minutes) + "분")
-        locationName.set((promise.location_name))
+        title.set(_response.value!!.title)
+        startDate.set("" + (_response.value!!.start_datetime.month + 1) + "월 " + _response.value!!.start_datetime.date + "일 " + _response.value!!.start_datetime.hours + "시 " + StringUtil.addPaddingIfSingleDigit(_response.value!!.start_datetime.minutes) + "분")
+        locationName.set((_response.value!!.location_name))
     }
 
     fun onClickedCurrentLocation() {
@@ -444,5 +449,4 @@ interface DetailEventListener {
     fun onClickModifyButton(view: View)
     fun onLongPressed(view: View, participant: Participant.Response, isAction: Boolean, millis: Long)
     fun onClickRequestLocation(partId: Int, nickname: String)
-
 }
