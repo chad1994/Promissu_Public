@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -31,11 +32,15 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import com.simsimhan.promissu.BuildConfig
+import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityDetailPromiseBinding
 import com.simsimhan.promissu.detail.adapter.DetailUserStatusAdapter
+import com.simsimhan.promissu.network.AuthAPI
 import com.simsimhan.promissu.network.model.Promise
 import com.simsimhan.promissu.util.NavigationUtil
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
 
@@ -414,7 +419,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == NavigationUtil.REQUEST_MODIFY_PROMISE && resultCode == Activity.RESULT_OK) {
-            ToastMessage("수정 완료 응답 넘어옴!")
+            val promise = data!!.getParcelableExtra<Promise.Response>("promise")
+            viewModel.updateResponseData(promise)
         }
     }
 }
