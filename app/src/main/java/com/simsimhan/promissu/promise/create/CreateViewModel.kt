@@ -85,8 +85,8 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
     val isModify: LiveData<Boolean>
         get() = _isModify
 
-    private val _modifyResponse = MutableLiveData<Boolean>() // TODO : 서버에서 응답 형태를 수정하여 Boolean -> Promise.Response 로 변경하여야 함
-    val modifyResponse: LiveData<Boolean>
+    private val _modifyResponse = MutableLiveData<Promise.Response>()
+    val modifyResponse: LiveData<Promise.Response>
         get() = _modifyResponse
 
     private val room_id = ObservableField<Int>()
@@ -165,9 +165,8 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     _toastMessage.postValue("수정 완료")
-                    _modifyResponse.postValue(true)
+                    _modifyResponse.postValue(it)
                 }, {
-                    //                    Timber.d("@@@ERROR code: "+(it as HttpException).code()) // test:: how to get http code from throwable
                     _toastMessage.postValue("수정 오류")
                     Timber.e(it)
                 }))
