@@ -4,6 +4,10 @@
         <variable
             name="viewModel"
             type="com.simsimhan.promissu.promise.create.CreateViewModel"/>
+
+        <variable
+            name="eventListener"
+            type="com.simsimhan.promissu.promise.create.CreateEventListener"/>
     </data>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"

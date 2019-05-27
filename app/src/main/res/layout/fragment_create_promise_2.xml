@@ -1,155 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <data>
+
         <variable
             name="viewModel"
-            type="com.simsimhan.promissu.promise.create.CreateViewModel"/>
+            type="com.simsimhan.promissu.promise.create.CreateViewModel" />
+
+        <variable
+            name="eventListener"
+            type="com.simsimhan.promissu.promise.create.CreateEventListener"/>
     </data>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="20dp"
-    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/create_question2_text"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black_1"
-        android:layout_marginTop="20dp"
-        android:textSize="22sp"
-        tools:text="@string/create_question_2" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="88dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-        <TextView
-            android:id="@+id/create_start_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="22sp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:textColor="#333333"
-            android:text="시작"
-            />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/promise_start_date_layout"
-            android:layout_width="0dp"
-            android:layout_marginLeft="33dp"
-            app:layout_constraintLeft_toRightOf="@id/create_start_text"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/promise_date">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/promise_start_date"
-                android:clickable="true"
-                android:focusable="false"
-                android:textSize="14sp"
-                android:textColor="@color/black_1"
+            <TextView
+                android:id="@+id/create_question2_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/promise_start_time_layout"
-            android:layout_marginTop="16dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/promise_start_date_layout"
-            app:layout_constraintLeft_toLeftOf="@id/promise_start_date_layout"
-            app:layout_constraintRight_toRightOf="parent"
-            android:hint="@string/promise_time">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/promise_start_time_edit_text"
-                android:clickable="true"
-                android:focusable="false"
-                android:textSize="14sp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:textColor="@color/black_1"
+                android:textSize="22sp"
+                tools:text="@string/create_question_2" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="88dp">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <TextView
+                    android:id="@+id/create_start_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="시작"
+                    android:textColor="#333333"
+                    android:textSize="22sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="@id/create_start_text"
-            app:layout_constraintRight_toRightOf="@id/create_start_text"
-            app:layout_constraintTop_toBottomOf="@id/create_start_text"
-            app:layout_constraintBottom_toTopOf="@id/create_end_text"
-            android:src="@drawable/ic_icon_create_promise_dividing_line"/>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/promise_start_date_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="33dp"
+                    android:hint="@string/promise_date"
+                    app:layout_constraintLeft_toRightOf="@id/create_start_text"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/promise_start_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:textColor="@color/black_1"
+                        android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/create_end_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="22sp"
-            app:layout_constraintTop_toBottomOf="@id/create_start_text"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginTop="130dp"
-            android:textColor="#333333"
-            android:text="종료"
-            />
+                </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/promise_end_date_layout"
-            android:layout_width="0dp"
-            android:layout_marginLeft="33dp"
-            app:layout_constraintLeft_toRightOf="@id/create_end_text"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@id/create_end_text"
-            android:layout_height="wrap_content"
-            android:hint="@string/promise_date">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/promise_start_time_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="@string/promise_time"
+                    app:layout_constraintLeft_toLeftOf="@id/promise_start_date_layout"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/promise_start_date_layout">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/promise_end_date"
-                android:clickable="true"
-                android:focusable="false"
-                android:textSize="14sp"
-                android:textColor="@color/black_1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/promise_start_time_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:textColor="@color/black_1"
+                        android:textSize="14sp" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/promise_end_time_layout"
-            android:layout_marginTop="16dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/promise_end_date_layout"
-            app:layout_constraintLeft_toLeftOf="@id/promise_end_date_layout"
-            app:layout_constraintRight_toRightOf="parent"
-            android:hint="@string/promise_time">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/promise_end_time_edit_text"
-                android:clickable="true"
-                android:focusable="false"
-                android:textSize="14sp"
-                android:textColor="@color/black_1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_icon_create_promise_dividing_line"
+                    app:layout_constraintBottom_toTopOf="@id/create_end_text"
+                    app:layout_constraintLeft_toLeftOf="@id/create_start_text"
+                    app:layout_constraintRight_toRightOf="@id/create_start_text"
+                    app:layout_constraintTop_toBottomOf="@id/create_start_text" />
 
 
+                <TextView
+                    android:id="@+id/create_end_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="130dp"
+                    android:text="종료"
+                    android:textColor="#333333"
+                    android:textSize="22sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/create_start_text" />
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/promise_end_date_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="33dp"
+                    android:hint="@string/promise_date"
+                    app:layout_constraintLeft_toRightOf="@id/create_end_text"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/create_end_text">
 
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/promise_end_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:textColor="@color/black_1"
+                        android:textSize="14sp" />
 
+                </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/promise_end_time_layout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:hint="@string/promise_time"
+                    app:layout_constraintLeft_toLeftOf="@id/promise_end_date_layout"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/promise_end_date_layout">
 
-</LinearLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/promise_end_time_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:textColor="@color/black_1"
+                        android:textSize="14sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/create_promise2_previous_button"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_gravity="start"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/round_shape_bg"
+                android:backgroundTint="@color/main_03"
+                android:onClick="@{()->eventListener.onDirectionButtonClicked(-1)}"
+                android:src="@drawable/ic_create_next_btn" />
+            <ImageButton
+                android:id="@+id/create_promise2_next_button"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/round_shape_bg"
+                android:backgroundTint="@color/main_03"
+                android:onClick="@{()->eventListener.onDirectionButtonClicked(1)}"
+                android:src="@drawable/ic_create_next_btn" />
+
+        </FrameLayout>
+    </LinearLayout>
 </layout>
