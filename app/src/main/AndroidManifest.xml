@@ -59,7 +59,8 @@
         <activity android:name=".promise.create.CreateActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="adjustResize"
+            >
         </activity>
         <activity
             android:name=".view.DummyTutorialActivity"
