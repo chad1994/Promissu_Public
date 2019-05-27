@@ -37,12 +37,12 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
     val description: LiveData<String>
         get() = _description
 
-    private val _startTime = MutableLiveData<Date>()
-    val startTime: LiveData<Date>
+    private val _startTime = MutableLiveData<String>()
+    val startTime: LiveData<String>
         get() = _startTime
 
-    private val _endTime = MutableLiveData<Date>()
-    val endTime: LiveData<Date>
+    private val _endTime = MutableLiveData<String>()
+    val endTime: LiveData<String>
         get() = _endTime
 
     private val _lat = MutableLiveData<Double>()
@@ -89,6 +89,10 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
     val modifyResponse: LiveData<Promise.Response>
         get() = _modifyResponse
 
+    private val _directionClicked = MutableLiveData<Int>()
+    val directionClicked: LiveData<Int>
+        get() = _directionClicked
+
     private val room_id = ObservableField<Int>()
 
     init {
@@ -113,11 +117,11 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
         _locationName.postValue(locationName)
     }
 
-    fun setStartDateTime(date: Date?) {
+    fun setStartDateTime(date: String?) {
         _startTime.postValue(date)
     }
 
-    fun setEndDateTime(date: Date?) {
+    fun setEndDateTime(date: String?) {
         _endTime.postValue(date)
     }
 
@@ -193,9 +197,14 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
         eventParams.putLong("user_id", user_id)
         PromissuApplication.firebaseAnalytics!!.logEvent("appointment_$event", eventParams)
     }
+
+
+    override fun onDirectionButtonClicked(i:Int) {
+        _directionClicked.postValue(i)
+    }
 }
 
 interface CreateEventListener {
-
+    fun onDirectionButtonClicked(i:Int)
     fun onTextChanged(s: String)
 }
