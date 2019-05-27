@@ -171,7 +171,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         })
 
         viewModel.modifyButtonClicked.observe(this, Observer {
-            NavigationUtil.openModifyPromiseScreen(this,promise)
+            NavigationUtil.openModifyPromiseScreen(this,viewModel.response.value)
         })
     }
 
