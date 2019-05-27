@@ -22,6 +22,8 @@ import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityCreatePromiseBinding
 import com.simsimhan.promissu.network.model.Promise
 import com.simsimhan.promissu.util.NavigationUtil
+import com.simsimhan.promissu.util.keyboardHide
+import com.simsimhan.promissu.util.keyboardShow
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -58,23 +60,32 @@ class CreateActivity : AppCompatActivity() {
         adapterViewPager = CreateFragmentPagerAdapter(supportFragmentManager)
         binding.toolbar.setTitleTextColor(resources.getColor(R.color.black))
         binding.vpPager.adapter = adapterViewPager
+
         binding.vpPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
                 viewModel.setToolbarTitle(position)
+                if(position==0){
+                    keyboardShow()
+                }else{
+                    keyboardHide()
+                }
             }
         })
+
         setSupportActionBar(binding.toolbar)
         changeStatusBarColor()
 
         val actionBar = supportActionBar
         if (actionBar != null) {
-//            actionBar.setDisplayShowHomeEnabled(true)
-
             actionBar.setDisplayHomeAsUpEnabled(true)
             actionBar.setDisplayShowTitleEnabled(false)
         }
+
+        viewModel.directionClicked.observe(this, Observer {
+            binding.vpPager.currentItem = binding.vpPager.currentItem+it
+        })
 
         viewModel.toastMessage.observe(this, Observer {
             Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
