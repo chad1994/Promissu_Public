@@ -227,7 +227,6 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
         if(response!=null){
             viewModel.setCreateInfo(response!!.location_lat,response!!.location_lon,response!!.location,response!!.location_name)
             setPromisePlace(response!!.location)
-            binding.root.create_promise_button.text = "약속 수정하기"
         }
     }
 
