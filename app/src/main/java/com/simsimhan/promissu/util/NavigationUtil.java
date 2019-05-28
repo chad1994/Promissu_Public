@@ -20,6 +20,7 @@ public class NavigationUtil {
     public static final int REQEUSET_LOGIN = 101;
     public static final int REQUEST_MAP_SEARCH = 102;
     public static final int REQUEST_CREATE_PROMISE = 103;
+    public static final int REQUEST_MODIFY_PROMISE = 104;
 
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9991;
 
@@ -30,8 +31,11 @@ public class NavigationUtil {
         // 사람들이 다 모이고, 약속이 시작되기를 기다리는 상태 -> (변경) 약속 시작 1시간 전
         PENDING(1),
 
-        // 약속 시간이 다 끝난 상태
-        CLOSED(2),
+        // 약속이 진행중인 상태
+        MEETING(2),
+
+        //약속 시간이 끝난 상태
+        CLOSED(3),
 
         // 약속이 삭제된 상태
         DELETED(-1);
@@ -58,6 +62,12 @@ public class NavigationUtil {
 //        Intent intent = new Intent(activity, CreatePromiseActivity.class);
         Intent intent = new Intent(activity, CreateActivity.class);
         activity.startActivityForResult(intent, REQUEST_CREATE_PROMISE);
+    }
+
+    public static void openModifyPromiseScreen(AppCompatActivity activity,Promise.Response promise){
+        Intent intent = new Intent(activity, CreateActivity.class);
+        intent.putExtra("promise", promise);
+        activity.startActivityForResult(intent,REQUEST_MODIFY_PROMISE);
     }
 
     public static void openMapScreen(Activity activity) {

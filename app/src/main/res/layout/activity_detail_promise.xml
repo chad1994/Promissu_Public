@@ -24,8 +24,7 @@
             <com.naver.maps.map.MapView
                 android:id="@+id/detail_activity_mapview"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </com.naver.maps.map.MapView>
+                android:layout_height="match_parent"></com.naver.maps.map.MapView>
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/detail_back_button"
@@ -48,6 +47,33 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="80dp"
                 android:background="@drawable/round_button" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/detail_promise_point_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="end"
+                android:elevation="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="80dp"
+                setPromisePointButtonVisibility="@{viewModel.isSocketOpen}"
+                android:src="@drawable/ic_icon_promissu"
+                android:background="@drawable/round_button"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="40dp"
+                android:layout_marginRight="73dp"
+                android:translationZ="10dp"
+                android:background="@drawable/round_shape_bg"
+                android:backgroundTint="@color/dark_hot_pink"
+                android:textColor="@color/white"
+                setPromisePointTextVisibility="@{viewModel.isSocketOpen}"
+                setPromisePointText="@{viewModel.myLocationEvent.point}"
+                android:text="4"/>
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/detail_current_location_button"

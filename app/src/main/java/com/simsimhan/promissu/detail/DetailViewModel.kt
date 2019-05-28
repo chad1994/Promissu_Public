@@ -2,9 +2,7 @@ package com.simsimhan.promissu.detail
 
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -31,6 +29,7 @@ import com.simsimhan.promissu.network.model.LocationEvent
 import com.simsimhan.promissu.network.model.Participant
 import com.simsimhan.promissu.network.model.Promise
 import com.simsimhan.promissu.util.SingleLiveEvent
+import com.simsimhan.promissu.util.StringUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.socket.client.IO
@@ -39,6 +38,7 @@ import org.joda.time.Seconds
 import org.json.JSONObject
 import timber.log.Timber
 import java.util.*
+import kotlin.collections.HashMap
 
 class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEventListener {
 
@@ -89,6 +89,10 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     val locationEvents: LiveData<HashMap<Int, LocationEvent>>
         get() = _locationEvents
 
+    private val _myLocationEvent = MutableLiveData<LocationEvent>()
+    val myLocationEvent : LiveData<LocationEvent>
+        get()= _myLocationEvent
+
     private val _dialogResponse = SingleLiveEvent<Any>()
     val dialogResponse: LiveData<Any>
         get() = _dialogResponse
@@ -113,6 +117,10 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     val longPressed: LiveData<Boolean>
         get() = _longPressed
 
+    private val _modifyButtonClicked = SingleLiveEvent<Any>()
+    val modifyButtonClicked : LiveData<Any>
+        get() = _modifyButtonClicked
+
 
     val title = ObservableField<String>()
     val startDate = ObservableField<String>()
@@ -129,6 +137,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         _attendMyMarker.value = false
         _isArrive.value = false
         _participants.value = emptyList()
+        _myLocationEvent.value = null
         val meetingLatLng = LatLng(promise.location_lat.toDouble(), promise.location_lon.toDouble())
         _meetingLocation.postValue(meetingLatLng)
         initRoomInfo()
@@ -141,10 +150,15 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         socketDisconnect()
     }
 
+    fun updateResponseData(response : Promise.Response){
+        _response.value = response
+        initRoomInfo()
+    }
+
     private fun initRoomInfo() {
-        title.set(promise.title)
-        startDate.set("" + (promise.start_datetime.month + 1) + "월 " + promise.start_datetime.date + "일 " + promise.start_datetime.hours + "시 " + promise.start_datetime.minutes + "분")
-        locationName.set((promise.location_name))
+        title.set(_response.value!!.title)
+        startDate.set("" + (_response.value!!.start_datetime.month + 1) + "월 " + _response.value!!.start_datetime.date + "일 " + _response.value!!.start_datetime.hours + "시 " + StringUtil.addPaddingIfSingleDigit(_response.value!!.start_datetime.minutes) + "분")
+        locationName.set((_response.value!!.location_name))
     }
 
     fun onClickedCurrentLocation() {
@@ -178,7 +192,6 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                                     myParticipation.set(it.participation)
                                 }
                             }
-
                             _participants.value = onNext.filterNot { it.participation == myParticipation.get() }.sortedWith(comparator = Participant.CompareByStatus())
                         },
                         { onError ->
@@ -218,7 +231,6 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
             map.forEach { map ->
                 Timber.d("@@@Data: " + map.toString())
             }
-            //TODO: info 조건 세분화 : 요청에 대해 나에게 온 요청인지 확인 후 응답, 응답에 대해 다른 인원에 대한 위치 변경 내용 갱신, 응답에 대해 거절된 경우 인지에 따른 view 갱신
         }
         socket.on("location.error") {
             Timber.d("@@@LOCATION ERROR: %s", it[0].toString())
@@ -242,6 +254,8 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
 
     private fun checkIsMyData() {
         if (_locationEvents.value!!.keys.contains(myParticipation.get())) { //내 키를 가지고 있고
+            _myLocationEvent.postValue(_locationEvents.value!![myParticipation.get()]) // 내 locationEvent 데이터 갱신
+
             if (_locationEvents.value!![myParticipation.get()]!!.status == 1) { //내 상태가 요청이 온 상태라면
                 _dialogResponse.call()
             }
@@ -270,6 +284,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     fun sendLocationRequest(partId: Int) {
         val jsonObject = JsonObject().apply {
             addProperty("appointment", promise.id)
+            addProperty("requester", myParticipation.get())
             addProperty("target", partId)
         }
         val jsonReq = JSONObject(jsonObject.toString())
@@ -335,9 +350,9 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
             override fun onTick(millisUntilFinished: Long) {
                 remainSeconds -= 1
                 if (remainSeconds % 60 < 10) {
-                    _timerString.postValue("약속 시작까지 " + remainSeconds / 60 + "분 0" + remainSeconds % 60 + "초 남았습니다")
+                    _timerString.postValue("" + remainSeconds / 60 + "분 0" + remainSeconds % 60 + "초 남았어요!")
                 } else {
-                    _timerString.postValue("약속 시작까지 " + remainSeconds / 60 + "분 " + remainSeconds % 60 + "초 남았습니다")
+                    _timerString.postValue("" + remainSeconds / 60 + "분 " + remainSeconds % 60 + "초 남았어요!")
                 }
             }
         }
@@ -409,23 +424,29 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                 _sendLocationRequest.postValue(Participant.Request(partId, nickname))
     }
 
-    override fun onLongPressed(view: View, participant: Participant.Response,isAction: Boolean, millis: Long) {
-        _longPressed.value = isAction
-        if(isAction) {
-            requestMillis.set(millis)
-        }else{
-            if(millis - requestMillis.get()!! > 2000){
-                _toastMsg.postValue("요청!")
-            }else{
-                _toastMsg.postValue("요청시간 미달")
+    override fun onLongPressed(view: View, participant: Participant.Response, isAction: Boolean, millis: Long) {
+        if (_isSocketOpen.value!!) {
+            _longPressed.value = isAction
+            if (isAction) {
+                requestMillis.set(millis)
+            } else {
+                if (millis - requestMillis.get()!! > 2000) {
+                    _toastMsg.postValue("요청!")
+                } else {
+                    _toastMsg.postValue("요청시간 미달")
+                }
             }
         }
+    }
+
+    override fun onClickModifyButton(view: View) {
+        _modifyButtonClicked.call()
     }
 }
 
 interface DetailEventListener {
     fun onClickInviteButton(view: View)
-    fun onLongPressed(view:View,participant: Participant.Response,isAction: Boolean,millis:Long)
+    fun onClickModifyButton(view: View)
+    fun onLongPressed(view: View, participant: Participant.Response, isAction: Boolean, millis: Long)
     fun onClickRequestLocation(partId: Int, nickname: String)
-
 }

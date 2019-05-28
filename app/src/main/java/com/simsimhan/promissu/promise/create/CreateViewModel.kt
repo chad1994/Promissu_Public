@@ -1,6 +1,7 @@
 package com.simsimhan.promissu.promise.create
 
 import android.os.Bundle
+import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.naver.maps.map.overlay.InfoWindow
@@ -36,12 +37,12 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
     val description: LiveData<String>
         get() = _description
 
-    private val _startTime = MutableLiveData<Date>()
-    val startTime: LiveData<Date>
+    private val _startTime = MutableLiveData<String>()
+    val startTime: LiveData<String>
         get() = _startTime
 
-    private val _endTime = MutableLiveData<Date>()
-    val endTime: LiveData<Date>
+    private val _endTime = MutableLiveData<String>()
+    val endTime: LiveData<String>
         get() = _endTime
 
     private val _lat = MutableLiveData<Double>()
@@ -80,10 +81,25 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
     val response: LiveData<Promise.Response>
         get() = _response
 
+    private val _isModify = MutableLiveData<Boolean>()
+    val isModify: LiveData<Boolean>
+        get() = _isModify
+
+    private val _modifyResponse = MutableLiveData<Promise.Response>()
+    val modifyResponse: LiveData<Promise.Response>
+        get() = _modifyResponse
+
+    private val _directionClicked = MutableLiveData<Int>()
+    val directionClicked: LiveData<Int>
+        get() = _directionClicked
+
+    private val room_id = ObservableField<Int>()
+
     init {
         _toolbarTitle.value = "1단계"
         _description.postValue("설명 없음")
         token = PromissuApplication.diskCache!!.userToken
+        _isModify.value = false
     }
 
     fun setToolbarTitle(position: Int) {
@@ -101,11 +117,11 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
         _locationName.postValue(locationName)
     }
 
-    fun setStartDateTime(date: Date?) {
+    fun setStartDateTime(date: String?) {
         _startTime.postValue(date)
     }
 
-    fun setEndDateTime(date: Date?) {
+    fun setEndDateTime(date: String?) {
         _endTime.postValue(date)
     }
 
@@ -118,7 +134,11 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
             _toastMessage.postValue("약속장소를 확인해주세요")
         } else {
             val request = Promise.Request(title.value, description.value, startTime.value, endTime.value, location.value, locationName.value, lat.value, lon.value)
-            createRoom(request)
+            if(_isModify.value!!){
+                modifyRoom(request)
+            }else{
+                createRoom(request)
+            }
         }
     }
 
@@ -141,6 +161,31 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
                 }))
     }
 
+    private fun modifyRoom(request:Promise.Request){
+        addDisposable(PromissuApplication.retrofit!!
+                .create(AuthAPI::class.java)
+                .modifyPromise("Bearer $token", room_id.get()!!,request)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    _toastMessage.postValue("수정 완료")
+                    _modifyResponse.postValue(it)
+                }, {
+                    _toastMessage.postValue("수정 오류")
+                    Timber.e(it)
+                }))
+    }
+
+    fun setModify(bool:Boolean,id: Int){
+        _isModify.value = bool
+        room_id.set(id)
+    }
+
+    fun setTitle(title:String){
+        _title.value = title
+        _titleValidate.value = title.length >=2
+    }
+
     override fun onTextChanged(s: String) {
         _title.postValue(s)
         _titleValidate.value = s.length >= 2
@@ -152,9 +197,14 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
         eventParams.putLong("user_id", user_id)
         PromissuApplication.firebaseAnalytics!!.logEvent("appointment_$event", eventParams)
     }
+
+
+    override fun onDirectionButtonClicked(i:Int) {
+        _directionClicked.postValue(i)
+    }
 }
 
 interface CreateEventListener {
-
+    fun onDirectionButtonClicked(i:Int)
     fun onTextChanged(s: String)
 }

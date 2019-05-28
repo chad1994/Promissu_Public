@@ -1,47 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <data>
+
         <variable
             name="viewModel"
             type="com.simsimhan.promissu.promise.create.CreateViewModel" />
+
         <variable
             name="eventListener"
-            type="com.simsimhan.promissu.promise.create.CreateEventListener"/>
+            type="com.simsimhan.promissu.promise.create.CreateEventListener" />
     </data>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/create_question1_text"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textColor="@color/black_1"
-            android:textSize="22sp"
-            tools:text="@string/create_question_1" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/promise_title_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="58dp"
-            app:errorEnabled="true"
-            setErrorMessage="@{viewModel.title}"
-            android:hint="@string/promise_title">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/promise_title_edit_text"
+            <TextView
+                android:id="@+id/create_question1_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                onTitleChanged="@{eventListener}"
+                android:layout_marginTop="20dp"
                 android:textColor="@color/black_1"
-                android:textSize="14sp" />
+                android:textSize="22sp"
+                tools:text="@string/create_question_1" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/promise_title_layout"
+                setErrorMessage="@{viewModel.title}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="58dp"
+                android:hint="@string/promise_title"
+                app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/promise_title_edit_text"
+                    onTitleChanged="@{eventListener}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_1"
+                    android:textSize="14sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/create_promise1_next_button"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginBottom="24dp"
+            android:onClick="@{()->eventListener.onDirectionButtonClicked(1)}"
+            android:src="@drawable/ic_create_next_btn"
+            android:background="@drawable/round_shape_bg"
+            android:backgroundTint="@color/main_03"/>
     </LinearLayout>
 </layout>

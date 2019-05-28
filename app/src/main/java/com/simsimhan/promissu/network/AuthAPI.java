@@ -61,7 +61,7 @@ public interface AuthAPI {
             "Accept: application/json",
             "Content-Type: application/json"
     })
-    @DELETE("participation/left/{room_id}")
+    @DELETE("participation/{room_id}")
     Observable<Response<ResponseBody>> leftAppointment(@Header("Authorization") String token, @Path("room_id") int roomId);
 
     @Headers({
@@ -75,7 +75,7 @@ public interface AuthAPI {
             "Accept: application/json",
             "Content-Type: application/json"
     })
-    @POST("participation/join/{room_id}")
+    @POST("participation/{room_id}")
     Observable<Promise.Response> enterPromise(@Header("Authorization") String token, @Path("room_id") String roomId);
 
     @Headers({
@@ -84,5 +84,12 @@ public interface AuthAPI {
     })
     @GET("appointment/{room_id}/participants")
     Observable<List<Participant.Response>> getParticipants(@Header("Authorization") String token, @Path("room_id") int roomId);
+
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
+    @PUT("appointment/{room_id}")
+    Observable<Promise.Response> modifyPromise(@Header("Authorization") String token,@Path("room_id") int roomId, @Body Promise.Request promiseRequest);
 
 }

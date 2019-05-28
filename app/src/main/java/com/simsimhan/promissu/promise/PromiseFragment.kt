@@ -18,6 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.simsimhan.promissu.BuildConfig
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
+import com.simsimhan.promissu.cache.DiskCache
 import com.simsimhan.promissu.databinding.FragmentPromiseListBinding
 import com.simsimhan.promissu.network.AuthAPI
 import com.simsimhan.promissu.util.NavigationUtil
@@ -65,7 +66,11 @@ class PromiseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         if (!isPastPromise) {
             viewModel.deleteRoom.observe(this, Observer {
-                buildDeleteDialog(it.id)
+                if(it.admin_id!=PromissuApplication.diskCache!!.userId){
+                    buildLeftDialog(it.id)
+                }else {
+                    buildDeleteDialog(it.id)
+                }
             })
         }
 
@@ -145,7 +150,7 @@ class PromiseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
     }
 
-    private fun buildDeleteDialog(room_id: Int) {
+    private fun buildLeftDialog(room_id:Int){
         val dialog = Dialog(context)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_request)
@@ -163,6 +168,54 @@ class PromiseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                     PromissuApplication.retrofit!!
                             .create(AuthAPI::class.java)
                             .leftAppointment("Bearer " + PromissuApplication.diskCache!!.userToken, room_id)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({ onNext ->
+                                if (onNext.code() == 200) {
+                                    //
+                                    if (!BuildConfig.DEBUG) {
+                                        val eventParams = Bundle()
+                                        eventParams.putInt("room_id", room_id)
+                                        eventParams.putLong("user_id", PromissuApplication.diskCache!!.userId)
+                                        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_left", eventParams)
+                                    }
+                                    fetch(isPastPromise)
+                                    dialog.dismiss()
+                                } else if (onNext.code() == 401) {
+                                    Toast.makeText(context, "나가기 권한이 없습니다.", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(context, "약속 나가기에 실패 했습니다. 잠시후 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+                                }
+                            }, {
+                                if (BuildConfig.DEBUG) {
+                                    Toast.makeText(context, "나가기 에러", Toast.LENGTH_SHORT).show()
+                                }
+                                dialog.dismiss()
+                            }))
+        }
+        btnCancel.setOnClickListener { dialog.dismiss() }
+        dialog.setCancelable(false)
+        dialog.show()
+    }
+
+    private fun buildDeleteDialog(room_id: Int) {
+        val dialog = Dialog(context)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_request)
+        val text1 = dialog.findViewById<TextView>(R.id.dialog_text1)
+        val text2 = dialog.findViewById<TextView>(R.id.dialog_text2)
+        val btnCancel = dialog.findViewById<Button>(R.id.dialog_button_cancel)
+        val btnAccept = dialog.findViewById<Button>(R.id.dialog_button_accept)
+        text1.text = "정말 약속을"
+        text2.text = "삭제 하시겠습니까?"
+        btnAccept.text = "삭제"
+        btnCancel.text = "취소"
+        btnAccept.setOnClickListener {
+            // successfully delete room
+            disposables.add(
+                    PromissuApplication.retrofit!!
+                            .create(AuthAPI::class.java)
+                            .deleteAppointment("Bearer " + PromissuApplication.diskCache!!.userToken, room_id)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({ onNext ->

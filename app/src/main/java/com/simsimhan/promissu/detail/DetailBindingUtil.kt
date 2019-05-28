@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
+import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.detail.adapter.DetailUserStatusAdapter
 import com.simsimhan.promissu.network.model.Participant
@@ -102,5 +103,48 @@ fun setLottieAnim(lottie:LottieAnimationView , boolean: Boolean){
     }else{
         lottie.cancelAnimation()
         lottie.visibility = View.GONE
+    }
+}
+
+@BindingAdapter("setModifyButtonVisibility")
+fun setModifyButtonVisibility(imageButton : ImageButton, id : Long){
+    if(id==PromissuApplication.diskCache!!.userId){
+        imageButton.visibility = View.VISIBLE
+    }else{
+        imageButton.visibility = View.GONE
+    }
+}
+
+@BindingAdapter("setModifyButtonVisibility2")
+fun setModifyButtonVisibility2(imageButton: ImageButton, status: Int){
+    if(status==0) {
+        imageButton.visibility = View.VISIBLE
+    }else{
+        imageButton.visibility = View.GONE
+    }
+}
+
+@BindingAdapter("setPromisePointButtonVisibility")
+fun setPromisePointButtonVisibility(imageButton: ImageButton,isSocketOpen: Boolean){
+    if(isSocketOpen){
+        imageButton.visibility = View.VISIBLE
+    }else{
+        imageButton.visibility= View.GONE
+    }
+}
+
+@BindingAdapter("setPromisePointTextVisibility")
+fun setPromisePointTextVisibility(text: TextView,isSocketOpen: Boolean){
+    if(isSocketOpen){
+        text.visibility = View.VISIBLE
+    }else{
+        text.visibility= View.GONE
+    }
+}
+
+@BindingAdapter("setPromisePointText")
+fun setPromisePointText(text:TextView,point : Int?){
+    if(point!=null){
+        text.text = ""+point
     }
 }

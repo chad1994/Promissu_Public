@@ -1,55 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="viewModel"
-            type="com.simsimhan.promissu.promise.create.CreateViewModel"/>
+            type="com.simsimhan.promissu.promise.create.CreateViewModel" />
+
+        <variable
+            name="eventListener"
+            type="com.simsimhan.promissu.promise.create.CreateEventListener" />
     </data>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp">
 
-
-
-    <TextView
-        android:id="@+id/create_question3_text"
+    <LinearLayout
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:textColor="@color/black_1"
-        android:textSize="22sp"
-        tools:text="@string/create_question_3" />
+        android:orientation="vertical">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_marginTop="16dp"
-        android:id="@+id/promise_location_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/promise_location">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/promise_location_edit_text"
-            android:textSize="14sp"
-            android:clickable="true"
-            android:focusable="false"
-            android:textColor="@color/black_1"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:padding="20dp">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/create_question3_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/black_1"
+                android:textSize="22sp"
+                tools:text="@string/create_question_3" />
 
-    <!--<RadioGroup-->
-        <!--android:id="@+id/radio_group"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginTop="20dp"-->
-        <!--android:orientation="horizontal">-->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/promise_location_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="@string/promise_location">
 
-        <!--<RadioButton-->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/promise_location_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:textColor="@color/black_1"
+                    android:textSize="14sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--<RadioGroup-->
+            <!--android:id="@+id/radio_group"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="20dp"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<RadioButton-->
             <!--android:id="@+id/rg_btn1"-->
             <!--android:layout_width="0dp"-->
             <!--android:layout_height="wrap_content"-->
@@ -61,7 +73,7 @@
             <!--android:text="1시간뒤"-->
             <!--android:textColor="@color/colorPrimary" />-->
 
-        <!--<RadioButton-->
+            <!--<RadioButton-->
             <!--android:id="@+id/rg_btn2"-->
             <!--android:layout_width="0dp"-->
             <!--android:layout_height="wrap_content"-->
@@ -74,7 +86,7 @@
             <!--android:text="2시간뒤"-->
             <!--android:textColor="@color/colorPrimary" />-->
 
-        <!--<RadioButton-->
+            <!--<RadioButton-->
             <!--android:id="@+id/rg_btn3"-->
             <!--android:layout_width="0dp"-->
             <!--android:layout_height="wrap_content"-->
@@ -85,38 +97,66 @@
             <!--android:gravity="center"-->
             <!--android:text="8시간뒤"-->
             <!--android:textColor="@color/colorPrimary" />-->
-    <!--</RadioGroup>-->
+            <!--</RadioGroup>-->
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
 
-        <!--<TextView-->
-            <!--app:layout_constraintLeft_toLeftOf="parent"-->
-            <!--app:layout_constraintRight_toRightOf="parent"-->
-            <!--app:layout_constraintTop_toTopOf="parent"-->
-            <!--app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--android:id="@+id/create_question_timer"-->
-            <!--android:layout_width="185dp"-->
-            <!--android:layout_height="185dp"-->
-            <!--android:text="7:00"-->
-            <!--android:textSize="45sp"-->
-            <!--android:textColor="@color/colorPrimary"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:gravity="center"-->
-            <!--android:background="@drawable/rounded_line_circle" />-->
+                <!--<TextView-->
+                <!--app:layout_constraintLeft_toLeftOf="parent"-->
+                <!--app:layout_constraintRight_toRightOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--android:id="@+id/create_question_timer"-->
+                <!--android:layout_width="185dp"-->
+                <!--android:layout_height="185dp"-->
+                <!--android:text="7:00"-->
+                <!--android:textSize="45sp"-->
+                <!--android:textColor="@color/colorPrimary"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:gravity="center"-->
+                <!--android:background="@drawable/rounded_line_circle" />-->
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/create_promise_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="약속 만들기"
-        android:onClick="@{()->viewModel.onClickCreateBtn()}"
-        android:textColor="@color/white"
-        app:backgroundTint="@color/colorPrimary" />
-</LinearLayout>
+        <FrameLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+
+            <ImageButton
+                android:background="@drawable/round_shape_bg"
+                android:backgroundTint="@color/main_03"
+                android:id="@+id/create_promise3_previous_button"
+                android:layout_gravity="start"
+                android:layout_height="55dp"
+                android:layout_marginBottom="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_width="55dp"
+                android:onClick="@{()->eventListener.onDirectionButtonClicked(-1)}"
+                android:src="@drawable/ic_create_next_btn" />
+
+            <Button
+                android:background="@drawable/round_shape_bg"
+                android:backgroundTint="@color/main_03"
+                android:id="@+id/create_promise_button"
+                android:layout_gravity="end"
+                android:layout_height="55dp"
+                android:onClick="@{()->viewModel.onClickCreateBtn()}"
+                android:layout_marginBottom="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_width="55dp"
+                android:text="완료"
+                android:textColor="@color/white"
+                android:elevation="10dp"
+                />
+
+        </FrameLayout>
+
+    </LinearLayout>
 </layout>

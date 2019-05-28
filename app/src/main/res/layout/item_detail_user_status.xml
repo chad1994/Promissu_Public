@@ -55,6 +55,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             setUserItemStatus="@{viewModel.locationEvents.get(participants.participation).status}"
+            android:background="@drawable/round_shape_bg"
             />
         <TextView
             android:id="@+id/item_detail_status_attend_complete_text"

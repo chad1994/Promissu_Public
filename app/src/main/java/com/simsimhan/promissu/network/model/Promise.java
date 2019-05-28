@@ -181,15 +181,15 @@ public class Promise {
     public static class Request {
         private String title;
         private String description;
-        private Date start_datetime;
-        private Date end_datetime;
+        private String start_datetime;
+        private String end_datetime;
         private String location;
         private String location_name;
         private Double location_lat;
         private Double location_lon;
 
 
-        public Request(String title, String description, Date start_datetime, Date end_datetime, String location, String location_name, Double location_lat, Double location_lon) {
+        public Request(String title, String description, String start_datetime, String end_datetime, String location, String location_name, Double location_lat, Double location_lon) {
             this.title = title;
             this.description = description;
             this.start_datetime = start_datetime;
@@ -216,19 +216,19 @@ public class Promise {
             this.description = description;
         }
 
-        public Date getStart_datetime() {
+        public String getStart_datetime() {
             return start_datetime;
         }
 
-        public void setStart_datetime(Date start_datetime) {
+        public void setStart_datetime(String start_datetime) {
             this.start_datetime = start_datetime;
         }
 
-        public Date getEnd_datetime() {
+        public String getEnd_datetime() {
             return end_datetime;
         }
 
-        public void setEnd_datetime(Date end_datetime) {
+        public void setEnd_datetime(String end_datetime) {
             this.end_datetime = end_datetime;
         }
 
