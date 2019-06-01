@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.simsimhan.promissu.BaseViewModel
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.network.AuthAPI
+import com.simsimhan.promissu.network.model.Appointment
 import com.simsimhan.promissu.network.model.Promise
 import com.simsimhan.promissu.util.NavigationUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -17,12 +18,12 @@ class PromiseViewModel : BaseViewModel(), PromiseItemEventListener {
 
     private val token: String
 
-    private val _onListLoadedPast = MutableLiveData<List<Promise.Response>>()
-    val onListLoadedPast: LiveData<List<Promise.Response>>
+    private val _onListLoadedPast = MutableLiveData<List<Appointment>>()
+    val onListLoadedPast: LiveData<List<Appointment>>
         get() = _onListLoadedPast
 
-    private val _onListLoadedRecent = MutableLiveData<List<Promise.Response>>()
-    val onListLoadedRecent: LiveData<List<Promise.Response>>
+    private val _onListLoadedRecent = MutableLiveData<List<Appointment>>()
+    val onListLoadedRecent: LiveData<List<Appointment>>
         get() = _onListLoadedRecent
 
     private val _errToastMsg = MutableLiveData<String>()
