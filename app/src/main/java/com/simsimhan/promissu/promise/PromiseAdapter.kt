@@ -7,10 +7,11 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ViewPromiseRowItemBinding
+import com.simsimhan.promissu.network.model.Appointment
 import com.simsimhan.promissu.network.model.Promise
 
 class PromiseAdapter(
-        private val items: MutableList<Promise.Response>,
+        private val items: MutableList<Appointment>,
         private val isPastPromise: Boolean,
         private val lifecycleOwner: LifecycleOwner,
         private val viewModel: PromiseViewModel)
@@ -46,7 +47,7 @@ class PromiseAdapter(
         return items.size
     }
 
-    fun reset(onNext: List<Promise.Response>) {
+    fun reset(onNext: List<Appointment>) {
         items.clear()
         items.addAll(onNext)
         notifyDataSetChanged()
@@ -55,7 +56,7 @@ class PromiseAdapter(
 
     internal class ItemViewHolder(private val itemBinding: ViewPromiseRowItemBinding) : RecyclerView.ViewHolder(itemBinding.root) {
 
-        fun bind(_viewModel: PromiseViewModel, _response: Promise.Response, _isPastPromise: Boolean, _lifecycleOwner: LifecycleOwner, _listener: PromiseItemEventListener) {
+        fun bind(_viewModel: PromiseViewModel, _response: Appointment, _isPastPromise: Boolean, _lifecycleOwner: LifecycleOwner, _listener: PromiseItemEventListener) {
             itemBinding.apply {
                 response = _response
                 lifecycleOwner = _lifecycleOwner
