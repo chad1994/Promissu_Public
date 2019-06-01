@@ -6,35 +6,8 @@ import android.os.Parcelable;
 import java.util.Date;
 
 public class Promise {
-//    {
-//        "id":2,
-//        "title": "테스트 모임3",
-//        "description": "안녕하세요",
-//        "deposit":null,
-//        "date":"2018-01-11T04:00:00.000Z",
-//        "participants":5,
-//        "location_lat":"37.499385",
-//        "location_lon":"127.029204",
-//        "admin_id":"996635036",
-//        "status":0,
-//        "createdAt": "2019-01-13T11:52:59.000Z",
-//        "updatedAt":"2019-01-13T11:52:59.000Z"
-//    }
 
     public static class Response implements Parcelable {
-        //        private final int id;
-//        private final String title;
-//        private final int participants;
-//        private final int waiting_time;
-//        private final String description;
-//        private final String admin_id;
-//        private final float location_lat;
-//        private final float location_lon;
-//        private final int status;
-//        private final Date start_datetime;
-//        private final Date end_datetime;
-//        private final Date createdAt;
-//        private final String location;
         private final int status;
         private final int id;
         private final String title;
