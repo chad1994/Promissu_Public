@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.simsimhan.promissu.R
+import com.simsimhan.promissu.network.model.Appointment
 import com.simsimhan.promissu.network.model.Promise
 import org.joda.time.DateTime
 import org.joda.time.Days
@@ -41,19 +42,36 @@ fun setItemLeftTime(text: TextView, isPast: Boolean, response: Promise.Response)
 }
 
 @BindingAdapter("setItemLeftLabel1", "setItemLeftLabel2")
-fun setItemLeftLabel(text: TextView, isPast: Boolean, response: Promise.Response) {
+fun setItemLeftLabel(text: TextView, isPast: Boolean, response: Appointment) {
     if (isPast) {
-        text.setTextColor(ContextCompat.getColor(text.context, R.color.black))
-        text.text = "" + (response.start_datetime.month + 1) + "." + (response.start_datetime.date)
+        when(response.status){
+            2->{
+                text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
+                text.text = "지각"
+            }
+            3->{
+                text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
+                text.text = "출석"
+            }
+            4->{
+                text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
+                text.text = "결석"
+            }
+            -1->{
+                text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
+                text.text = "삭제된 약속"
+            }
+        }
+
     } else {
         val now = DateTime()
-        val promiseStartDate = DateTime(response.start_datetime)
+        val promiseStartDate = DateTime(response.promise.start_datetime)
         val daysDifference = Days.daysBetween(now, promiseStartDate)
 
         if (daysDifference.days == 0) {
             val hoursDifference = Hours.hoursBetween(now, promiseStartDate)
             if (hoursDifference.hours < 1) {
-                if (response.status==1) {
+                if (response.promise.status==1) {
                     text.text = "출석하세요!"
                     text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
                 }else{
