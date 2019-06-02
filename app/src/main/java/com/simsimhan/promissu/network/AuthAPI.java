@@ -1,5 +1,6 @@
 package com.simsimhan.promissu.network;
 
+import com.simsimhan.promissu.network.model.Appointment;
 import com.simsimhan.promissu.network.model.FcmToken;
 import com.simsimhan.promissu.network.model.Participant;
 import com.simsimhan.promissu.network.model.Promise;
@@ -69,7 +70,7 @@ public interface AuthAPI {
             "Content-Type: application/json"
     })
     @GET("appointments")
-    Observable<List<Promise.Response>> getMyPromise(@Header("Authorization") String token, @Query("offset") int offset, @Query("limit") int limit, @Query("type") String type);
+    Observable<List<Appointment>> getMyPromise(@Header("Authorization") String token, @Query("offset") int offset, @Query("limit") int limit, @Query("type") String type);
 
     @Headers({
             "Accept: application/json",

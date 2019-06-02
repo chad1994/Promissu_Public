@@ -6,7 +6,7 @@
             type="com.simsimhan.promissu.promise.PromiseViewModel"/>
         <variable
             name="response"
-            type="com.simsimhan.promissu.network.model.Promise.Response"/>
+            type="com.simsimhan.promissu.network.model.Appointment"/>
         <variable
             name="listener"
             type="com.simsimhan.promissu.promise.PromiseItemEventListener"/>
@@ -21,8 +21,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     setContainerBg="@{isPast}"
-    android:onClick="@{(view)->listener.itemClickListener(view,response)}"
-    android:onLongClick="@{()->listener.itemLongCLickListener(response)}"
+    android:onClick="@{(view)->listener.itemClickListener(view,response.promise)}"
+    android:onLongClick="@{()->listener.itemLongCLickListener(response.promise)}"
     android:background="@color/background_grey"
     android:padding="24dp">
 
@@ -40,7 +40,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        android:text="@{response.title}" />
+        android:text="@{response.promise.title}" />
 
     <TextView
         android:id="@+id/item_time"
@@ -52,7 +52,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         setItemLeftTime1="@{isPast}"
-        setItemLeftTime2="@{response}"
+        setItemLeftTime2="@{response.promise}"
         tools:text="05" />
 
     <TextView
