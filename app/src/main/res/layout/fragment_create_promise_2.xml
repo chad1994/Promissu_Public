@@ -163,7 +163,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageButton
+            <Button
                 android:id="@+id/create_promise2_previous_button"
                 android:layout_width="55dp"
                 android:layout_height="55dp"
@@ -174,8 +174,10 @@
                 android:background="@drawable/round_shape_bg"
                 android:backgroundTint="@color/main_03"
                 android:onClick="@{()->eventListener.onDirectionButtonClicked(-1)}"
-                android:src="@drawable/ic_create_next_btn" />
-            <ImageButton
+                android:text="이전"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+            <Button
                 android:id="@+id/create_promise2_next_button"
                 android:layout_width="55dp"
                 android:layout_height="55dp"
@@ -186,7 +188,9 @@
                 android:background="@drawable/round_shape_bg"
                 android:backgroundTint="@color/main_03"
                 android:onClick="@{()->eventListener.onDirectionButtonClicked(1)}"
-                android:src="@drawable/ic_create_next_btn" />
+                android:text="다음"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
 
         </FrameLayout>
     </LinearLayout>

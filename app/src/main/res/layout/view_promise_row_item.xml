@@ -21,7 +21,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     setContainerBg="@{isPast}"
-    android:onClick="@{(view)->listener.itemClickListener(view,response.promise)}"
+    android:onClick="@{(view)->listener.itemClickListener(view,response.promise,isPast)}"
     android:onLongClick="@{()->listener.itemLongCLickListener(response.promise)}"
     android:background="@color/background_grey"
     android:padding="24dp">

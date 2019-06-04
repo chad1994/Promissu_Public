@@ -55,7 +55,7 @@
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
-        <ImageButton
+        <Button
             android:id="@+id/create_promise1_next_button"
             android:layout_width="55dp"
             android:layout_height="55dp"
@@ -64,7 +64,9 @@
             android:layout_marginRight="24dp"
             android:layout_marginBottom="24dp"
             android:onClick="@{()->eventListener.onDirectionButtonClicked(1)}"
-            android:src="@drawable/ic_create_next_btn"
+            android:text="다음"
+            android:textColor="@color/white"
+            android:textSize="16sp"
             android:background="@drawable/round_shape_bg"
             android:backgroundTint="@color/main_03"/>
     </LinearLayout>
