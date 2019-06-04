@@ -307,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(onNext -> {
                             // save token
-                            NavigationUtil.enterRoom(this, onNext);
+                            NavigationUtil.enterRoom(this, onNext,onNext.getStatus()==2);
                         }, onError -> {
                             if (BuildConfig.DEBUG) {
                                 Toast.makeText(this, "이미 시작했거나, 끝난 모임입니다.", Toast.LENGTH_SHORT).show();

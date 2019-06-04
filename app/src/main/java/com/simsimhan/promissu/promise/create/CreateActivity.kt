@@ -92,7 +92,7 @@ class CreateActivity : AppCompatActivity() {
         })
 
         viewModel.response.observe(this, Observer {
-            NavigationUtil.enterRoom(this, it)
+            NavigationUtil.enterRoom(this, it,it.status==2)
             finish()
         })
 

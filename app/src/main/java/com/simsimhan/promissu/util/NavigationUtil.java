@@ -32,10 +32,10 @@ public class NavigationUtil {
         PENDING(1),
 
         // 약속이 진행중인 상태
-        MEETING(2),
+//        MEETING(2),
 
         //약속 시간이 끝난 상태
-        CLOSED(3),
+        CLOSED(2),
 
         // 약속이 삭제된 상태
         DELETED(-1);
@@ -117,12 +117,15 @@ public class NavigationUtil {
         return string.length() > length ? string.substring(0, length) : string;
     }
 
-    public static void enterRoom(AppCompatActivity appCompatActivity, Promise.Response promise) {
+    public static void enterRoom(AppCompatActivity appCompatActivity, Promise.Response promise,Boolean isPast) {
 //        if (promise.getStatus() == PROMISE_STATUS.PENDING.getValue()) {
 //            openPendingScreen(appCompatActivity, promise);
 //        } else
         if (promise.getStatus() == PROMISE_STATUS.DELETED.getValue()) {
             Toast.makeText(appCompatActivity, "삭제된 방입니다.", Toast.LENGTH_SHORT).show();
+        } else if(isPast) {
+            // TODO : Open Promise Ranking Screen
+            Toast.makeText(appCompatActivity, "지난모임!", Toast.LENGTH_SHORT).show();
         } else {
             openPromiseDetailScreen(appCompatActivity, promise);
         }
