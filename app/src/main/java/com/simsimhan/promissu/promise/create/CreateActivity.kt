@@ -20,6 +20,7 @@ import com.simsimhan.promissu.BuildConfig
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityCreatePromiseBinding
+import com.simsimhan.promissu.network.model.Appointment
 import com.simsimhan.promissu.network.model.Promise
 import com.simsimhan.promissu.util.NavigationUtil
 import com.simsimhan.promissu.util.keyboardHide
@@ -92,7 +93,7 @@ class CreateActivity : AppCompatActivity() {
         })
 
         viewModel.response.observe(this, Observer {
-            NavigationUtil.enterRoom(this, it,it.status==2)
+            NavigationUtil.enterRoom(this, Appointment(it,0),it.status==2)
             finish()
         })
 

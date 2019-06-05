@@ -67,7 +67,7 @@ class PromiseViewModel : BaseViewModel(), PromiseItemEventListener {
                 }))
     }
 
-    override fun itemClickListener(view: View, response: Promise.Response,isPast: Boolean) {
+    override fun itemClickListener(view: View, response: Appointment,isPast: Boolean) {
             NavigationUtil.enterRoom(view.context as AppCompatActivity, response,isPast)
     }
 
@@ -84,6 +84,6 @@ class PromiseViewModel : BaseViewModel(), PromiseItemEventListener {
 }
 
 interface PromiseItemEventListener {
-    fun itemClickListener(view: View, response: Promise.Response,isPast: Boolean)
+    fun itemClickListener(view: View, response: Appointment,isPast: Boolean)
     fun itemLongCLickListener(response: Promise.Response): Boolean
 }

@@ -11,7 +11,9 @@ import com.simsimhan.promissu.MainActivity;
 import com.simsimhan.promissu.detail.PromiseDetailActivity;
 import com.simsimhan.promissu.login.LoginActivity;
 import com.simsimhan.promissu.map.LocationSearchActivity;
+import com.simsimhan.promissu.network.model.Appointment;
 import com.simsimhan.promissu.network.model.Promise;
+import com.simsimhan.promissu.pastdetail.DetailPastActivity;
 import com.simsimhan.promissu.promise.create.CreateActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -117,24 +119,30 @@ public class NavigationUtil {
         return string.length() > length ? string.substring(0, length) : string;
     }
 
-    public static void enterRoom(AppCompatActivity appCompatActivity, Promise.Response promise,Boolean isPast) {
+    public static void enterRoom(AppCompatActivity appCompatActivity, Appointment promise, Boolean isPast) {
 //        if (promise.getStatus() == PROMISE_STATUS.PENDING.getValue()) {
 //            openPendingScreen(appCompatActivity, promise);
 //        } else
         if (promise.getStatus() == PROMISE_STATUS.DELETED.getValue()) {
             Toast.makeText(appCompatActivity, "삭제된 방입니다.", Toast.LENGTH_SHORT).show();
         } else if(isPast) {
-            // TODO : Open Promise Ranking Screen
-            Toast.makeText(appCompatActivity, "지난모임!", Toast.LENGTH_SHORT).show();
+            openPromiseDetailPastScreen(appCompatActivity, promise);
         } else {
             openPromiseDetailScreen(appCompatActivity, promise);
         }
     }
 
-    private static void openPromiseDetailScreen(AppCompatActivity appCompatActivity, Promise.Response promise) {
+    private static void openPromiseDetailScreen(AppCompatActivity appCompatActivity, Appointment promise) {
         Intent intent = new Intent(appCompatActivity, PromiseDetailActivity.class);
+        intent.putExtra("promise", promise.getPromise());
+        appCompatActivity.startActivity(intent);
+    }
+
+    private static void openPromiseDetailPastScreen(AppCompatActivity appCompatActivity, Appointment promise) {
+        Intent intent = new Intent(appCompatActivity, DetailPastActivity.class);
         intent.putExtra("promise", promise);
         appCompatActivity.startActivity(intent);
+
     }
 
 }
