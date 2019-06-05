@@ -73,6 +73,10 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"/>
 
+        <activity android:name=".pastdetail.DetailPastActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"/>
+
         <activity android:name=".map.LocationSearchActivity">
         </activity>
 
