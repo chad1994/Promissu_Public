@@ -26,6 +26,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.kakao.auth.Session;
 import com.simsimhan.promissu.network.AuthAPI;
+import com.simsimhan.promissu.network.model.Appointment;
 import com.simsimhan.promissu.network.model.FcmToken;
 import com.simsimhan.promissu.promise.PromiseFragment;
 import com.simsimhan.promissu.util.DialogUtil;
@@ -307,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(onNext -> {
                             // save token
-                            NavigationUtil.enterRoom(this, onNext,onNext.getStatus()==2);
+                            NavigationUtil.enterRoom(this, new Appointment(onNext,0),onNext.getStatus()==2);
                         }, onError -> {
                             if (BuildConfig.DEBUG) {
                                 Toast.makeText(this, "이미 시작했거나, 끝난 모임입니다.", Toast.LENGTH_SHORT).show();
