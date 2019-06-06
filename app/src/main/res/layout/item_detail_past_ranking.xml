@@ -1,6 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-</LinearLayout>
+    <data>
+        <!--<variable-->
+        <!--name="rank"-->
+        <!--type=""/>-->
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="vertical"
+        android:background="@drawable/bg_circle_detail_past_item">
+
+        <TextView
+            android:id="@+id/item_detail_past_rank_num"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginLeft="12dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:lineSpacingExtra="16sp"
+            android:text="1등"
+            android:gravity="center"
+            android:background="@drawable/round_shape_bg"
+            android:backgroundTint="@color/colorStrong"
+            />
+
+        <TextView
+            android:id="@+id/item_detail_past_rank_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15.5sp"
+            android:textColor="@color/black"
+            android:lineSpacingExtra="7.5sp"
+            android:includeFontPadding="false"
+            android:text="준영초이준영"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/item_detail_past_rank_num"
+            android:layout_marginLeft="13dp"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
