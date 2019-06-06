@@ -16,7 +16,7 @@ import timber.log.Timber
 
 class PromiseViewModel : BaseViewModel(), PromiseItemEventListener {
 
-    private val token: String
+    val token: String = PromissuApplication.diskCache!!.userToken
 
     private val _onListLoadedPast = MutableLiveData<List<Appointment>>()
     val onListLoadedPast: LiveData<List<Appointment>>
@@ -41,11 +41,6 @@ class PromiseViewModel : BaseViewModel(), PromiseItemEventListener {
     private val _deleteRoom = MutableLiveData<Promise.Response>()
     val deleteRoom: LiveData<Promise.Response>
         get() = _deleteRoom
-
-
-    init {
-        token = PromissuApplication.diskCache!!.userToken
-    }
 
 
     fun fetch(isPastPromise: Boolean) {
