@@ -5,6 +5,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
+import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.network.model.Appointment
 import com.simsimhan.promissu.network.model.Promise
@@ -95,5 +96,14 @@ fun setContainerBg(container: ConstraintLayout, isPast: Boolean) {
         container.setBackgroundColor(ContextCompat.getColor(container.context, R.color.past_background_color))
     } else {
         container.setBackgroundColor(ContextCompat.getColor(container.context, R.color.background_grey))
+    }
+}
+
+@BindingAdapter("setAdminIconVisibility")
+fun setAdminIconVisibility(view:View, id:Long){
+    if(id==PromissuApplication.diskCache!!.userId){
+        view.visibility = View.VISIBLE
+    }else{
+        view.visibility = View.GONE
     }
 }
