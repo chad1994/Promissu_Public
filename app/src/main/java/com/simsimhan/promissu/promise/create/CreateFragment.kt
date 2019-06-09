@@ -28,6 +28,7 @@ import kotlinx.android.synthetic.main.fragment_create_promise_1.view.*
 import kotlinx.android.synthetic.main.fragment_create_promise_2.view.*
 import kotlinx.android.synthetic.main.fragment_create_promise_3.view.*
 import org.joda.time.DateTime
+import org.joda.time.Minutes
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -302,7 +303,10 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
                     .withMinuteOfHour(minute)
             if ((startSelectedDate == endSelectedDate) && (endSelectedDateTime!!.isBefore(startSelectedDateTime))) { //시작 종료일이 같고 종료시간이 시작시간보다 빠르다면
                 Toast.makeText(requireContext(), "시작 시간보다 종료 시간이 늦도록 설정해주세요", Toast.LENGTH_SHORT).show()
-            } else {
+            }else if((startSelectedDate == endSelectedDate) && (Minutes.minutesBetween(startSelectedDateTime,endSelectedDateTime).minutes<60)) {
+                Toast.makeText(requireContext(), "약속시간이 적어도 1시간 이상이 되도록 설저해주세요", Toast.LENGTH_SHORT).show()
+            }
+            else {
                 if (endTimeEditText != null) {
                     endTimeEditText!!.setText(StringUtil.addPaddingIfSingleDigit(hourOfDay) + ":" + StringUtil.addPaddingIfSingleDigit(minute))
                 }

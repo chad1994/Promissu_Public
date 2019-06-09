@@ -16,7 +16,7 @@ import timber.log.Timber
 
 class PromiseViewModel : BaseViewModel(), PromiseItemEventListener {
 
-    private val token: String
+    val token: String = PromissuApplication.diskCache!!.userToken
 
     private val _onListLoadedPast = MutableLiveData<List<Appointment>>()
     val onListLoadedPast: LiveData<List<Appointment>>
@@ -43,11 +43,6 @@ class PromiseViewModel : BaseViewModel(), PromiseItemEventListener {
         get() = _deleteRoom
 
 
-    init {
-        token = PromissuApplication.diskCache!!.userToken
-    }
-
-
     fun fetch(isPastPromise: Boolean) {
         addDisposable(PromissuApplication.retrofit!!
                 .create(AuthAPI::class.java)
@@ -67,8 +62,8 @@ class PromiseViewModel : BaseViewModel(), PromiseItemEventListener {
                 }))
     }
 
-    override fun itemClickListener(view: View, response: Promise.Response) {
-        NavigationUtil.enterRoom(view.context as AppCompatActivity, response)
+    override fun itemClickListener(view: View, response: Appointment,isPast: Boolean) {
+            NavigationUtil.enterRoom(view.context as AppCompatActivity, response,isPast)
     }
 
     override fun itemLongCLickListener(response: Promise.Response): Boolean {
@@ -84,6 +79,6 @@ class PromiseViewModel : BaseViewModel(), PromiseItemEventListener {
 }
 
 interface PromiseItemEventListener {
-    fun itemClickListener(view: View, response: Promise.Response)
+    fun itemClickListener(view: View, response: Appointment,isPast: Boolean)
     fun itemLongCLickListener(response: Promise.Response): Boolean
 }
