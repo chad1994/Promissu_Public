@@ -7,7 +7,6 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
-import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.kakao.kakaolink.v2.KakaoLinkResponse
@@ -218,20 +217,24 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
             socket.emit("location.join", jsonReq)
             Timber.d("@@@Connect on")
         }
+
         socket.on("location.info") {
             val jsonParser = JsonParser()
-            val data = jsonParser.parse("" + it[0]) as JsonArray
+            val data = jsonParser.parse(""+it[0])
             val gson = Gson()
-            val locationEvent = gson.fromJson(data, Array<LocationEvent>::class.java)
+            val locationResult = data.asJsonObject.get("result")
+            val locationEvent = gson.fromJson(data.asJsonObject.get("location_event"),Array<LocationEvent>::class.java)
             val map = HashMap<Int, LocationEvent>()
             locationEvent.forEach { event ->
                 map[event.partId] = event
             }
             _locationEvents.postValue(map)
+            Timber.d("@@@Result: "+locationResult)
             map.forEach { map ->
                 Timber.d("@@@Data: " + map.toString())
             }
         }
+
         socket.on("location.error") {
             Timber.d("@@@LOCATION ERROR: %s", it[0].toString())
         }
