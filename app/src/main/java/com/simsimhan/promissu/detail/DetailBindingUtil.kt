@@ -106,18 +106,9 @@ fun setLottieAnim(lottie:LottieAnimationView , boolean: Boolean){
     }
 }
 
-@BindingAdapter("setModifyButtonVisibility")
-fun setModifyButtonVisibility(imageButton : ImageButton, id : Long){
-    if(id==PromissuApplication.diskCache!!.userId){
-        imageButton.visibility = View.VISIBLE
-    }else{
-        imageButton.visibility = View.GONE
-    }
-}
-
-@BindingAdapter("setModifyButtonVisibility2")
-fun setModifyButtonVisibility2(imageButton: ImageButton, status: Int){
-    if(status==0) {
+@BindingAdapter("setModifyButtonVisibility","setModifyButtonVisibility2")
+fun setModifyButtonVisibility(imageButton : ImageButton, id : Long, status:Int){
+    if(status==0 && id==PromissuApplication.diskCache!!.userId) {
         imageButton.visibility = View.VISIBLE
     }else{
         imageButton.visibility = View.GONE
