@@ -420,11 +420,14 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     }
 
     override fun onClickRequestLocation(partId: Int, nickname: String) {
-        if (isSocketOpen.value!! && partId != myParticipation.get())
-            if (_locationEvents.value!![partId]!!.point <= 0)
-                _toastMsg.postValue("해당 사용자에게 더 이상 위치를 요청할 수 없습니다.")
-            else
-                _sendLocationRequest.postValue(Participant.Request(partId, nickname))
+//        if (isSocketOpen.value!! && partId != myParticipation.get())
+//            if (_locationEvents.value!![myParticipation.get()]!!.point <= 0) {
+//                _toastMsg.postValue("더 이상 위치를 요청할 수 없습니다. 요청권을 구매해주세요")
+//            }
+//            else {
+////                _sendLocationRequest.postValue(Participant.Request(partId, nickname))
+//                sendLocationRequest(partId)
+//            }
     }
 
     override fun onLongPressed(view: View, participant: Participant.Response, isAction: Boolean, millis: Long) {
@@ -433,9 +436,13 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
             if (isAction) {
                 requestMillis.set(millis)
             } else {
-                if (millis - requestMillis.get()!! > 2000) {
-                    _toastMsg.postValue("요청!")
-                } else {
+                if (millis - requestMillis.get()!! > 2000) { // 클릭 요청 시간 충족
+                    if (_locationEvents.value!![myParticipation.get()]!!.point <= 0) {
+                        _toastMsg.postValue("더 이상 위치를 요청할 수 없습니다. 요청권을 구매해주세요")
+                    }else{
+                        sendLocationRequest(participant.participation) // 요청
+                    }
+                } else { // 클릭 요청 시간 미달
                     _toastMsg.postValue("요청시간 미달")
                 }
             }
