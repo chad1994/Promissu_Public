@@ -145,10 +145,10 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             buildResponseDialog()
         })
 
-        viewModel.sendLocationRequest.observe(this, Observer {
-            //TODO : 상대방에게 요청 클릭 시
-            buildRequestDialog(it.nickname, it.partId)
-        })
+//        viewModel.sendLocationRequest.observe(this, Observer {
+//            //TODO : 상대방에게 요청 클릭 시
+//            buildRequestDialog(it.nickname, it.partId)
+//        }) // 요청권 방식 변경으로 인한 기능 변경
 
         viewModel.userMarkers.observe(this, Observer {
             userMarkerList.forEach { existingMarker ->

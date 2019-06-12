@@ -7,7 +7,6 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
-import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.kakao.kakaolink.v2.KakaoLinkResponse
@@ -218,20 +217,24 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
             socket.emit("location.join", jsonReq)
             Timber.d("@@@Connect on")
         }
+
         socket.on("location.info") {
             val jsonParser = JsonParser()
-            val data = jsonParser.parse("" + it[0]) as JsonArray
+            val data = jsonParser.parse(""+it[0])
             val gson = Gson()
-            val locationEvent = gson.fromJson(data, Array<LocationEvent>::class.java)
+            val locationResult = data.asJsonObject.get("result")
+            val locationEvent = gson.fromJson(data.asJsonObject.get("location_event"),Array<LocationEvent>::class.java)
             val map = HashMap<Int, LocationEvent>()
             locationEvent.forEach { event ->
                 map[event.partId] = event
             }
             _locationEvents.postValue(map)
+            Timber.d("@@@Result: "+locationResult)
             map.forEach { map ->
                 Timber.d("@@@Data: " + map.toString())
             }
         }
+
         socket.on("location.error") {
             Timber.d("@@@LOCATION ERROR: %s", it[0].toString())
         }
@@ -417,11 +420,14 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     }
 
     override fun onClickRequestLocation(partId: Int, nickname: String) {
-        if (isSocketOpen.value!! && partId != myParticipation.get())
-            if (_locationEvents.value!![partId]!!.point <= 0)
-                _toastMsg.postValue("해당 사용자에게 더 이상 위치를 요청할 수 없습니다.")
-            else
-                _sendLocationRequest.postValue(Participant.Request(partId, nickname))
+//        if (isSocketOpen.value!! && partId != myParticipation.get())
+//            if (_locationEvents.value!![myParticipation.get()]!!.point <= 0) {
+//                _toastMsg.postValue("더 이상 위치를 요청할 수 없습니다. 요청권을 구매해주세요")
+//            }
+//            else {
+////                _sendLocationRequest.postValue(Participant.Request(partId, nickname))
+//                sendLocationRequest(partId)
+//            }
     }
 
     override fun onLongPressed(view: View, participant: Participant.Response, isAction: Boolean, millis: Long) {
@@ -430,9 +436,13 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
             if (isAction) {
                 requestMillis.set(millis)
             } else {
-                if (millis - requestMillis.get()!! > 2000) {
-                    _toastMsg.postValue("요청!")
-                } else {
+                if (millis - requestMillis.get()!! > 2000) { // 클릭 요청 시간 충족
+                    if (_locationEvents.value!![myParticipation.get()]!!.point <= 0) {
+                        _toastMsg.postValue("더 이상 위치를 요청할 수 없습니다. 요청권을 구매해주세요")
+                    }else{
+                        sendLocationRequest(participant.participation) // 요청
+                    }
+                } else { // 클릭 요청 시간 미달
                     _toastMsg.postValue("요청시간 미달")
                 }
             }
