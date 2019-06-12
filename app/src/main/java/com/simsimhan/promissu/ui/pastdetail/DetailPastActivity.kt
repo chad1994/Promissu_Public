@@ -9,9 +9,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityDetailPastPromiseBinding
 import com.simsimhan.promissu.network.model.Appointment
+import com.simsimhan.promissu.ui.pastdetail.adapter.DetailPastAdapter
 
 class DetailPastActivity : AppCompatActivity() {
 
@@ -30,6 +33,11 @@ class DetailPastActivity : AppCompatActivity() {
         binding.apply {
             viewModel = this@DetailPastActivity.viewModel
             lifecycleOwner = this@DetailPastActivity
+        }
+
+        binding.detailPastRankingRv.apply{
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            adapter = DetailPastAdapter(this@DetailPastActivity, this@DetailPastActivity.viewModel)
         }
 
         setSupportActionBar(binding.detailPastToolbar)
