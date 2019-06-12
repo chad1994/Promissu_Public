@@ -1,18 +1,21 @@
 package com.simsimhan.promissu.network.model;
 
 import java.util.Comparator;
+import java.util.Date;
 
 public class Participant {
     public static class Response {
         private final int kakao_id;
         private final String nickname;
         private final int participation;
+        private final Date updatedAt;
         private int status = 0;
 
-        public Response(int kakao_id, String nickname, int participation, int status) {
+        public Response(int kakao_id, String nickname, int participation, Date updatedAt, int status) {
             this.kakao_id = kakao_id;
             this.nickname = nickname;
             this.participation = participation;
+            this.updatedAt = updatedAt;
             this.status = status;
         }
 
@@ -35,6 +38,12 @@ public class Participant {
         public void setStatus(int status) {
             this.status = status;
         }
+
+        public Date getUpdatedAt() {
+            return updatedAt;
+        }
+
+
     }
 
     public static class Request {
