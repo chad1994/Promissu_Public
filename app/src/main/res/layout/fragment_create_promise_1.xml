@@ -6,11 +6,11 @@
 
         <variable
             name="viewModel"
-            type="com.simsimhan.promissu.promise.create.CreateViewModel" />
+            type="com.simsimhan.promissu.ui.promise.create.CreateViewModel" />
 
         <variable
             name="eventListener"
-            type="com.simsimhan.promissu.promise.create.CreateEventListener" />
+            type="com.simsimhan.promissu.ui.promise.create.CreateEventListener" />
     </data>
 
     <LinearLayout

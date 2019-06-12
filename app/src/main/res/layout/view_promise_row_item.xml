@@ -5,13 +5,13 @@
     <data>
         <variable
             name="viewModel"
-            type="com.simsimhan.promissu.promise.PromiseViewModel"/>
+            type="com.simsimhan.promissu.ui.promise.PromiseViewModel"/>
         <variable
             name="response"
             type="com.simsimhan.promissu.network.model.Appointment"/>
         <variable
             name="listener"
-            type="com.simsimhan.promissu.promise.PromiseItemEventListener"/>
+            type="com.simsimhan.promissu.ui.promise.PromiseItemEventListener"/>
         <variable
             name="isPast"
             type="Boolean"/>
