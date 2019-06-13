@@ -35,16 +35,17 @@ class DetailPastAdapter(
     }
 
     override fun onBindViewHolder(holder: DetailPastViewHolder, position: Int) {
-        holder.bind(lifecycleOwner,list[position],viewModel)
+        holder.bind(lifecycleOwner,list[position],viewModel,position)
     }
 
 
     class DetailPastViewHolder(private val itemBinding: ItemDetailPastRankingBinding) : RecyclerView.ViewHolder(itemBinding.root){
-        fun bind(_lifecycleOwner: LifecycleOwner, _participant: Participant.Response, _viewModel: DetailPastViewModel){
+        fun bind(_lifecycleOwner: LifecycleOwner, _participant: Participant.Response, _viewModel: DetailPastViewModel,_position:Int){
             itemBinding.apply {
                 lifecycleOwner = _lifecycleOwner
                 participant = _participant
                 viewModel = _viewModel
+                position = _position
                 executePendingBindings()
             }
         }
