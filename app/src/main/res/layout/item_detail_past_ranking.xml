@@ -10,12 +10,16 @@
         <variable
             name="viewModel"
             type="com.simsimhan.promissu.ui.pastdetail.DetailPastViewModel"/>
+        <variable
+            name="position"
+            type="Integer"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="@drawable/bg_circle_detail_past_item"
+        android:background="@drawable/bg_circle_detail_past_item_purple"
+        setBackgroundColor="@{participant.status}"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:orientation="vertical">
@@ -25,11 +29,11 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginLeft="12dp"
-            android:background="@drawable/round_shape_bg"
-            android:backgroundTint="@color/colorStrong"
+            setIconBackgroundColor="@{participant.status}"
             android:gravity="center"
             android:lineSpacingExtra="16sp"
-            android:text="1등"
+            setRankingText="@{position}"
+            setRankingText2="@{participant.status}"
             android:textColor="@color/white"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"

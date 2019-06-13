@@ -141,7 +141,7 @@
                 android:layout_marginLeft="19dp"
                 android:includeFontPadding="false"
                 android:lineSpacingExtra="16sp"
-                android:text="00 명"
+                android:text="@{viewModel.participantNum}"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 app:layout_constraintLeft_toRightOf="@id/detail_past_user_iv"
