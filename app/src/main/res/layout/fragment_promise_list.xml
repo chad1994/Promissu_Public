@@ -5,7 +5,7 @@
 
         <variable
             name="viewModel"
-            type="com.simsimhan.promissu.promise.PromiseViewModel" />
+            type="com.simsimhan.promissu.ui.promise.PromiseViewModel" />
     </data>
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"

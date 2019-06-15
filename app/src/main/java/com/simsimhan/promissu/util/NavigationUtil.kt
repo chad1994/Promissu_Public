@@ -9,12 +9,12 @@
 //import android.widget.Toast
 //import androidx.appcompat.app.AppCompatActivity
 //import com.simsimhan.promissu.MainActivity
-//import com.simsimhan.promissu.detail.PromiseDetailActivity
-//import com.simsimhan.promissu.login.LoginActivity
-//import com.simsimhan.promissu.map.LocationSearchActivity
+//import com.simsimhan.promissu.ui.detail.PromiseDetailActivity
+//import com.simsimhan.promissu.ui.login.LoginActivity
+//import com.simsimhan.promissu.ui.map.LocationSearchActivity
 //import com.simsimhan.promissu.network.model.Promise
-//import com.simsimhan.promissu.promise.PendingPromiseActivity
-//import com.simsimhan.promissu.promise.create.CreateActivity
+//import com.simsimhan.promissu.ui.promise.PendingPromiseActivity
+//import com.simsimhan.promissu.ui.promise.create.CreateActivity
 //
 //object NavigationUtil {
 //

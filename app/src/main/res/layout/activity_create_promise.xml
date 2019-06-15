@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.simsimhan.promissu.promise.create.CreateViewModel"/>
+            type="com.simsimhan.promissu.ui.promise.create.CreateViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -38,7 +38,7 @@
                     android:textStyle="bold" />
             </androidx.appcompat.widget.Toolbar>
 
-            <com.simsimhan.promissu.promise.create.NonSwipeViewPager
+            <com.simsimhan.promissu.ui.promise.create.NonSwipeViewPager
                 android:id="@+id/vpPager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

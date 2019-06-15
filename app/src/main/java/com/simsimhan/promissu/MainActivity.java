@@ -28,7 +28,7 @@ import com.kakao.auth.Session;
 import com.simsimhan.promissu.network.AuthAPI;
 import com.simsimhan.promissu.network.model.Appointment;
 import com.simsimhan.promissu.network.model.FcmToken;
-import com.simsimhan.promissu.promise.PromiseFragment;
+import com.simsimhan.promissu.ui.promise.PromiseFragment;
 import com.simsimhan.promissu.util.DialogUtil;
 import com.simsimhan.promissu.util.NavigationUtil;
 

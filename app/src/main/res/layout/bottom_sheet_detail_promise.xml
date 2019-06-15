@@ -6,10 +6,10 @@
     <data>
         <variable
             name="viewModel"
-            type="com.simsimhan.promissu.detail.DetailViewModel" />
+            type="com.simsimhan.promissu.ui.detail.DetailViewModel" />
         <variable
             name="listener"
-            type="com.simsimhan.promissu.detail.DetailEventListener"/>
+            type="com.simsimhan.promissu.ui.detail.DetailEventListener"/>
     </data>
 
     <androidx.core.widget.NestedScrollView

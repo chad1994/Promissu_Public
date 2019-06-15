@@ -1,6 +1,6 @@
 package com.simsimhan.promissu.di
 
-import com.simsimhan.promissu.promise.PromiseViewModel
+import com.simsimhan.promissu.ui.promise.PromiseViewModel
 import org.koin.androidx.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 
