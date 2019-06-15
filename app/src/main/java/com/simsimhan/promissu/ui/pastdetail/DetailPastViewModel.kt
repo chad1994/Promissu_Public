@@ -50,13 +50,13 @@ class DetailPastViewModel(val promise: Appointment) : BaseViewModel(){
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { onNext ->
-                            participantNum.set((onNext.size).toString() + " 명")
-                            _participants.postValue(onNext)
+                            participantNum.set((StringUtil.addPaddingIfSingleDigit(onNext.size)).toString() + " 명")
+                            val sortedList = onNext.sortedWith(comparator = Participant.CompareByStatus())
+                            _participants.postValue(sortedList)
                         },
                         { onError ->
                             Timber.e(onError)
                         }
                 ))
-
     }
 }
