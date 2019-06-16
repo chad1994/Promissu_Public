@@ -48,11 +48,11 @@ fun setItemLeftLabel(text: TextView, isPast: Boolean, response: Appointment) {
         when(response.status){
             2->{
                 text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
-                text.text = "지각"
+                text.text = "출석"
             }
             3->{
                 text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
-                text.text = "출석"
+                text.text = "지각"
             }
             4->{
                 text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
