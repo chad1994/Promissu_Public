@@ -1,27 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:paddingTop="7dp"
-    android:background="@null"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+<layout>
+    <data>
+        <variable
+            name="viewModel"
+            type="com.simsimhan.promissu.ui.detail.DetailViewModel" />
+    </data>
 
-    <TextView
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="wrap_content"
-        android:layout_height="26dp"
-        android:background="@drawable/round_shape_marker_attendance"
-        android:textSize="16sp"
-        android:textColor="@color/dark_hot_pink"
-        android:lineSpacingExtra="16sp"
-        android:includeFontPadding="false"
-        android:paddingLeft="14dp"
-        android:paddingRight="14dp"
-        android:gravity="center_vertical"
-        android:elevation="10dp"
-        android:text="+25"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:orientation="vertical"
+        android:paddingTop="7dp">
+
+        <TextView
+            android:id="@+id/item_marker_attendance_text"
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:background="@drawable/round_shape_marker_attendance"
+            android:elevation="10dp"
+            android:gravity="center_vertical"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="16sp"
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp"
+            android:textColor="@color/dark_hot_pink"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
