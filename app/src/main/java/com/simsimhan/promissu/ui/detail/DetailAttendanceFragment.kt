@@ -8,15 +8,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import com.simsimhan.promissu.databinding.FragmentDetailAttendanceBinding
 
-class DetailAttendanceFragment : Fragment(){
+
+class DetailAttendanceFragment : Fragment() {
 
     private lateinit var binding: ViewDataBinding
     private lateinit var viewModel: DetailViewModel
 
     companion object {
-        fun newInstance() :Fragment{
+        fun newInstance(): Fragment {
             val fragment = DetailAttendanceFragment()
             val args = Bundle()
             fragment.arguments = args
@@ -27,16 +29,16 @@ class DetailAttendanceFragment : Fragment(){
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-//        viewModel = ViewModelProviders.of(activity,)
+        viewModel = ViewModelProviders.of(activity!!).get(DetailViewModel::class.java)
+
         binding = FragmentDetailAttendanceBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = this@DetailAttendanceFragment
         }
 
 
         (binding as FragmentDetailAttendanceBinding).detailAttendanceCl.setOnTouchListener { v, event ->
-            if(event.action==MotionEvent.ACTION_DOWN){
+            if (event.action == MotionEvent.ACTION_DOWN) {
                 activity!!.onBackPressed()
-                // TODO : promise detail activity 의 fragmentLayout 의 색상 원래대로 변경할 방법 모색.
             }
             true
         }
@@ -50,7 +52,5 @@ class DetailAttendanceFragment : Fragment(){
         return binding.root
 
     }
-
-
 
 }
