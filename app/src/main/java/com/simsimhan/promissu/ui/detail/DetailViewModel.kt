@@ -180,7 +180,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     fun fetchParticipants() {
         addDisposable(PromissuApplication.retrofit!!
                 .create(AuthAPI::class.java)
-                .getParticipants("Bearer " + PromissuApplication.diskCache!!.userToken, promise.id)
+                .getParticipants(PromissuApplication.getVersionInfo(),"Bearer " + PromissuApplication.diskCache!!.userToken, promise.id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

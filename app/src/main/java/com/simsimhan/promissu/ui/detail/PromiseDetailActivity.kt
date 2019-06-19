@@ -37,7 +37,6 @@ import com.simsimhan.promissu.databinding.ViewMarkerAttendanceBinding
 import com.simsimhan.promissu.network.model.Promise
 import com.simsimhan.promissu.ui.detail.adapter.DetailUserStatusAdapter
 import com.simsimhan.promissu.util.NavigationUtil
-import timber.log.Timber
 
 
 class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -254,11 +253,11 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             val manager = supportFragmentManager
             val transaction = manager.beginTransaction()
                     .setCustomAnimations(
-                    R.anim.slide_in_top,
-                    R.anim.slide_out_top,
-                    R.anim.slide_in_bottom,
-                    R.anim.slide_out_bottom
-            )
+                            R.anim.slide_in_top,
+                            R.anim.slide_out_top,
+                            R.anim.slide_in_bottom,
+                            R.anim.slide_out_bottom
+                    )
             transaction.add(binding.detailActivityContainer.id, detailAttendanceFragment, "AttendanceFragment")
             transaction.addToBackStack(null)
             transaction.commit()
@@ -450,6 +449,17 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         if (requestCode == NavigationUtil.REQUEST_MODIFY_PROMISE && resultCode == Activity.RESULT_OK) {
             val promise = data!!.getParcelableExtra<Promise.Response>("promise")
             viewModel.updateResponseData(promise)
+        }
+    }
+
+    override fun onBackPressed() {
+        val count = supportFragmentManager.backStackEntryCount
+
+        if (count == 0) {
+            super.onBackPressed()
+        } else {
+            supportFragmentManager.popBackStack()
+            binding.detailActivityContainer.setBackgroundColor(resources.getColor(R.color.zxing_transparent))
         }
     }
 }
