@@ -166,7 +166,7 @@ class PromiseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             disposables.add(
                     PromissuApplication.retrofit!!
                             .create(AuthAPI::class.java)
-                            .leftAppointment("Bearer " + PromissuApplication.diskCache!!.userToken, room_id)
+                            .leftAppointment(PromissuApplication.getVersionInfo(),"Bearer " + PromissuApplication.diskCache!!.userToken, room_id)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({ onNext ->
@@ -214,7 +214,7 @@ class PromiseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             disposables.add(
                     PromissuApplication.retrofit!!
                             .create(AuthAPI::class.java)
-                            .deleteAppointment("Bearer " + PromissuApplication.diskCache!!.userToken, room_id)
+                            .deleteAppointment(PromissuApplication.getVersionInfo(),"Bearer " + PromissuApplication.diskCache!!.userToken, room_id)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({ onNext ->

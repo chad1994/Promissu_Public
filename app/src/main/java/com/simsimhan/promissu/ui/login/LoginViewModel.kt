@@ -9,6 +9,7 @@ import com.simsimhan.promissu.network.AuthAPI
 import com.simsimhan.promissu.network.Login
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import retrofit2.HttpException
 import timber.log.Timber
 
 class LoginViewModel : BaseViewModel() {
@@ -28,7 +29,7 @@ class LoginViewModel : BaseViewModel() {
     fun login(userSessionToken: String, result: MeV2Response) {
         addDisposable(PromissuApplication.retrofit!!
                 .create(AuthAPI::class.java)
-                .loginKakao(Login.Request(userSessionToken))
+                .loginKakao(PromissuApplication.getVersionInfo(), Login.Request(userSessionToken))
                 .doOnNext { next ->
                     PromissuApplication.diskCache!!.setUserData(result.nickname, result.id, result.thumbnailImagePath)
                     PromissuApplication.diskCache!!.userToken = next.token
@@ -39,8 +40,16 @@ class LoginViewModel : BaseViewModel() {
                     // save token
                     _onSuccess.postValue(true)
                 }, { onError ->
-                    Timber.e("onSessionClosed(): %s", onError.toString())
-                    _toastMsg.postValue("서버 점검 중이거나, 인터넷 연결을 확인해주세요.")
+                    when ((onError as HttpException).code()) {
+                        420 -> {
+                            Timber.e("require update: %s", onError.toString())
+                            _toastMsg.postValue("최신 버전의 업데이트가 필요합니다.")
+                        }
+                        else -> {
+                            Timber.e("onSessionClosed(): %s", onError.toString())
+                            _toastMsg.postValue("네트워크 상태를 확인 후, 로그인을 재시도 해주세요.")
+                        }
+                    }
                 }))
     }
 
