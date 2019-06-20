@@ -74,6 +74,10 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     val participants: LiveData<List<Participant.Response>>
         get() = _participants
 
+    private val _attendedParticipants = MutableLiveData<List<Participant.Response>>()
+    val attendedParticipants: LiveData<List<Participant.Response>>
+        get() = _attendedParticipants
+
     private val _isSpread = MutableLiveData<Boolean>()
     val isSpread: LiveData<Boolean>
         get() = _isSpread
@@ -89,8 +93,8 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         get() = _locationEvents
 
     private val _myLocationEvent = MutableLiveData<LocationEvent>()
-    val myLocationEvent : LiveData<LocationEvent>
-        get()= _myLocationEvent
+    val myLocationEvent: LiveData<LocationEvent>
+        get() = _myLocationEvent
 
     private val _dialogResponse = SingleLiveEvent<Any>()
     val dialogResponse: LiveData<Any>
@@ -117,7 +121,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         get() = _longPressed
 
     private val _modifyButtonClicked = SingleLiveEvent<Any>()
-    val modifyButtonClicked : LiveData<Any>
+    val modifyButtonClicked: LiveData<Any>
         get() = _modifyButtonClicked
 
 
@@ -136,6 +140,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         _attendMyMarker.value = false
         _isArrive.value = false
         _participants.value = emptyList()
+        _attendedParticipants.value = emptyList()
         _myLocationEvent.value = null
         val meetingLatLng = LatLng(promise.location_lat.toDouble(), promise.location_lon.toDouble())
         _meetingLocation.postValue(meetingLatLng)
@@ -149,7 +154,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         socketDisconnect()
     }
 
-    fun updateResponseData(response : Promise.Response){
+    fun updateResponseData(response: Promise.Response) {
         _response.value = response
         initRoomInfo()
     }
@@ -180,7 +185,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     fun fetchParticipants() {
         addDisposable(PromissuApplication.retrofit!!
                 .create(AuthAPI::class.java)
-                .getParticipants(PromissuApplication.getVersionInfo(),"Bearer " + PromissuApplication.diskCache!!.userToken, promise.id)
+                .getParticipants(PromissuApplication.getVersionInfo(), "Bearer " + PromissuApplication.diskCache!!.userToken, promise.id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -220,16 +225,16 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
 
         socket.on("location.info") {
             val jsonParser = JsonParser()
-            val data = jsonParser.parse(""+it[0])
+            val data = jsonParser.parse("" + it[0])
             val gson = Gson()
             val locationResult = data.asJsonObject.get("result")
-            val locationEvent = gson.fromJson(data.asJsonObject.get("location_event"),Array<LocationEvent>::class.java)
+            val locationEvent = gson.fromJson(data.asJsonObject.get("location_event"), Array<LocationEvent>::class.java)
             val map = HashMap<Int, LocationEvent>()
             locationEvent.forEach { event ->
                 map[event.partId] = event
             }
             _locationEvents.postValue(map)
-            Timber.d("@@@Result: "+locationResult)
+            Timber.d("@@@Result: " + locationResult)
             map.forEach { map ->
                 Timber.d("@@@Data: " + map.toString())
             }
@@ -249,6 +254,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     fun notifyEventInfo() {
         checkIsMyData()
         updateUserMarkers()
+        checkAttendedParticipants()
     }
 
     fun checkArrive(bool: Boolean) {
@@ -262,7 +268,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
             if (_locationEvents.value!![myParticipation.get()]!!.status == 1) { //내 상태가 요청이 온 상태라면
                 _dialogResponse.call()
             }
-            if (_locationEvents.value!![myParticipation.get()]!!.status == 4) {
+            if (_locationEvents.value!![myParticipation.get()]!!.status == 4||_locationEvents.value!![myParticipation.get()]!!.status == 5) {
                 _attendMyMarker.postValue(true)
             }
         }
@@ -282,6 +288,18 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                     list.add(marker)
                 }
         _userMarkers.postValue(list)
+    }
+
+    private fun checkAttendedParticipants() {
+        val list = ArrayList<Participant.Response>()
+        list.add(Participant.Response(0,"empty",0,_response.value!!.start_datetime,0))
+        _locationEvents.value!!.forEach {
+            if(it.value.status==4||it.value.status==5) {
+                val tmpPart = Participant.Response(it.value.id, it.value.nickname, it.value.partId, it.value.timestamp, it.value.status)
+                list.add(tmpPart)
+            }
+        }
+        _attendedParticipants.postValue(list.sortedWith(comparator = Participant.CompareByStatus()))
     }
 
     fun sendLocationRequest(partId: Int) {
@@ -439,7 +457,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                 if (millis - requestMillis.get()!! > 2000) { // 클릭 요청 시간 충족
                     if (_locationEvents.value!![myParticipation.get()]!!.point <= 0) {
                         _toastMsg.postValue("더 이상 위치를 요청할 수 없습니다. 요청권을 구매해주세요")
-                    }else{
+                    } else {
                         sendLocationRequest(participant.participation) // 요청
                     }
                 } else { // 클릭 요청 시간 미달

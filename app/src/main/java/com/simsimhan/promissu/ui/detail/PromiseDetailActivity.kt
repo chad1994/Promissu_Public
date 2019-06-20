@@ -144,7 +144,14 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             viewModel.notifyEventInfo()
         })
 
-        viewModel.dialogResponse.observe(this, Observer {
+        viewModel.attendedParticipants.observe(this, Observer {
+            attendanceBinding.itemMarkerAttendanceText.text = "+ " + (it.size-1)
+            attendanceMarker.icon = OverlayImage.fromView(attendanceBinding.root)
+
+        })
+
+        viewModel.dialogResponse.observe(this, Observer
+        {
             //TODO : 나에게 온 요청일때 처리.
             buildResponseDialog()
         })
@@ -154,7 +161,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 //            buildRequestDialog(it.nickname, it.partId)
 //        }) // 요청권 방식 변경으로 인한 기능 변경
 
-        viewModel.userMarkers.observe(this, Observer {
+        viewModel.userMarkers.observe(this, Observer
+        {
             userMarkerList.forEach { existingMarker ->
                 existingMarker.map = null
             }
@@ -162,7 +170,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             updateUserMarkers(userMarkerList)
         })
 
-        viewModel.isSocketOpen.observe(this, Observer {
+        viewModel.isSocketOpen.observe(this, Observer
+        {
             if (it) {
                 viewModel.startTimer()
                 attendanceMarker.isVisible = true
@@ -171,13 +180,16 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         })
 
-        viewModel.longPressed.observe(this, Observer {
+        viewModel.longPressed.observe(this, Observer
+        {
             //            TODO : ..
         })
 
-        viewModel.modifyButtonClicked.observe(this, Observer {
+        viewModel.modifyButtonClicked.observe(this, Observer
+        {
             NavigationUtil.openModifyPromiseScreen(this, viewModel.response.value)
         })
+
     }
 
     override fun onMapReady(naverMap: NaverMap) {
@@ -225,7 +237,12 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             map = naverMap
             icon = OverlayImage.fromResource(R.drawable.ic_icon_location)
             anchor = PointF(0.1f, 1.0f)
+            setOnClickListener {
+                openAttendanceFragment()
+                true
+            }
         }
+
         meetingCircle.apply {
             center = it
             radius = 100.0
@@ -244,29 +261,28 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             map = naverMap
             icon = OverlayImage.fromView(attendanceBinding.root)
             anchor = PointF(0.5f, 0f)
+            isVisible = false
+            setOnClickListener {
+                openAttendanceFragment()
+                true
+            }
         }
-        attendanceMarker.isVisible = false
-        attendanceMarker.setOnClickListener {
-            //TODO : 출석 리스트 보이도록 이벤트 처리
-            binding.detailActivityContainer.setBackgroundColor(resources.getColor(R.color.mdtp_transparent_black))
-            val detailAttendanceFragment = DetailAttendanceFragment.newInstance()
-            val manager = supportFragmentManager
-            val transaction = manager.beginTransaction()
-                    .setCustomAnimations(
-                            R.anim.slide_in_top,
-                            R.anim.slide_out_top,
-                            R.anim.slide_in_bottom,
-                            R.anim.slide_out_bottom
-                    )
-            transaction.add(binding.detailActivityContainer.id, detailAttendanceFragment, "AttendanceFragment")
-            transaction.addToBackStack(null)
-            transaction.commit()
+    }
 
-//            attendanceBinding.itemMarkerAttendanceText.text = "1"
-//            attendanceMarker.icon = OverlayImage.fromView(attendanceBinding.root)
-
-            true
-        }
+    private fun openAttendanceFragment(){
+        binding.detailActivityContainer.setBackgroundColor(resources.getColor(R.color.mdtp_transparent_black))
+        val detailAttendanceFragment = DetailAttendanceFragment.newInstance()
+        val manager = supportFragmentManager
+        val transaction = manager.beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_in_top,
+                        R.anim.slide_out_top,
+                        R.anim.slide_in_bottom,
+                        R.anim.slide_out_bottom
+                )
+        transaction.add(binding.detailActivityContainer.id, detailAttendanceFragment, "AttendanceFragment")
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     private fun initMyLocationViewResource() {
