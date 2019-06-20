@@ -18,9 +18,23 @@
         <FrameLayout
             android:id="@+id/detail_attendance_fl"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="100dp"
             android:background="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detail_attendance_rv"
+                android:layout_gravity="bottom"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/detail_ll_height"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:orientation="horizontal"
+                android:background="@color/white"
+                android:overScrollMode="never"
+                setAttendanceRvItems="@{viewModel.attendedParticipants}"
+                />
+        </FrameLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

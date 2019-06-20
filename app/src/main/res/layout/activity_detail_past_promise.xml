@@ -108,7 +108,7 @@
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/detail_past_location_tv"
-                    android:layout_width="wrap_content"
+                    android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="19dp"
                     android:layout_marginTop="3dp"
@@ -122,11 +122,11 @@
 
                 <TextView
                     android:id="@+id/detail_past_location_detail_tv"
-                    android:layout_width="wrap_content"
+                    android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="11dp"
                     android:includeFontPadding="false"
-                    android:lineSpacingExtra="20sp"
+                    android:lineSpacingExtra="6sp"
                     android:text="@{viewModel.locationDetail}"
                     android:textColor="#969696"
                     android:textSize="12sp"
