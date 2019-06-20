@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.simsimhan.promissu.ui.detail.DetailViewModel" />
+        <variable
+            name="participant"
+            type="com.simsimhan.promissu.network.model.Participant.Response" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_detail_past_user_name"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@drawable/bg_circle_detail_past_item_user"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:padding="5.5dp"
+            android:singleLine="true"
+            android:text="준영초이"
+            android:textColor="@color/dark_hot_pink"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/item_detail_past_user_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/item_detail_past_user_name"
+            app:layout_constraintBottom_toBottomOf="@id/item_detail_past_user_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="visible"
+            android:background="@drawable/ic_icon_attend_complete"
+            android:text="1등"
+            android:elevation="10dp"
+            android:textColor="@color/main_03"
+            android:gravity="center"
+            android:textSize="10sp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
