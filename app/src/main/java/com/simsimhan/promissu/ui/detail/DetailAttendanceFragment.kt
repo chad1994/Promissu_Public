@@ -8,8 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.naver.maps.map.overlay.OverlayImage
 import com.simsimhan.promissu.databinding.FragmentDetailAttendanceBinding
+import com.simsimhan.promissu.ui.detail.adapter.DetailAttendanceAdapter
+import com.simsimhan.promissu.ui.detail.adapter.DetailUserStatusAdapter
+import timber.log.Timber
 
 
 class DetailAttendanceFragment : Fragment() {
@@ -35,6 +41,13 @@ class DetailAttendanceFragment : Fragment() {
             lifecycleOwner = this@DetailAttendanceFragment
         }
 
+        (binding as FragmentDetailAttendanceBinding).detailAttendanceRv.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = DetailAttendanceAdapter(activity as PromiseDetailActivity, this@DetailAttendanceFragment.viewModel)
+            if(viewModel.attendedParticipants.value!=null){
+                (adapter as DetailAttendanceAdapter).setData(viewModel.attendedParticipants.value!!)
+            }
+        }
 
         (binding as FragmentDetailAttendanceBinding).detailAttendanceCl.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
@@ -47,6 +60,11 @@ class DetailAttendanceFragment : Fragment() {
 
             true
         }
+
+        viewModel.attendedParticipants.observe(this, Observer {
+            (binding as FragmentDetailAttendanceBinding).detailAttendanceRv.adapter!!.notifyDataSetChanged()
+        })
+
 
 
         return binding.root
