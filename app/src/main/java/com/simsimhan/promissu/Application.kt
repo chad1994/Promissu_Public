@@ -1,6 +1,7 @@
 package com.simsimhan.promissu
 
 import android.content.Context
+import android.content.pm.PackageInfo
 import android.util.Log
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
@@ -101,6 +102,7 @@ class PromissuApplication : MultiDexApplication() {
         instance = null
     }
 
+
     private class KakaoSDKAdapter : KakaoAdapter() {
         /**
          * Session Config에 대해서는 default값들이 존재한다.
@@ -171,6 +173,11 @@ class PromissuApplication : MultiDexApplication() {
                     throw IllegalStateException("This Application does not inherit com.kakao.GlobalApplication")
                 return instance as PromissuApplication
             }
+
+        fun getVersionInfo() : String{
+            val info: PackageInfo = globalApplicationContext.packageManager.getPackageInfo(globalApplicationContext.packageName, 0)
+            return info.versionName
+        }
     }
 
     class NotifyDevelopersDebugTree() : Timber.Tree() {

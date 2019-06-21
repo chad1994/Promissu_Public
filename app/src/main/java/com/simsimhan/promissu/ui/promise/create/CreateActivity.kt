@@ -54,8 +54,8 @@ class CreateActivity : AppCompatActivity() {
             viewModel.setModify(true,promise!!.id)
         }
 
-        if (!PromissuApplication.diskCache!!.isUploadedPromiseBefore) {
-            Toast.makeText(this, "좌우로 미세요.", Toast.LENGTH_LONG).show()
+        if (!PromissuApplication.diskCache!!.isUploadedPromiseBefore) { // 첫 사용자 - 가이드 표현
+//            Toast.makeText(this, "좌우로 미세요.", Toast.LENGTH_LONG).show()
         }
 
         adapterViewPager = CreateFragmentPagerAdapter(supportFragmentManager)

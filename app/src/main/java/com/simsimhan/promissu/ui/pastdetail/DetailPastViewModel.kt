@@ -45,7 +45,7 @@ class DetailPastViewModel(val promise: Appointment) : BaseViewModel(){
     private fun fetchRanking(){
         addDisposable(PromissuApplication.retrofit!!
                 .create(AuthAPI::class.java)
-                .getParticipants("Bearer " + PromissuApplication.diskCache!!.userToken, promise.promise.id)
+                .getParticipants(PromissuApplication.getVersionInfo(),"Bearer " + PromissuApplication.diskCache!!.userToken, promise.promise.id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

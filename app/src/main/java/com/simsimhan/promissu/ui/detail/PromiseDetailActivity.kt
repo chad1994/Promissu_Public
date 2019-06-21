@@ -33,8 +33,9 @@ import com.naver.maps.map.util.FusedLocationSource
 import com.simsimhan.promissu.BuildConfig
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityDetailPromiseBinding
-import com.simsimhan.promissu.ui.detail.adapter.DetailUserStatusAdapter
+import com.simsimhan.promissu.databinding.ViewMarkerAttendanceBinding
 import com.simsimhan.promissu.network.model.Promise
+import com.simsimhan.promissu.ui.detail.adapter.DetailUserStatusAdapter
 import com.simsimhan.promissu.util.NavigationUtil
 
 
@@ -52,6 +53,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var viewModel: DetailViewModel
     private lateinit var factory: DetailViewModelFactory
     private lateinit var binding: ActivityDetailPromiseBinding
+    private lateinit var attendanceBinding: ViewMarkerAttendanceBinding
+    private lateinit var atdBindingInflater: LayoutInflater
     //    private lateinit var currentFragment: Fragment
     private lateinit var promise: Promise.Response
     private lateinit var locationSource: FusedLocationSource
@@ -70,6 +73,9 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_detail_promise)
+        atdBindingInflater = getSystemService(android.content.Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        attendanceBinding = ViewMarkerAttendanceBinding.inflate(atdBindingInflater)
+
         promise = intent.getParcelableExtra("promise")
         factory = DetailViewModelFactory(promise)
         viewModel = ViewModelProviders.of(this, factory).get(DetailViewModel::class.java)
@@ -86,6 +92,10 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             lifecycleOwner = this@PromiseDetailActivity
         }
 
+        attendanceBinding.apply {
+            viewModel = this@PromiseDetailActivity.viewModel
+            lifecycleOwner = this@PromiseDetailActivity
+        }
 
         binding.detailBottomRv.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -134,7 +144,14 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             viewModel.notifyEventInfo()
         })
 
-        viewModel.dialogResponse.observe(this, Observer {
+        viewModel.attendedParticipants.observe(this, Observer {
+            attendanceBinding.itemMarkerAttendanceText.text = "+ " + (it.size-1)
+            attendanceMarker.icon = OverlayImage.fromView(attendanceBinding.root)
+
+        })
+
+        viewModel.dialogResponse.observe(this, Observer
+        {
             //TODO : 나에게 온 요청일때 처리.
             buildResponseDialog()
         })
@@ -144,7 +161,8 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 //            buildRequestDialog(it.nickname, it.partId)
 //        }) // 요청권 방식 변경으로 인한 기능 변경
 
-        viewModel.userMarkers.observe(this, Observer {
+        viewModel.userMarkers.observe(this, Observer
+        {
             userMarkerList.forEach { existingMarker ->
                 existingMarker.map = null
             }
@@ -152,21 +170,26 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             updateUserMarkers(userMarkerList)
         })
 
-        viewModel.isSocketOpen.observe(this, Observer {
+        viewModel.isSocketOpen.observe(this, Observer
+        {
             if (it) {
                 viewModel.startTimer()
+                attendanceMarker.isVisible = true
             } else {
                 viewModel.removeTimer()
             }
         })
 
-        viewModel.longPressed.observe(this, Observer {
-//            TODO : ..
+        viewModel.longPressed.observe(this, Observer
+        {
+            //            TODO : ..
         })
 
-        viewModel.modifyButtonClicked.observe(this, Observer {
-            NavigationUtil.openModifyPromiseScreen(this,viewModel.response.value)
+        viewModel.modifyButtonClicked.observe(this, Observer
+        {
+            NavigationUtil.openModifyPromiseScreen(this, viewModel.response.value)
         })
+
     }
 
     override fun onMapReady(naverMap: NaverMap) {
@@ -194,7 +217,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         viewModel.meetingLocation.observe(this, Observer {
             initTargetLocation(it, naverMap)
-            initAttendanceMarker(it,naverMap)
+            initAttendanceMarker(it, naverMap)
         })
 
         viewModel.trackingMode.observe(this, Observer {
@@ -214,7 +237,12 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             map = naverMap
             icon = OverlayImage.fromResource(R.drawable.ic_icon_location)
             anchor = PointF(0.1f, 1.0f)
+            setOnClickListener {
+                openAttendanceFragment()
+                true
+            }
         }
+
         meetingCircle.apply {
             center = it
             radius = 100.0
@@ -225,14 +253,36 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         naverMap.moveCamera(cameraUpdate)
     }
 
-    private fun initAttendanceMarker(it:LatLng,naverMap: NaverMap){
-        val attendMarker = LayoutInflater.from(this).inflate(R.layout.view_marker_attendance, null)
+    private fun initAttendanceMarker(it: LatLng, naverMap: NaverMap) {
+//        val attendMarker = LayoutInflater.from(this).inflate(R.layout.view_marker_attendance, null)
+        attendanceBinding.itemMarkerAttendanceText.text = "+0"
         attendanceMarker.apply {
             position = it
             map = naverMap
-            icon = OverlayImage.fromView(attendMarker)
+            icon = OverlayImage.fromView(attendanceBinding.root)
             anchor = PointF(0.5f, 0f)
+            isVisible = false
+            setOnClickListener {
+                openAttendanceFragment()
+                true
+            }
         }
+    }
+
+    private fun openAttendanceFragment(){
+        binding.detailActivityContainer.setBackgroundColor(resources.getColor(R.color.mdtp_transparent_black))
+        val detailAttendanceFragment = DetailAttendanceFragment.newInstance()
+        val manager = supportFragmentManager
+        val transaction = manager.beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_in_top,
+                        R.anim.slide_out_top,
+                        R.anim.slide_in_bottom,
+                        R.anim.slide_out_bottom
+                )
+        transaction.add(binding.detailActivityContainer.id, detailAttendanceFragment, "AttendanceFragment")
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     private fun initMyLocationViewResource() {
@@ -415,6 +465,17 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         if (requestCode == NavigationUtil.REQUEST_MODIFY_PROMISE && resultCode == Activity.RESULT_OK) {
             val promise = data!!.getParcelableExtra<Promise.Response>("promise")
             viewModel.updateResponseData(promise)
+        }
+    }
+
+    override fun onBackPressed() {
+        val count = supportFragmentManager.backStackEntryCount
+
+        if (count == 0) {
+            super.onBackPressed()
+        } else {
+            supportFragmentManager.popBackStack()
+            binding.detailActivityContainer.setBackgroundColor(resources.getColor(R.color.zxing_transparent))
         }
     }
 }

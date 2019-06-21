@@ -46,7 +46,7 @@ class PromiseViewModel : BaseViewModel(), PromiseItemEventListener {
     fun fetch(isPastPromise: Boolean) {
         addDisposable(PromissuApplication.retrofit!!
                 .create(AuthAPI::class.java)
-                .getMyPromise("Bearer $token", 0, 9, if (isPastPromise) "past" else "future")
+                .getMyPromise(PromissuApplication.getVersionInfo(),"Bearer $token", 0, 9, if (isPastPromise) "past" else "future")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ onNext ->
@@ -58,7 +58,7 @@ class PromiseViewModel : BaseViewModel(), PromiseItemEventListener {
                 }, { onError ->
                     Timber.e(onError)
                     PromissuApplication.diskCache!!.clearUserData()
-                    _errToastMsg.postValue("서버 점검중입니다. 잠시후 다시 시도해주세요.")
+                    _errToastMsg.postValue("세션만료로 로그아웃 되었습니다. 다시 로그인 해주세요.")
                 }))
     }
 

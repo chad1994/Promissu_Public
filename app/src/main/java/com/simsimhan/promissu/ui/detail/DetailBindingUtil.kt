@@ -11,6 +11,7 @@ import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.ui.detail.adapter.DetailUserStatusAdapter
 import com.simsimhan.promissu.network.model.Participant
+import com.simsimhan.promissu.ui.detail.adapter.DetailAttendanceAdapter
 
 
 @BindingAdapter("setRvItems")
@@ -137,5 +138,14 @@ fun setPromisePointTextVisibility(text: TextView,isSocketOpen: Boolean){
 fun setPromisePointText(text:TextView,point : Int?){
     if(point!=null){
         text.text = ""+point
+    }
+}
+
+@BindingAdapter("setAttendanceRvItems")
+fun setAttendanceRvItems(recyclerView: RecyclerView, itemList: List<Participant.Response>?) {
+    if (itemList != null) {
+        (recyclerView.adapter as DetailAttendanceAdapter).setData(itemList)
+    } else {
+        // TODO 데이터 정보 없음 처리.
     }
 }

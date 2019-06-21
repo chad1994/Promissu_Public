@@ -144,7 +144,7 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
     private fun createRoom(request: Promise.Request) {
         addDisposable(PromissuApplication.retrofit!!
                 .create(AuthAPI::class.java)
-                .createPromise("Bearer $token", request)
+                .createPromise(PromissuApplication.getVersionInfo(),"Bearer $token", request)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -163,7 +163,7 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
     private fun modifyRoom(request:Promise.Request){
         addDisposable(PromissuApplication.retrofit!!
                 .create(AuthAPI::class.java)
-                .modifyPromise("Bearer $token", room_id.get()!!,request)
+                .modifyPromise(PromissuApplication.getVersionInfo(),"Bearer $token", room_id.get()!!,request)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

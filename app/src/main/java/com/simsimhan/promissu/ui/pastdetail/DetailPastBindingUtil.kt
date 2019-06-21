@@ -17,10 +17,10 @@ import java.util.*
 fun setAttendanceText(view: TextView, status: Int) {
     when (status) {
         2 -> {
-            view.text = "지각했습니다"
+            view.text = "출석했습니다"
         }
         3 -> {
-            view.text = "출석했습니다"
+            view.text = "지각했습니다"
         }
         4 -> {
             view.text = "결석했습니다"
@@ -30,7 +30,7 @@ fun setAttendanceText(view: TextView, status: Int) {
 
 @BindingAdapter("setBackgroundColor", "setBackgroundColor2")
 fun setBackgroundColor(layout: ConstraintLayout, status: Int, id: Int) {
-    if (status == 3) {
+    if (status == 2) {
         if (id == PromissuApplication.diskCache!!.userId.toInt()) {
             layout.setBackgroundResource(R.drawable.bg_circle_detail_past_item_purple_mine)
         } else {
@@ -47,7 +47,7 @@ fun setBackgroundColor(layout: ConstraintLayout, status: Int, id: Int) {
 
 @BindingAdapter("setIconBackgroundColor")
 fun setIconBackgroundColor(view: TextView, status: Int) {
-    if (status == 3) {
+    if (status == 2) {
         view.setBackgroundResource(R.drawable.round_shape_bg_strong_color)
     } else {
         view.setBackgroundResource(R.drawable.round_shape_bg_gray_color)
@@ -86,11 +86,11 @@ fun setRankingAttendance(textView: TextView, status: Int) {
     when (status) {
         2 -> {
             textView.visibility = View.VISIBLE
-            textView.text = "지각"
+            textView.text = "출석"
         }
         3 -> {
             textView.visibility = View.VISIBLE
-            textView.text = "출석"
+            textView.text = "지각"
         }
         4 -> textView.visibility = View.GONE
     }
@@ -105,12 +105,12 @@ fun setRankingTime(textView: TextView, status: Int?, updatedAt: Date?, appointme
         val updateTime = DateTime(updatedAt)
         val startTime = DateTime(appointmentTime)
         val minDiff = Minutes.minutesBetween(updateTime, startTime)
-        if (status == 2) {
+        if (status == 3) {
             textView.text = "${Math.abs(minDiff.minutes)}분"
             textView.setTextColor(textView.context.resources.getColor(R.color.black))
-        } else if (status == 3) {
+        } else if (status == 2) {
             textView.text = "${Math.abs(minDiff.minutes)}분 빨리"
-            textView.setTextColor(textView.context.resources.getColor(R.color.main_01))
+            textView.setTextColor(textView.context.resources.getColor(R.color.main_03))
         }
     }
 }

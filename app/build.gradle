@@ -55,6 +55,7 @@ android {
             debuggable true
             buildConfigField 'String', 'SERVER_URL', '"http://api.promissu.com"'
             buildConfigField 'String', 'SOCKET_URL', keystoreProperties.getProperty("socketServerURL")
+            buildConfigField 'String', 'LOCAL_URL', keystoreProperties.getProperty("localServerURL")
             buildConfigField "String", "NaverClientId", keystoreProperties.getProperty("naverClientId")
             buildConfigField "String", "NaverClientSecret", keystoreProperties.getProperty("naverClientSecret")
         }
