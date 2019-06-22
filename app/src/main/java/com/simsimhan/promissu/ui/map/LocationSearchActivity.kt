@@ -225,7 +225,6 @@ class LocationSearchActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.
 
     override fun onClick(overlay: Overlay): Boolean {
         if (overlay.tag == "info") {
-            Toast.makeText(this, "정보 클릭", Toast.LENGTH_SHORT).show()
             if (!location.isNullOrEmpty()) {
                 val intent = Intent()
                 intent.putExtra("location", location)
