@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
-import com.simsimhan.promissu.ui.detail.adapter.DetailUserStatusAdapter
 import com.simsimhan.promissu.network.model.Participant
 import com.simsimhan.promissu.ui.detail.adapter.DetailAttendanceAdapter
+import com.simsimhan.promissu.ui.detail.adapter.DetailUserStatusAdapter
 
 
 @BindingAdapter("setRvItems")
