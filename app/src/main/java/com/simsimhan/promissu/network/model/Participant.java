@@ -78,12 +78,12 @@ public class Participant {
         public int compare(Response o1, Response o2) {
             if (o1.status > o2.status)
                 return 1;
-            else if(o1.status < o2.status)
+            else if (o1.status < o2.status)
                 return -1;
             else {
-                if(o1.updatedAt.after(o2.updatedAt)){
+                if (o1.updatedAt.after(o2.updatedAt)) {
                     return 1;
-                }else{
+                } else {
                     return -1;
                 }
             }

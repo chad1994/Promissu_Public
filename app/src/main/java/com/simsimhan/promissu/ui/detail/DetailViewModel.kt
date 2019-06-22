@@ -123,7 +123,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         get() = _modifyButtonClicked
 
     private val _deleteAppointmentClicked = MutableLiveData<Promise.Response>()
-    val deleteAppointmentClicked : LiveData<Promise.Response>
+    val deleteAppointmentClicked: LiveData<Promise.Response>
         get() = _deleteAppointmentClicked
 
 
@@ -301,7 +301,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                 val tmpPart = Participant.Response(it.value.id, it.value.nickname, it.value.partId, it.value.timestamp, it.value.status)
                 list.add(tmpPart)
 
-                partList = partList!!.filterNot { o-> o.participation == it.value.partId }
+                partList = partList!!.filterNot { o -> o.participation == it.value.partId }
 
             }
         }
@@ -472,10 +472,10 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                         _longPressed.postValue(3)
                         _toastMsg.postValue("더 이상 위치를 요청할 수 없습니다. 요청권을 구매해주세요")
                     } else {
-                        if(_locationEvents.value!![participant.participation]!!.status==1){
+                        if (_locationEvents.value!![participant.participation]!!.status == 1) {
                             _longPressed.postValue(3)
                             _toastMsg.postValue("이미 위치 요청을 받은 사용자입니다.")
-                        }else {
+                        } else {
                             _longPressed.postValue(2)
                             sendLocationRequest(participant.participation) // 요청
                         }
@@ -492,7 +492,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         _modifyButtonClicked.call()
     }
 
-    override fun onClickDeleteButton(promise:Promise.Response) {
+    override fun onClickDeleteButton(promise: Promise.Response) {
         _deleteAppointmentClicked.postValue(promise)
     }
 }

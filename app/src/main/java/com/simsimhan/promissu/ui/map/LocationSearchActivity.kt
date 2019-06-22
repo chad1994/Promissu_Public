@@ -23,9 +23,9 @@ import com.simsimhan.promissu.BuildConfig
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityMapSearchBinding
-import com.simsimhan.promissu.ui.map.search.FullListAdapter
 import com.simsimhan.promissu.model.LocationSearchItem
 import com.simsimhan.promissu.network.NaverAPI
+import com.simsimhan.promissu.ui.map.search.FullListAdapter
 import com.simsimhan.promissu.ui.promise.create.CreateViewModel
 import com.simsimhan.promissu.util.keyboardHide
 import io.reactivex.android.schedulers.AndroidSchedulers

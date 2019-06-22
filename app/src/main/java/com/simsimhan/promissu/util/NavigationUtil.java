@@ -8,11 +8,11 @@ import android.util.DisplayMetrics;
 import android.widget.Toast;
 
 import com.simsimhan.promissu.MainActivity;
+import com.simsimhan.promissu.network.model.Appointment;
+import com.simsimhan.promissu.network.model.Promise;
 import com.simsimhan.promissu.ui.detail.PromiseDetailActivity;
 import com.simsimhan.promissu.ui.login.LoginActivity;
 import com.simsimhan.promissu.ui.map.LocationSearchActivity;
-import com.simsimhan.promissu.network.model.Appointment;
-import com.simsimhan.promissu.network.model.Promise;
 import com.simsimhan.promissu.ui.pastdetail.DetailPastActivity;
 import com.simsimhan.promissu.ui.promise.create.CreateActivity;
 
@@ -66,10 +66,10 @@ public class NavigationUtil {
         activity.startActivityForResult(intent, REQUEST_CREATE_PROMISE);
     }
 
-    public static void openModifyPromiseScreen(AppCompatActivity activity,Promise.Response promise){
+    public static void openModifyPromiseScreen(AppCompatActivity activity, Promise.Response promise) {
         Intent intent = new Intent(activity, CreateActivity.class);
         intent.putExtra("promise", promise);
-        activity.startActivityForResult(intent,REQUEST_MODIFY_PROMISE);
+        activity.startActivityForResult(intent, REQUEST_MODIFY_PROMISE);
     }
 
     public static void openMapScreen(Activity activity) {
@@ -125,7 +125,7 @@ public class NavigationUtil {
 //        } else
         if (promise.getStatus() == PROMISE_STATUS.DELETED.getValue()) {
             Toast.makeText(appCompatActivity, "삭제된 방입니다.", Toast.LENGTH_SHORT).show();
-        } else if(isPast) {
+        } else if (isPast) {
             openPromiseDetailPastScreen(appCompatActivity, promise);
         } else {
             openPromiseDetailScreen(appCompatActivity, promise);

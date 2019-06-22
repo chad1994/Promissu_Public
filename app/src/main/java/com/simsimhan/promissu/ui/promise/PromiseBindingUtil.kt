@@ -45,20 +45,20 @@ fun setItemLeftTime(text: TextView, isPast: Boolean, response: Promise.Response)
 @BindingAdapter("setItemLeftLabel1", "setItemLeftLabel2")
 fun setItemLeftLabel(text: TextView, isPast: Boolean, response: Appointment) {
     if (isPast) {
-        when(response.status){
-            2->{
+        when (response.status) {
+            2 -> {
                 text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
                 text.text = "출석"
             }
-            3->{
+            3 -> {
                 text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
                 text.text = "지각"
             }
-            4->{
+            4 -> {
                 text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
                 text.text = "결석"
             }
-            -1->{
+            -1 -> {
                 text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
                 text.text = "삭제된 약속"
             }
@@ -72,10 +72,10 @@ fun setItemLeftLabel(text: TextView, isPast: Boolean, response: Appointment) {
         if (daysDifference.days == 0) {
             val hoursDifference = Hours.hoursBetween(now, promiseStartDate)
             if (hoursDifference.hours < 1) {
-                if (response.promise.status==1) {
+                if (response.promise.status == 1) {
                     text.text = "출석하세요!"
                     text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
-                }else{
+                } else {
                     text.text = "분 남음"
                     text.setTextColor(ContextCompat.getColor(text.context, R.color.black))
                 }
@@ -100,10 +100,10 @@ fun setContainerBg(container: ConstraintLayout, isPast: Boolean) {
 }
 
 @BindingAdapter("setAdminIconVisibility")
-fun setAdminIconVisibility(view:View, id:Long){
-    if(id==PromissuApplication.diskCache!!.userId){
+fun setAdminIconVisibility(view: View, id: Long) {
+    if (id == PromissuApplication.diskCache!!.userId) {
         view.visibility = View.VISIBLE
-    }else{
+    } else {
         view.visibility = View.GONE
     }
 }

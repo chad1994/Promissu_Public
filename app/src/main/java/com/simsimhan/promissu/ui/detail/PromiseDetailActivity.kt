@@ -150,7 +150,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         })
 
         viewModel.attendedParticipants.observe(this, Observer {
-            attendanceBinding.itemMarkerAttendanceText.text = "+" + (it.size-1)
+            attendanceBinding.itemMarkerAttendanceText.text = "+" + (it.size - 1)
             attendanceMarker.icon = OverlayImage.fromView(attendanceBinding.root)
 
         })
@@ -162,9 +162,9 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         })
 
         viewModel.deleteAppointmentClicked.observe(this, Observer {
-            if(it.admin_id!=PromissuApplication.diskCache!!.userId){
+            if (it.admin_id != PromissuApplication.diskCache!!.userId) {
                 buildLeftDialog(it.id)
-            }else {
+            } else {
                 buildDeleteDialog(it.id)
             }
         })
@@ -188,6 +188,14 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             if (it) {
                 viewModel.startTimer()
                 attendanceMarker.isVisible = true
+//                if (viewModel.participants.value!!.isNotEmpty()) {
+//                    ShowcaseView.Builder(this)
+//                            .setTarget(ActionViewTarget(this, ActionViewTarget.Type.HOME))
+//                            .setContentTitle("ShowcaseView")
+//                            .setContentText("This is highlighting the Home button")
+//                            .hideOnTouchOutside()
+//                            .build()
+//                }
             } else {
                 viewModel.removeTimer()
             }
@@ -282,7 +290,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun openAttendanceFragment(){
+    private fun openAttendanceFragment() {
         binding.detailActivityContainer.setBackgroundColor(resources.getColor(R.color.mdtp_transparent_black))
         val detailAttendanceFragment = DetailAttendanceFragment.newInstance()
         val manager = supportFragmentManager
@@ -401,7 +409,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         dialog.show()
     }
 
-    private fun buildLeftDialog(room_id:Int){
+    private fun buildLeftDialog(room_id: Int) {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_request)
@@ -418,7 +426,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             viewModel.addDisposable(
                     PromissuApplication.retrofit!!
                             .create(AuthAPI::class.java)
-                            .leftAppointment(PromissuApplication.getVersionInfo(),"Bearer " + PromissuApplication.diskCache!!.userToken, room_id)
+                            .leftAppointment(PromissuApplication.getVersionInfo(), "Bearer " + PromissuApplication.diskCache!!.userToken, room_id)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({ onNext ->
@@ -466,7 +474,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             viewModel.addDisposable(
                     PromissuApplication.retrofit!!
                             .create(AuthAPI::class.java)
-                            .deleteAppointment(PromissuApplication.getVersionInfo(),"Bearer " + PromissuApplication.diskCache!!.userToken, room_id)
+                            .deleteAppointment(PromissuApplication.getVersionInfo(), "Bearer " + PromissuApplication.diskCache!!.userToken, room_id)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({ onNext ->

@@ -16,8 +16,8 @@ import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.FragmentCreatePromise1Binding
 import com.simsimhan.promissu.databinding.FragmentCreatePromise2Binding
 import com.simsimhan.promissu.databinding.FragmentCreatePromise3Binding
-import com.simsimhan.promissu.ui.map.LocationSearchActivity
 import com.simsimhan.promissu.network.model.Promise
+import com.simsimhan.promissu.ui.map.LocationSearchActivity
 import com.simsimhan.promissu.util.NavigationUtil
 import com.simsimhan.promissu.util.StringUtil
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
@@ -36,7 +36,7 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
 
 
     private var pageKey: Int? = null
-    private var response :Promise.Response? = null
+    private var response: Promise.Response? = null
     private var username: String? = null
     private var now: DateTime? = null
     private var startDateEditText: TextInputEditText? = null
@@ -64,11 +64,11 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
             return fragment
         }
 
-        fun newInstance(position:Int,response:Promise.Response) :Fragment{
+        fun newInstance(position: Int, response: Promise.Response): Fragment {
             val fragment = CreateFragment()
             val args = Bundle()
             args.putInt("Page_key", position)
-            args.putParcelable("Response",response)
+            args.putParcelable("Response", response)
             fragment.arguments = args
             return fragment
         }
@@ -107,7 +107,7 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
         }
         val question = binding.root.create_question1_text
         question.text = Html.fromHtml(getString(R.string.create_question_1, username))
-        if(response!=null){
+        if (response != null) {
             binding.root.promise_title_edit_text.setText(response!!.title)
             viewModel.setTitle(response!!.title)
         }
@@ -188,19 +188,19 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
             }
         }
 
-        if(response!=null){
-            startDateEditText!!.setText("${response!!.start_datetime.year+1900}년 ${response!!.start_datetime.month+1}월 ${response!!.start_datetime.date}일")
+        if (response != null) {
+            startDateEditText!!.setText("${response!!.start_datetime.year + 1900}년 ${response!!.start_datetime.month + 1}월 ${response!!.start_datetime.date}일")
             startTimeEditText!!.setText("${StringUtil.addPaddingIfSingleDigit(response!!.start_datetime.hours)}:${StringUtil.addPaddingIfSingleDigit(response!!.start_datetime.minutes)}")
-            endDateEditText!!.setText("${response!!.end_datetime.year+1900}년 ${response!!.end_datetime.month+1}월 ${response!!.end_datetime.date}일")
+            endDateEditText!!.setText("${response!!.end_datetime.year + 1900}년 ${response!!.end_datetime.month + 1}월 ${response!!.end_datetime.date}일")
             endTimeEditText!!.setText("${StringUtil.addPaddingIfSingleDigit(response!!.end_datetime.hours)}:${StringUtil.addPaddingIfSingleDigit(response!!.end_datetime.minutes)}")
-            val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss",Locale.KOREA)
+            val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.KOREA)
             val formattedstartDate = sdf.format(response!!.start_datetime)
             val formattedendDate = sdf.format(response!!.end_datetime)
             viewModel.setStartDateTime(formattedstartDate)
             viewModel.setEndDateTime(formattedendDate)
-            startSelectedDate = now!!.withYear(response!!.start_datetime.year+1900).withMonthOfYear(response!!.start_datetime.month+1).withDayOfMonth(response!!.start_datetime.date)
+            startSelectedDate = now!!.withYear(response!!.start_datetime.year + 1900).withMonthOfYear(response!!.start_datetime.month + 1).withDayOfMonth(response!!.start_datetime.date)
             startSelectedDateTime = DateTime(response!!.start_datetime)
-            endSelectedDate = now!!.withYear(response!!.end_datetime.year+1900).withMonthOfYear(response!!.end_datetime.month+1).withDayOfMonth(response!!.end_datetime.date)
+            endSelectedDate = now!!.withYear(response!!.end_datetime.year + 1900).withMonthOfYear(response!!.end_datetime.month + 1).withDayOfMonth(response!!.end_datetime.date)
             endSelectedDateTime = DateTime(response!!.end_datetime)
 
         }
@@ -223,8 +223,8 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
             }
         }
 
-        if(response!=null){
-            viewModel.setCreateInfo(response!!.location_lat,response!!.location_lon,response!!.location,response!!.location_name)
+        if (response != null) {
+            viewModel.setCreateInfo(response!!.location_lat, response!!.location_lon, response!!.location, response!!.location_name)
             setPromisePlace(response!!.location)
         }
     }
@@ -279,14 +279,14 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
         if (view!!.tag == "StartTimePickerDialog") {
             startSelectedDateTime = now!!.withHourOfDay(hourOfDay)
                     .withMinuteOfHour(minute)
-            if((startSelectedDate!!.isEqual(now))&&((now!!.hourOfDay+1>hourOfDay)||((now!!.hourOfDay+1==hourOfDay)&&(now!!.minuteOfHour>=minute)))){
+            if ((startSelectedDate!!.isEqual(now)) && ((now!!.hourOfDay + 1 > hourOfDay) || ((now!!.hourOfDay + 1 == hourOfDay) && (now!!.minuteOfHour >= minute)))) {
                 Toast.makeText(requireContext(), "최소 1시간 이후로 설정해주세요", Toast.LENGTH_SHORT).show()
-            }else {
+            } else {
                 if (startTimeEditText != null) {
                     startTimeEditText!!.setText(StringUtil.addPaddingIfSingleDigit(hourOfDay) + ":" + StringUtil.addPaddingIfSingleDigit(minute))
                 }
                 val requestStartDateTime = startSelectedDate!!.withHourOfDay(startSelectedDateTime!!.hourOfDay).withMinuteOfHour(startSelectedDateTime!!.minuteOfHour).withSecondOfMinute(0).toDate()
-                val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss",Locale.KOREA)
+                val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.KOREA)
                 val formattedDate = sdf.format(requestStartDateTime)
                 viewModel.setStartDateTime(formattedDate)
                 // end 시간을 설정 후 start 변경 시 end 초기화
@@ -301,15 +301,14 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
                     .withMinuteOfHour(minute)
             if ((startSelectedDate == endSelectedDate) && (endSelectedDateTime!!.isBefore(startSelectedDateTime))) { //시작 종료일이 같고 종료시간이 시작시간보다 빠르다면
                 Toast.makeText(requireContext(), "시작 시간보다 종료 시간이 늦도록 설정해주세요", Toast.LENGTH_SHORT).show()
-            }else if((startSelectedDate == endSelectedDate) && (Minutes.minutesBetween(startSelectedDateTime,endSelectedDateTime).minutes<60)) {
+            } else if ((startSelectedDate == endSelectedDate) && (Minutes.minutesBetween(startSelectedDateTime, endSelectedDateTime).minutes < 60)) {
                 Toast.makeText(requireContext(), "약속시간이 적어도 1시간 이상이 되도록 설저해주세요", Toast.LENGTH_SHORT).show()
-            }
-            else {
+            } else {
                 if (endTimeEditText != null) {
                     endTimeEditText!!.setText(StringUtil.addPaddingIfSingleDigit(hourOfDay) + ":" + StringUtil.addPaddingIfSingleDigit(minute))
                 }
                 val requestEndDateTime = endSelectedDate!!.withHourOfDay(endSelectedDateTime!!.hourOfDay).withMinuteOfHour(endSelectedDateTime!!.minuteOfHour).withSecondOfMinute(0).toDate()
-                val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss",Locale.KOREA)
+                val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.KOREA)
                 val formattedDate = sdf.format(requestEndDateTime)
                 viewModel.setEndDateTime(formattedDate)
             }

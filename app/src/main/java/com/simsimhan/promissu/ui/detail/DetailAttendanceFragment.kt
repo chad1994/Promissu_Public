@@ -11,11 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.naver.maps.map.overlay.OverlayImage
 import com.simsimhan.promissu.databinding.FragmentDetailAttendanceBinding
 import com.simsimhan.promissu.ui.detail.adapter.DetailAttendanceAdapter
-import com.simsimhan.promissu.ui.detail.adapter.DetailUserStatusAdapter
-import timber.log.Timber
 
 
 class DetailAttendanceFragment : Fragment() {
@@ -44,7 +41,7 @@ class DetailAttendanceFragment : Fragment() {
         (binding as FragmentDetailAttendanceBinding).detailAttendanceRv.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = DetailAttendanceAdapter(activity as PromiseDetailActivity, this@DetailAttendanceFragment.viewModel)
-            if(viewModel.attendedParticipants.value!=null){
+            if (viewModel.attendedParticipants.value != null) {
                 (adapter as DetailAttendanceAdapter).setData(viewModel.attendedParticipants.value!!)
             }
         }

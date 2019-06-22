@@ -38,7 +38,7 @@ class DetailAttendanceAdapter(
 
     class DetailAttendanceViewHolder(private val itemBinding: ItemDetailUserRankingBinding
     ) : RecyclerView.ViewHolder(itemBinding.root) {
-        fun bind(_lifecycleOwner: LifecycleOwner,_ranking:Int, _participant: Participant.Response, _viewModel: DetailViewModel) {
+        fun bind(_lifecycleOwner: LifecycleOwner, _ranking: Int, _participant: Participant.Response, _viewModel: DetailViewModel) {
             itemBinding.apply {
                 lifecycleOwner = _lifecycleOwner
                 participant = _participant

@@ -13,7 +13,6 @@ import com.simsimhan.promissu.R
 import com.simsimhan.promissu.network.model.Participant
 import com.simsimhan.promissu.ui.detail.adapter.DetailAttendanceAdapter
 import com.simsimhan.promissu.ui.detail.adapter.DetailUserStatusAdapter
-import timber.log.Timber
 
 
 @BindingAdapter("setRvItems")
@@ -103,14 +102,14 @@ var timeCount = 0
 fun setLottieAnim(lottie: LottieAnimationView, anim_status: Int) {
     val handler = Handler()
     val runnableState = Runnable {
-        run{
+        run {
             timeCount++
         }
     }
     val runnable = Runnable {
         run {
-            if(handlerCount== timeCount){
-                handlerState=false
+            if (handlerCount == timeCount) {
+                handlerState = false
                 lottie.setAnimation("req_step02.json")
                 lottie.loop(true)
                 lottie.playAnimation()
@@ -126,7 +125,7 @@ fun setLottieAnim(lottie: LottieAnimationView, anim_status: Int) {
             lottie.setAnimation("req_step01.json")
             lottie.loop(false)
             lottie.playAnimation()
-            handler.postDelayed(runnableState,1900)
+            handler.postDelayed(runnableState, 1900)
             handler.postDelayed(runnable, 2000)
         }
         2 -> {

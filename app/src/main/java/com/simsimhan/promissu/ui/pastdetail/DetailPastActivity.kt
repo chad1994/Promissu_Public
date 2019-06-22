@@ -35,7 +35,7 @@ class DetailPastActivity : AppCompatActivity() {
             lifecycleOwner = this@DetailPastActivity
         }
 
-        binding.detailPastRankingRv.apply{
+        binding.detailPastRankingRv.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = DetailPastAdapter(this@DetailPastActivity, this@DetailPastActivity.viewModel)
         }

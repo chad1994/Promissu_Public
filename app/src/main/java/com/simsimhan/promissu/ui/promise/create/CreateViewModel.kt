@@ -133,9 +133,9 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
             _toastMessage.postValue("약속장소를 확인해주세요")
         } else {
             val request = Promise.Request(title.value, description.value, startTime.value, endTime.value, location.value, locationName.value, lat.value, lon.value)
-            if(_isModify.value!!){
+            if (_isModify.value!!) {
                 modifyRoom(request)
-            }else{
+            } else {
                 createRoom(request)
             }
         }
@@ -144,7 +144,7 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
     private fun createRoom(request: Promise.Request) {
         addDisposable(PromissuApplication.retrofit!!
                 .create(AuthAPI::class.java)
-                .createPromise(PromissuApplication.getVersionInfo(),"Bearer $token", request)
+                .createPromise(PromissuApplication.getVersionInfo(), "Bearer $token", request)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -160,10 +160,10 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
                 }))
     }
 
-    private fun modifyRoom(request:Promise.Request){
+    private fun modifyRoom(request: Promise.Request) {
         addDisposable(PromissuApplication.retrofit!!
                 .create(AuthAPI::class.java)
-                .modifyPromise(PromissuApplication.getVersionInfo(),"Bearer $token", room_id.get()!!,request)
+                .modifyPromise(PromissuApplication.getVersionInfo(), "Bearer $token", room_id.get()!!, request)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
@@ -175,14 +175,14 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
                 }))
     }
 
-    fun setModify(bool:Boolean,id: Int){
+    fun setModify(bool: Boolean, id: Int) {
         _isModify.value = bool
         room_id.set(id)
     }
 
-    fun setTitle(title:String){
+    fun setTitle(title: String) {
         _title.value = title
-        _titleValidate.value = title.length >=2
+        _titleValidate.value = title.length >= 2
     }
 
     override fun onTextChanged(s: String) {
@@ -198,12 +198,12 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
     }
 
 
-    override fun onDirectionButtonClicked(i:Int) {
+    override fun onDirectionButtonClicked(i: Int) {
         _directionClicked.postValue(i)
     }
 }
 
 interface CreateEventListener {
-    fun onDirectionButtonClicked(i:Int)
+    fun onDirectionButtonClicked(i: Int)
     fun onTextChanged(s: String)
 }

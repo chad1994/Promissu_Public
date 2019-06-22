@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         disposables.add( //TODO : fcm 토큰 업데이트. 조건 다시 생각 ( Main -> FirebaseMSG -> Main) . 현재는 실행시 무조건 적어도 한번 호출.
                 PromissuApplication.Companion.getRetrofit()
                         .create(AuthAPI.class)
-                        .updateFcmToken(PromissuApplication.Companion.getVersionInfo(),"Bearer " + PromissuApplication.Companion.getDiskCache().getUserToken(), new FcmToken(PromissuApplication.Companion.getDiskCache().getFcmToken()))
+                        .updateFcmToken(PromissuApplication.Companion.getVersionInfo(), "Bearer " + PromissuApplication.Companion.getDiskCache().getUserToken(), new FcmToken(PromissuApplication.Companion.getDiskCache().getFcmToken()))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(onNext -> Timber.d("Success:: Fcm Token registered "),
@@ -303,12 +303,12 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         disposables.add(
                 PromissuApplication.Companion.getRetrofit()
                         .create(AuthAPI.class)
-                        .enterPromise(PromissuApplication.Companion.getVersionInfo(),"Bearer " + PromissuApplication.Companion.getDiskCache().getUserToken(), roomId)
+                        .enterPromise(PromissuApplication.Companion.getVersionInfo(), "Bearer " + PromissuApplication.Companion.getDiskCache().getUserToken(), roomId)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(onNext -> {
                             // save token
-                            NavigationUtil.enterRoom(this, new Appointment(onNext,0),onNext.getStatus()==2);
+                            NavigationUtil.enterRoom(this, new Appointment(onNext, 0), onNext.getStatus() == 2);
                         }, onError -> {
                             if (BuildConfig.DEBUG) {
                                 Toast.makeText(this, "이미 시작했거나, 끝난 모임입니다.", Toast.LENGTH_SHORT).show();
