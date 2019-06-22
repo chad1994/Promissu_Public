@@ -13,7 +13,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
-class DetailPastViewModel(val promise: Appointment) : BaseViewModel(){
+class DetailPastViewModel(val promise: Appointment) : BaseViewModel() {
 
     private val _response = MutableLiveData<Appointment>() // 전체 데이터 리스트
     val response: LiveData<Appointment>
@@ -42,10 +42,10 @@ class DetailPastViewModel(val promise: Appointment) : BaseViewModel(){
         locationDetail.set(_response.value!!.promise.location)
     }
 
-    private fun fetchRanking(){
+    private fun fetchRanking() {
         addDisposable(PromissuApplication.retrofit!!
                 .create(AuthAPI::class.java)
-                .getParticipants(PromissuApplication.getVersionInfo(),"Bearer " + PromissuApplication.diskCache!!.userToken, promise.promise.id)
+                .getParticipants(PromissuApplication.getVersionInfo(), "Bearer " + PromissuApplication.diskCache!!.userToken, promise.promise.id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

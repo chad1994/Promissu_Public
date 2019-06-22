@@ -23,9 +23,9 @@ import com.simsimhan.promissu.BuildConfig
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityMapSearchBinding
-import com.simsimhan.promissu.ui.map.search.FullListAdapter
 import com.simsimhan.promissu.model.LocationSearchItem
 import com.simsimhan.promissu.network.NaverAPI
+import com.simsimhan.promissu.ui.map.search.FullListAdapter
 import com.simsimhan.promissu.ui.promise.create.CreateViewModel
 import com.simsimhan.promissu.util.keyboardHide
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -225,7 +225,6 @@ class LocationSearchActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.
 
     override fun onClick(overlay: Overlay): Boolean {
         if (overlay.tag == "info") {
-            Toast.makeText(this, "정보 클릭", Toast.LENGTH_SHORT).show()
             if (!location.isNullOrEmpty()) {
                 val intent = Intent()
                 intent.putExtra("location", location)

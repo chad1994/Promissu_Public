@@ -5,11 +5,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.simsimhan.promissu.databinding.ItemDetailPastRankingBinding
-import com.simsimhan.promissu.databinding.ItemDetailUserStatusBinding
 import com.simsimhan.promissu.network.model.Participant
-import com.simsimhan.promissu.ui.detail.DetailEventListener
-import com.simsimhan.promissu.ui.detail.DetailViewModel
-import com.simsimhan.promissu.ui.detail.adapter.DetailUserStatusAdapter
 import com.simsimhan.promissu.ui.pastdetail.DetailPastViewModel
 
 class DetailPastAdapter(
@@ -35,12 +31,12 @@ class DetailPastAdapter(
     }
 
     override fun onBindViewHolder(holder: DetailPastViewHolder, position: Int) {
-        holder.bind(lifecycleOwner,list[position],viewModel,position)
+        holder.bind(lifecycleOwner, list[position], viewModel, position)
     }
 
 
-    class DetailPastViewHolder(private val itemBinding: ItemDetailPastRankingBinding) : RecyclerView.ViewHolder(itemBinding.root){
-        fun bind(_lifecycleOwner: LifecycleOwner, _participant: Participant.Response, _viewModel: DetailPastViewModel,_position:Int){
+    class DetailPastViewHolder(private val itemBinding: ItemDetailPastRankingBinding) : RecyclerView.ViewHolder(itemBinding.root) {
+        fun bind(_lifecycleOwner: LifecycleOwner, _participant: Participant.Response, _viewModel: DetailPastViewModel, _position: Int) {
             itemBinding.apply {
                 lifecycleOwner = _lifecycleOwner
                 participant = _participant

@@ -62,7 +62,7 @@ class CustomFirebaseMessagingService : FirebaseMessagingService() {
         disposable.add(
                 PromissuApplication.retrofit!!
                         .create(AuthAPI::class.java)
-                        .updateFcmToken(PromissuApplication.getVersionInfo(),"Bearer ${PromissuApplication.diskCache!!.userToken}", FcmToken(fcmToken))
+                        .updateFcmToken(PromissuApplication.getVersionInfo(), "Bearer ${PromissuApplication.diskCache!!.userToken}", FcmToken(fcmToken))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({

@@ -65,9 +65,9 @@ class PromiseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         if (!isPastPromise) {
             viewModel.deleteRoom.observe(this, Observer {
-                if(it.admin_id!=PromissuApplication.diskCache!!.userId){
+                if (it.admin_id != PromissuApplication.diskCache!!.userId) {
                     buildLeftDialog(it.id)
-                }else {
+                } else {
                     buildDeleteDialog(it.id)
                 }
             })
@@ -149,7 +149,7 @@ class PromiseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
     }
 
-    private fun buildLeftDialog(room_id:Int){
+    private fun buildLeftDialog(room_id: Int) {
         val dialog = Dialog(context)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_request)
@@ -166,7 +166,7 @@ class PromiseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             disposables.add(
                     PromissuApplication.retrofit!!
                             .create(AuthAPI::class.java)
-                            .leftAppointment(PromissuApplication.getVersionInfo(),"Bearer " + PromissuApplication.diskCache!!.userToken, room_id)
+                            .leftAppointment(PromissuApplication.getVersionInfo(), "Bearer " + PromissuApplication.diskCache!!.userToken, room_id)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({ onNext ->
@@ -176,7 +176,7 @@ class PromiseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                                         val eventParams = Bundle()
                                         eventParams.putInt("room_id", room_id)
                                         eventParams.putLong("user_id", PromissuApplication.diskCache!!.userId)
-                                        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_left", eventParams)
+                                        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_leave", eventParams)
                                     }
                                     fetch(isPastPromise)
                                     dialog.dismiss()
@@ -214,7 +214,7 @@ class PromiseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             disposables.add(
                     PromissuApplication.retrofit!!
                             .create(AuthAPI::class.java)
-                            .deleteAppointment(PromissuApplication.getVersionInfo(),"Bearer " + PromissuApplication.diskCache!!.userToken, room_id)
+                            .deleteAppointment(PromissuApplication.getVersionInfo(), "Bearer " + PromissuApplication.diskCache!!.userToken, room_id)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe({ onNext ->
@@ -224,7 +224,7 @@ class PromiseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                                         val eventParams = Bundle()
                                         eventParams.putInt("room_id", room_id)
                                         eventParams.putLong("user_id", PromissuApplication.diskCache!!.userId)
-                                        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_left", eventParams)
+                                        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_delete", eventParams)
                                     }
                                     fetch(isPastPromise)
                                     dialog.dismiss()

@@ -46,7 +46,7 @@ class PromiseViewModel : BaseViewModel(), PromiseItemEventListener {
     fun fetch(isPastPromise: Boolean) {
         addDisposable(PromissuApplication.retrofit!!
                 .create(AuthAPI::class.java)
-                .getMyPromise(PromissuApplication.getVersionInfo(),"Bearer $token", 0, 9, if (isPastPromise) "past" else "future")
+                .getMyPromise(PromissuApplication.getVersionInfo(), "Bearer $token", 0, 9, if (isPastPromise) "past" else "future")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ onNext ->
@@ -62,8 +62,8 @@ class PromiseViewModel : BaseViewModel(), PromiseItemEventListener {
                 }))
     }
 
-    override fun itemClickListener(view: View, response: Appointment,isPast: Boolean) {
-            NavigationUtil.enterRoom(view.context as AppCompatActivity, response,isPast)
+    override fun itemClickListener(view: View, response: Appointment, isPast: Boolean) {
+        NavigationUtil.enterRoom(view.context as AppCompatActivity, response, isPast)
     }
 
     override fun itemLongCLickListener(response: Promise.Response): Boolean {
@@ -79,6 +79,6 @@ class PromiseViewModel : BaseViewModel(), PromiseItemEventListener {
 }
 
 interface PromiseItemEventListener {
-    fun itemClickListener(view: View, response: Appointment,isPast: Boolean)
+    fun itemClickListener(view: View, response: Appointment, isPast: Boolean)
     fun itemLongCLickListener(response: Promise.Response): Boolean
 }

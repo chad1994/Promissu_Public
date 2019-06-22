@@ -174,7 +174,7 @@ class PromissuApplication : MultiDexApplication() {
                 return instance as PromissuApplication
             }
 
-        fun getVersionInfo() : String{
+        fun getVersionInfo(): String {
             val info: PackageInfo = globalApplicationContext.packageManager.getPackageInfo(globalApplicationContext.packageName, 0)
             return info.versionName
         }

@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.simsimhan.promissu.databinding.ItemDetailUserStatusBinding
+import com.simsimhan.promissu.network.model.Participant
 import com.simsimhan.promissu.ui.detail.DetailEventListener
 import com.simsimhan.promissu.ui.detail.DetailViewModel
-import com.simsimhan.promissu.network.model.Participant
 
 class DetailUserStatusAdapter(
         private val lifecycleOwner: LifecycleOwner,
@@ -86,16 +86,16 @@ class DetailUserStatusAdapter(
             }
             itemBinding.itemDetailCl.setOnTouchListener { v, event ->
                 val action = event.action
-                val time  = System.currentTimeMillis()
-                when(action){
-                    MotionEvent.ACTION_DOWN->{
-                        _listener.onLongPressed(v,_participant,true,time)
+                val time = System.currentTimeMillis()
+                when (action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        _listener.onLongPressed(v, _participant, true, time)
                     }
-                    MotionEvent.ACTION_UP->{
-                        _listener.onLongPressed(v,_participant,false,time)
+                    MotionEvent.ACTION_UP -> {
+                        _listener.onLongPressed(v, _participant, false, time)
                     }
-                    MotionEvent.ACTION_CANCEL->{
-                        _listener.onLongPressed(v,_participant,false,time)
+                    MotionEvent.ACTION_CANCEL -> {
+                        _listener.onLongPressed(v, _participant, false, time)
                     }
                 }
                 false

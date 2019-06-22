@@ -37,7 +37,7 @@ class CreateActivity : AppCompatActivity() {
     private lateinit var thirdFragment: CreateFragment
     private lateinit var binding: ActivityCreatePromiseBinding
     private lateinit var adapterViewPager: CreateFragmentPagerAdapter
-    private var promise :Promise.Response? = null
+    private var promise: Promise.Response? = null
     private val viewModel: CreateViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,9 +49,9 @@ class CreateActivity : AppCompatActivity() {
             lifecycleOwner = this@CreateActivity
         }
 
-        if(intent.extras!=null){
+        if (intent.extras != null) {
             promise = intent.getParcelableExtra("promise")
-            viewModel.setModify(true,promise!!.id)
+            viewModel.setModify(true, promise!!.id)
         }
 
         if (!PromissuApplication.diskCache!!.isUploadedPromiseBefore) { // 첫 사용자 - 가이드 표현
@@ -67,9 +67,9 @@ class CreateActivity : AppCompatActivity() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
                 viewModel.setToolbarTitle(position)
-                if(position==0){
+                if (position == 0) {
                     keyboardShow()
-                }else{
+                } else {
                     keyboardHide()
                 }
             }
@@ -85,7 +85,7 @@ class CreateActivity : AppCompatActivity() {
         }
 
         viewModel.directionClicked.observe(this, Observer {
-            binding.vpPager.currentItem = binding.vpPager.currentItem+it
+            binding.vpPager.currentItem = binding.vpPager.currentItem + it
         })
 
         viewModel.toastMessage.observe(this, Observer {
@@ -93,15 +93,15 @@ class CreateActivity : AppCompatActivity() {
         })
 
         viewModel.response.observe(this, Observer {
-            NavigationUtil.enterRoom(this, Appointment(it,0),it.status==2)
+            NavigationUtil.enterRoom(this, Appointment(it, 0), it.status == 2)
             finish()
         })
 
         viewModel.modifyResponse.observe(this, Observer {
-                val intent = Intent()
-                intent.putExtra("promise",it) // TODO : 응답 메세지를 보내는 형태로 변경 되어야 함 .
-                setResult(RESULT_OK, intent)
-                finish()
+            val intent = Intent()
+            intent.putExtra("promise", it) // TODO : 응답 메세지를 보내는 형태로 변경 되어야 함 .
+            setResult(RESULT_OK, intent)
+            finish()
         })
     }
 
@@ -133,14 +133,14 @@ class CreateActivity : AppCompatActivity() {
         override fun getItem(position: Int): Fragment {
             val fragment: Fragment? = null
             return when (position) {
-                    0, 1, 2 -> {
-                        if(promise==null){
+                0, 1, 2 -> {
+                    if (promise == null) {
                         CreateFragment.newInstance(position)
-                        }else{
-                            CreateFragment.newInstance(position,promise!!)
-                        }
+                    } else {
+                        CreateFragment.newInstance(position, promise!!)
                     }
-                    else -> fragment!!
+                }
+                else -> fragment!!
             }
         }
 

@@ -114,8 +114,8 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     val toastMsg: LiveData<String>
         get() = _toastMsg
 
-    private val _longPressed = MutableLiveData<Boolean>()
-    val longPressed: LiveData<Boolean>
+    private val _longPressed = MutableLiveData<Int>()
+    val longPressed: LiveData<Int>
         get() = _longPressed
 
     private val _modifyButtonClicked = SingleLiveEvent<Any>()
@@ -123,7 +123,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         get() = _modifyButtonClicked
 
     private val _deleteAppointmentClicked = MutableLiveData<Promise.Response>()
-    val deleteAppointmentClicked : LiveData<Promise.Response>
+    val deleteAppointmentClicked: LiveData<Promise.Response>
         get() = _deleteAppointmentClicked
 
 
@@ -301,7 +301,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                 val tmpPart = Participant.Response(it.value.id, it.value.nickname, it.value.partId, it.value.timestamp, it.value.status)
                 list.add(tmpPart)
 
-                partList = partList!!.filterNot { o-> o.participation == it.value.partId }
+                partList = partList!!.filterNot { o -> o.participation == it.value.partId }
 
             }
         }
@@ -462,18 +462,33 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
 
     override fun onLongPressed(view: View, participant: Participant.Response, isAction: Boolean, millis: Long) {
         if (_isSocketOpen.value!!) {
-            _longPressed.value = isAction
+//            _longPressed.value = isAction
             if (isAction) {
                 requestMillis.set(millis)
+                _longPressed.postValue(1)
             } else {
                 if (millis - requestMillis.get()!! > 2000) { // 클릭 요청 시간 충족
                     if (_locationEvents.value!![myParticipation.get()]!!.point <= 0) {
+                        _longPressed.postValue(3)
                         _toastMsg.postValue("더 이상 위치를 요청할 수 없습니다. 요청권을 구매해주세요")
+                        if (!BuildConfig.DEBUG) {
+                            val eventParams = Bundle()
+                            eventParams.putInt("room_id", _response.value!!.id)
+                            eventParams.putLong("user_id", PromissuApplication.diskCache!!.userId)
+                            PromissuApplication.firebaseAnalytics!!.logEvent("appointment_location_shortage", eventParams)
+                        }
                     } else {
-                        sendLocationRequest(participant.participation) // 요청
+                        if (_locationEvents.value!![participant.participation]!!.status == 1) {
+                            _longPressed.postValue(3)
+                            _toastMsg.postValue("이미 위치 요청을 받은 사용자입니다.")
+                        } else {
+                            _longPressed.postValue(2)
+                            sendLocationRequest(participant.participation) // 요청
+                        }
                     }
                 } else { // 클릭 요청 시간 미달
-                    _toastMsg.postValue("요청시간 미달")
+//                    _toastMsg.postValue("요청시간 미달")
+                    _longPressed.postValue(3)
                 }
             }
         }
@@ -483,7 +498,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         _modifyButtonClicked.call()
     }
 
-    override fun onClickDeleteButton(promise:Promise.Response) {
+    override fun onClickDeleteButton(promise: Promise.Response) {
         _deleteAppointmentClicked.postValue(promise)
     }
 }
