@@ -114,8 +114,8 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     val toastMsg: LiveData<String>
         get() = _toastMsg
 
-    private val _longPressed = MutableLiveData<Boolean>()
-    val longPressed: LiveData<Boolean>
+    private val _longPressed = MutableLiveData<Int>()
+    val longPressed: LiveData<Int>
         get() = _longPressed
 
     private val _modifyButtonClicked = SingleLiveEvent<Any>()
@@ -462,18 +462,27 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
 
     override fun onLongPressed(view: View, participant: Participant.Response, isAction: Boolean, millis: Long) {
         if (_isSocketOpen.value!!) {
-            _longPressed.value = isAction
+//            _longPressed.value = isAction
             if (isAction) {
                 requestMillis.set(millis)
+                _longPressed.postValue(1)
             } else {
                 if (millis - requestMillis.get()!! > 2000) { // 클릭 요청 시간 충족
                     if (_locationEvents.value!![myParticipation.get()]!!.point <= 0) {
+                        _longPressed.postValue(3)
                         _toastMsg.postValue("더 이상 위치를 요청할 수 없습니다. 요청권을 구매해주세요")
                     } else {
-                        sendLocationRequest(participant.participation) // 요청
+                        if(_locationEvents.value!![participant.participation]!!.status==1){
+                            _longPressed.postValue(3)
+                            _toastMsg.postValue("이미 위치 요청을 받은 사용자입니다.")
+                        }else {
+                            _longPressed.postValue(2)
+                            sendLocationRequest(participant.participation) // 요청
+                        }
                     }
                 } else { // 클릭 요청 시간 미달
-                    _toastMsg.postValue("요청시간 미달")
+//                    _toastMsg.postValue("요청시간 미달")
+                    _longPressed.postValue(3)
                 }
             }
         }
