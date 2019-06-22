@@ -471,6 +471,12 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                     if (_locationEvents.value!![myParticipation.get()]!!.point <= 0) {
                         _longPressed.postValue(3)
                         _toastMsg.postValue("더 이상 위치를 요청할 수 없습니다. 요청권을 구매해주세요")
+                        if (!BuildConfig.DEBUG) {
+                            val eventParams = Bundle()
+                            eventParams.putInt("room_id", _response.value!!.id)
+                            eventParams.putLong("user_id", PromissuApplication.diskCache!!.userId)
+                            PromissuApplication.firebaseAnalytics!!.logEvent("appointment_location_shortage", eventParams)
+                        }
                     } else {
                         if (_locationEvents.value!![participant.participation]!!.status == 1) {
                             _longPressed.postValue(3)

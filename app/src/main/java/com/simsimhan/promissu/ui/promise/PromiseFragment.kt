@@ -176,7 +176,7 @@ class PromiseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                                         val eventParams = Bundle()
                                         eventParams.putInt("room_id", room_id)
                                         eventParams.putLong("user_id", PromissuApplication.diskCache!!.userId)
-                                        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_left", eventParams)
+                                        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_leave", eventParams)
                                     }
                                     fetch(isPastPromise)
                                     dialog.dismiss()
@@ -224,7 +224,7 @@ class PromiseFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                                         val eventParams = Bundle()
                                         eventParams.putInt("room_id", room_id)
                                         eventParams.putLong("user_id", PromissuApplication.diskCache!!.userId)
-                                        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_left", eventParams)
+                                        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_delete", eventParams)
                                     }
                                     fetch(isPastPromise)
                                     dialog.dismiss()

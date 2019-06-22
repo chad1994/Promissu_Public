@@ -436,7 +436,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                                         val eventParams = Bundle()
                                         eventParams.putInt("room_id", room_id)
                                         eventParams.putLong("user_id", PromissuApplication.diskCache!!.userId)
-                                        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_left", eventParams)
+                                        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_leave", eventParams)
                                     }
                                     dialog.dismiss()
                                     onBackPressed()
@@ -484,7 +484,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
                                         val eventParams = Bundle()
                                         eventParams.putInt("room_id", room_id)
                                         eventParams.putLong("user_id", PromissuApplication.diskCache!!.userId)
-                                        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_left", eventParams)
+                                        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_delete", eventParams)
                                     }
                                     dialog.dismiss()
                                     onBackPressed()
