@@ -36,8 +36,6 @@ import org.joda.time.DateTime
 import org.joda.time.Seconds
 import org.json.JSONObject
 import timber.log.Timber
-import java.util.*
-import kotlin.collections.HashMap
 
 class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEventListener {
 
@@ -123,6 +121,10 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     private val _modifyButtonClicked = SingleLiveEvent<Any>()
     val modifyButtonClicked: LiveData<Any>
         get() = _modifyButtonClicked
+
+    private val _deleteAppointmentClicked = MutableLiveData<Promise.Response>()
+    val deleteAppointmentClicked : LiveData<Promise.Response>
+        get() = _deleteAppointmentClicked
 
 
     val title = ObservableField<String>()
@@ -268,7 +270,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
             if (_locationEvents.value!![myParticipation.get()]!!.status == 1) { //내 상태가 요청이 온 상태라면
                 _dialogResponse.call()
             }
-            if (_locationEvents.value!![myParticipation.get()]!!.status == 4||_locationEvents.value!![myParticipation.get()]!!.status == 5) {
+            if (_locationEvents.value!![myParticipation.get()]!!.status == 4 || _locationEvents.value!![myParticipation.get()]!!.status == 5) {
                 _attendMyMarker.postValue(true)
             }
         }
@@ -292,13 +294,19 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
 
     private fun checkAttendedParticipants() {
         val list = ArrayList<Participant.Response>()
-        list.add(Participant.Response(0,"empty",0,_response.value!!.start_datetime,0))
+        var partList = _participants.value
+        list.add(Participant.Response(0, "empty", 0, _response.value!!.start_datetime, 0))
         _locationEvents.value!!.forEach {
-            if(it.value.status==4||it.value.status==5) {
+            if (it.value.status == 4 || it.value.status == 5) {
                 val tmpPart = Participant.Response(it.value.id, it.value.nickname, it.value.partId, it.value.timestamp, it.value.status)
                 list.add(tmpPart)
+
+                partList = partList!!.filterNot { o-> o.participation == it.value.partId }
+
             }
         }
+        _participants.postValue(partList)
+
         _attendedParticipants.postValue(list.sortedWith(comparator = Participant.CompareByStatus()))
     }
 
@@ -374,6 +382,10 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                     _timerString.postValue("" + remainSeconds / 60 + "분 0" + remainSeconds % 60 + "초 남았어요!")
                 } else {
                     _timerString.postValue("" + remainSeconds / 60 + "분 " + remainSeconds % 60 + "초 남았어요!")
+                }
+                //
+                if (remainSeconds < 0) {
+                    _timerString.postValue("지각이에요!")
                 }
             }
         }
@@ -470,6 +482,10 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     override fun onClickModifyButton(view: View) {
         _modifyButtonClicked.call()
     }
+
+    override fun onClickDeleteButton(promise:Promise.Response) {
+        _deleteAppointmentClicked.postValue(promise)
+    }
 }
 
 interface DetailEventListener {
@@ -477,4 +493,5 @@ interface DetailEventListener {
     fun onClickModifyButton(view: View)
     fun onLongPressed(view: View, participant: Participant.Response, isAction: Boolean, millis: Long)
     fun onClickRequestLocation(partId: Int, nickname: String)
+    fun onClickDeleteButton(promise: Promise.Response)
 }
