@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -31,12 +32,16 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.naver.maps.map.util.FusedLocationSource
 import com.simsimhan.promissu.BuildConfig
+import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityDetailPromiseBinding
 import com.simsimhan.promissu.databinding.ViewMarkerAttendanceBinding
+import com.simsimhan.promissu.network.AuthAPI
 import com.simsimhan.promissu.network.model.Promise
 import com.simsimhan.promissu.ui.detail.adapter.DetailUserStatusAdapter
 import com.simsimhan.promissu.util.NavigationUtil
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 
 class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -135,7 +140,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         })
 
         viewModel.participants.observe(this, Observer {
-            if (promise.status == 1 && viewModel.myParticipation.get() != null) { //방이 pending 되고 참여자 정보를 받아왔을 때
+            if (promise.status == 1 && viewModel.myParticipation.get() != null && !(viewModel.isSocketOpen.value!!)) { //방이 pending 되고 참여자 정보를 받아왔을 때
                 viewModel.setSocketReady(true)
             }
         })
@@ -145,7 +150,7 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         })
 
         viewModel.attendedParticipants.observe(this, Observer {
-            attendanceBinding.itemMarkerAttendanceText.text = "+ " + (it.size-1)
+            attendanceBinding.itemMarkerAttendanceText.text = "+" + (it.size-1)
             attendanceMarker.icon = OverlayImage.fromView(attendanceBinding.root)
 
         })
@@ -154,6 +159,14 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         {
             //TODO : 나에게 온 요청일때 처리.
             buildResponseDialog()
+        })
+
+        viewModel.deleteAppointmentClicked.observe(this, Observer {
+            if(it.admin_id!=PromissuApplication.diskCache!!.userId){
+                buildLeftDialog(it.id)
+            }else {
+                buildDeleteDialog(it.id)
+            }
         })
 
 //        viewModel.sendLocationRequest.observe(this, Observer {
@@ -286,16 +299,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun initMyLocationViewResource() {
-//        arriveView = LayoutInflater.from(this).inflate(R.layout.user_marker, null)
-//        arriveView.setOnTouchListener { v, event ->
-//            Toast.makeText(this,"asdf",Toast.LENGTH_SHORT).show()
-//            false
-//        }
-//        val tv = arriveView.findViewById(R.id.user_marker_name) as TextView
-//        val img = arriveView.findViewById(R.id.user_marker_image) as ImageView
-//        tv.text = "출석하기"
-//        tv.setTextColor(Color.parseColor("#5F6CCC"))
-//        img.setImageResource(R.drawable.ic_icon_marker_attend)
 
         notArriveView = LayoutInflater.from(this).inflate(R.layout.user_marker, null)
         val ntv = notArriveView.findViewById(R.id.user_marker_name) as TextView
@@ -309,12 +312,6 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         location = naverMap.locationOverlay
         location.icon = OverlayImage.fromResource(R.drawable.ic_icon_mylocation_overlay)
         location.circleColor = Color.parseColor("#48ef006d")
-//        val myView = LayoutInflater.from(this).inf
-// late(R.layout.user_marker, null)
-//        val tv = myView.findViewById(R.id.user_marker_name) as TextView
-//        tv.text = "나"
-//        location.icon = OverlayImage.fromView(notArriveView)
-//        location.anchor = PointF(0.5f, 1f)
 
         binding.detailAttendButton.setOnClickListener {
             if (viewModel.isArrive.value == true && viewModel.isSocketOpen.value == true) {
@@ -400,6 +397,102 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         btnCancel.setOnClickListener {
             dialog.dismiss()
         }
+        dialog.setCancelable(false)
+        dialog.show()
+    }
+
+    private fun buildLeftDialog(room_id:Int){
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_request)
+        val text1 = dialog.findViewById<TextView>(R.id.dialog_text1)
+        val text2 = dialog.findViewById<TextView>(R.id.dialog_text2)
+        val btnCancel = dialog.findViewById<Button>(R.id.dialog_button_cancel)
+        val btnAccept = dialog.findViewById<Button>(R.id.dialog_button_accept)
+        text1.text = "정말 약속을"
+        text2.text = "나가시겠습니까?"
+        btnAccept.text = "나가기"
+        btnCancel.text = "취소"
+        btnAccept.setOnClickListener {
+            // successfully delete room
+            viewModel.addDisposable(
+                    PromissuApplication.retrofit!!
+                            .create(AuthAPI::class.java)
+                            .leftAppointment(PromissuApplication.getVersionInfo(),"Bearer " + PromissuApplication.diskCache!!.userToken, room_id)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({ onNext ->
+                                if (onNext.code() == 200) {
+                                    //
+                                    if (!BuildConfig.DEBUG) {
+                                        val eventParams = Bundle()
+                                        eventParams.putInt("room_id", room_id)
+                                        eventParams.putLong("user_id", PromissuApplication.diskCache!!.userId)
+                                        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_left", eventParams)
+                                    }
+                                    dialog.dismiss()
+                                    onBackPressed()
+                                } else if (onNext.code() == 401) {
+                                    Toast.makeText(this, "나가기 권한이 없습니다.", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(this, "약속 나가기에 실패 했습니다. 잠시후 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+                                }
+                            }, {
+                                if (BuildConfig.DEBUG) {
+                                    Toast.makeText(this, "나가기 에러", Toast.LENGTH_SHORT).show()
+                                }
+                                dialog.dismiss()
+                            }))
+        }
+        btnCancel.setOnClickListener { dialog.dismiss() }
+        dialog.setCancelable(false)
+        dialog.show()
+    }
+
+    private fun buildDeleteDialog(room_id: Int) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_request)
+        val text1 = dialog.findViewById<TextView>(R.id.dialog_text1)
+        val text2 = dialog.findViewById<TextView>(R.id.dialog_text2)
+        val btnCancel = dialog.findViewById<Button>(R.id.dialog_button_cancel)
+        val btnAccept = dialog.findViewById<Button>(R.id.dialog_button_accept)
+        text1.text = "정말 약속을"
+        text2.text = "삭제 하시겠습니까?"
+        btnAccept.text = "삭제"
+        btnCancel.text = "취소"
+        btnAccept.setOnClickListener {
+            // successfully delete room
+            viewModel.addDisposable(
+                    PromissuApplication.retrofit!!
+                            .create(AuthAPI::class.java)
+                            .deleteAppointment(PromissuApplication.getVersionInfo(),"Bearer " + PromissuApplication.diskCache!!.userToken, room_id)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe({ onNext ->
+                                if (onNext.code() == 200) {
+                                    //
+                                    if (!BuildConfig.DEBUG) {
+                                        val eventParams = Bundle()
+                                        eventParams.putInt("room_id", room_id)
+                                        eventParams.putLong("user_id", PromissuApplication.diskCache!!.userId)
+                                        PromissuApplication.firebaseAnalytics!!.logEvent("appointment_left", eventParams)
+                                    }
+                                    dialog.dismiss()
+                                    onBackPressed()
+                                } else if (onNext.code() == 401) {
+                                    Toast.makeText(this, "삭제 권한이 없습니다.", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(this, "나가기에 실패 했습니다. 잠시후 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+                                }
+                            }, {
+                                if (BuildConfig.DEBUG) {
+                                    Toast.makeText(this, "삭제 에러", Toast.LENGTH_SHORT).show()
+                                }
+                                dialog.dismiss()
+                            }))
+        }
+        btnCancel.setOnClickListener { dialog.dismiss() }
         dialog.setCancelable(false)
         dialog.show()
     }

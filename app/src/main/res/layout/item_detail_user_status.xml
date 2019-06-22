@@ -13,6 +13,7 @@
         <variable
             name="participants"
             type="com.simsimhan.promissu.network.model.Participant.Response"/>
+        <import type="android.view.View"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -10,6 +10,7 @@
         <variable
             name="listener"
             type="com.simsimhan.promissu.ui.detail.DetailEventListener"/>
+        <import type="android.view.View"/>
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -80,6 +81,8 @@
                     app:layout_constraintTop_toBottomOf="@id/detail_kakao_invite_btn"
                     android:layout_marginTop="8dp"
                     android:src="@drawable/ic_icon_leave"
+                    android:visibility="@{viewModel.isSocketOpen()?View.GONE:View.VISIBLE}"
+                    android:onClick="@{()->listener.onClickDeleteButton(viewModel.response)}"
                     android:background="@drawable/detail_white_round_button"
                     />
 
