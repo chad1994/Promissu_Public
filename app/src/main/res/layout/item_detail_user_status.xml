@@ -6,16 +6,18 @@
     <data>
         <variable
             name="viewModel"
-            type="com.simsimhan.promissu.detail.DetailViewModel"/>
+            type="com.simsimhan.promissu.ui.detail.DetailViewModel"/>
         <variable
             name="listener"
-            type="com.simsimhan.promissu.detail.DetailEventListener"/>
+            type="com.simsimhan.promissu.ui.detail.DetailEventListener"/>
         <variable
             name="participants"
             type="com.simsimhan.promissu.network.model.Participant.Response"/>
+        <import type="android.view.View"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/item_detail_cl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="4dp"
@@ -54,6 +56,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             setUserItemStatus="@{viewModel.locationEvents.get(participants.participation).status}"
+            android:background="@drawable/round_shape_bg"
             />
         <TextView
             android:id="@+id/item_detail_status_attend_complete_text"

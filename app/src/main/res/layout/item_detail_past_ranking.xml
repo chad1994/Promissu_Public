@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="participant"
+            type="com.simsimhan.promissu.network.model.Participant.Response" />
+        <variable
+            name="viewModel"
+            type="com.simsimhan.promissu.ui.pastdetail.DetailPastViewModel"/>
+        <variable
+            name="position"
+            type="Integer"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@drawable/bg_circle_detail_past_item_purple"
+        setBackgroundColor="@{participant.status}"
+        setBackgroundColor2="@{participant.kakao_id}"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_detail_past_rank_num"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="12dp"
+            setIconBackgroundColor="@{participant.status}"
+            android:gravity="center"
+            android:lineSpacingExtra="16sp"
+            setRankingText="@{position}"
+            setRankingText2="@{participant.status}"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/item_detail_past_rank_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="13dp"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="7.5sp"
+            android:text="@{participant.nickname}"
+            android:textColor="@color/black"
+            android:textSize="15.5sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/item_detail_past_rank_num"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/item_detail_past_rank_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/main_03"
+            android:lineSpacingExtra="11sp"
+            android:gravity="center_horizontal"
+            setRankingTime="@{participant.status}"
+            setRankingTime2="@{participant.updatedAt}"
+            setRankingTime3="@{viewModel.response.promise.start_datetime}"
+            app:layout_constraintLeft_toLeftOf="@id/item_detail_past_rank_attendance"
+            app:layout_constraintRight_toRightOf="@id/item_detail_past_rank_attendance"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/item_detail_past_rank_attendance"
+            android:layout_marginBottom="3dp"
+            android:text="59분 빨리"
+            />
+
+        <TextView
+            android:id="@+id/item_detail_past_rank_attendance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15.5sp"
+            android:textColor="@color/black"
+            android:lineSpacingExtra="7.5sp"
+            setRankingAttendance="@{participant.status}"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="3dp"
+            app:layout_constraintTop_toTopOf="@id/item_detail_past_rank_time"
+            android:layout_marginRight="36dp"
+            android:gravity="center_horizontal"
+            android:text="출석"
+            />
+
+        <TextView
+            android:id="@+id/item_detail_past_rank_absent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15.5sp"
+            android:textColor="@color/black"
+            android:lineSpacingExtra="7.5sp"
+            setRankingAbsent="@{participant.status}"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="3dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginRight="36dp"
+            android:gravity="center_horizontal"
+            android:text="결석"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

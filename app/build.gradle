@@ -10,12 +10,17 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
+
+    androidExtensions {
+        experimental = true
+    }
+
     defaultConfig {
         applicationId "com.simsimhan.promissu"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 4
-        versionName "1.0.2"
+        versionCode 5
+        versionName "1.0.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -50,6 +55,7 @@ android {
             debuggable true
             buildConfigField 'String', 'SERVER_URL', '"http://api.promissu.com"'
             buildConfigField 'String', 'SOCKET_URL', keystoreProperties.getProperty("socketServerURL")
+            buildConfigField 'String', 'LOCAL_URL', keystoreProperties.getProperty("localServerURL")
             buildConfigField "String", "NaverClientId", keystoreProperties.getProperty("naverClientId")
             buildConfigField "String", "NaverClientSecret", keystoreProperties.getProperty("naverClientSecret")
         }
@@ -163,4 +169,10 @@ dependencies {
     //fcm
     implementation 'com.google.firebase:firebase-core:16.0.4'
     implementation 'com.google.firebase:firebase-messaging:17.3.3'
+
+    //lottie
+    implementation 'com.airbnb.android:lottie:3.0.1'
+
+    //showcaseView
+    implementation 'com.github.amlcurran.showcaseview:library:5.4.3'
 }

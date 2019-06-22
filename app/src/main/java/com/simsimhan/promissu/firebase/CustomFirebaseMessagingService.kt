@@ -5,19 +5,14 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
-import android.util.Log
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.simsimhan.promissu.MainActivity
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.network.AuthAPI
-import com.simsimhan.promissu.network.Login
 import com.simsimhan.promissu.network.model.FcmToken
-import com.simsimhan.promissu.util.NavigationUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -63,11 +58,11 @@ class CustomFirebaseMessagingService : FirebaseMessagingService() {
         notificationManager.notify(0, notificationBuilder.build())
     }
 
-    private fun sendFcmTokenToServer(fcmToken: String){
+    private fun sendFcmTokenToServer(fcmToken: String) {
         disposable.add(
                 PromissuApplication.retrofit!!
                         .create(AuthAPI::class.java)
-                        .updateFcmToken("Bearer ${PromissuApplication.diskCache!!.userToken}",FcmToken(fcmToken))
+                        .updateFcmToken(PromissuApplication.getVersionInfo(), "Bearer ${PromissuApplication.diskCache!!.userToken}", FcmToken(fcmToken))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({

@@ -3,7 +3,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.simsimhan.promissu.promise.create.CreateViewModel" />
+            type="com.simsimhan.promissu.ui.promise.create.CreateViewModel" />
     </data>
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"

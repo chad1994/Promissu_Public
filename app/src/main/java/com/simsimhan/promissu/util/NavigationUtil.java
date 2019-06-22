@@ -8,12 +8,13 @@ import android.util.DisplayMetrics;
 import android.widget.Toast;
 
 import com.simsimhan.promissu.MainActivity;
-import com.simsimhan.promissu.detail.PromiseDetailActivity;
-import com.simsimhan.promissu.login.LoginActivity;
-import com.simsimhan.promissu.map.LocationSearchActivity;
+import com.simsimhan.promissu.network.model.Appointment;
 import com.simsimhan.promissu.network.model.Promise;
-import com.simsimhan.promissu.promise.PendingPromiseActivity;
-import com.simsimhan.promissu.promise.create.CreateActivity;
+import com.simsimhan.promissu.ui.detail.PromiseDetailActivity;
+import com.simsimhan.promissu.ui.login.LoginActivity;
+import com.simsimhan.promissu.ui.map.LocationSearchActivity;
+import com.simsimhan.promissu.ui.pastdetail.DetailPastActivity;
+import com.simsimhan.promissu.ui.promise.create.CreateActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,6 +22,7 @@ public class NavigationUtil {
     public static final int REQEUSET_LOGIN = 101;
     public static final int REQUEST_MAP_SEARCH = 102;
     public static final int REQUEST_CREATE_PROMISE = 103;
+    public static final int REQUEST_MODIFY_PROMISE = 104;
 
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 9991;
 
@@ -31,7 +33,10 @@ public class NavigationUtil {
         // 사람들이 다 모이고, 약속이 시작되기를 기다리는 상태 -> (변경) 약속 시작 1시간 전
         PENDING(1),
 
-        // 약속 시간이 다 끝난 상태
+        // 약속이 진행중인 상태
+//        MEETING(2),
+
+        //약속 시간이 끝난 상태
         CLOSED(2),
 
         // 약속이 삭제된 상태
@@ -59,6 +64,12 @@ public class NavigationUtil {
 //        Intent intent = new Intent(activity, CreatePromiseActivity.class);
         Intent intent = new Intent(activity, CreateActivity.class);
         activity.startActivityForResult(intent, REQUEST_CREATE_PROMISE);
+    }
+
+    public static void openModifyPromiseScreen(AppCompatActivity activity, Promise.Response promise) {
+        Intent intent = new Intent(activity, CreateActivity.class);
+        intent.putExtra("promise", promise);
+        activity.startActivityForResult(intent, REQUEST_MODIFY_PROMISE);
     }
 
     public static void openMapScreen(Activity activity) {
@@ -108,26 +119,30 @@ public class NavigationUtil {
         return string.length() > length ? string.substring(0, length) : string;
     }
 
-    public static void enterRoom(AppCompatActivity appCompatActivity, Promise.Response promise) {
+    public static void enterRoom(AppCompatActivity appCompatActivity, Appointment promise, Boolean isPast) {
 //        if (promise.getStatus() == PROMISE_STATUS.PENDING.getValue()) {
 //            openPendingScreen(appCompatActivity, promise);
 //        } else
         if (promise.getStatus() == PROMISE_STATUS.DELETED.getValue()) {
             Toast.makeText(appCompatActivity, "삭제된 방입니다.", Toast.LENGTH_SHORT).show();
+        } else if (isPast) {
+            openPromiseDetailPastScreen(appCompatActivity, promise);
         } else {
             openPromiseDetailScreen(appCompatActivity, promise);
         }
     }
 
-    private static void openPromiseDetailScreen(AppCompatActivity appCompatActivity, Promise.Response promise) {
+    private static void openPromiseDetailScreen(AppCompatActivity appCompatActivity, Appointment promise) {
         Intent intent = new Intent(appCompatActivity, PromiseDetailActivity.class);
-        intent.putExtra("promise", promise);
+        intent.putExtra("promise", promise.getPromise());
         appCompatActivity.startActivity(intent);
     }
 
-    private static void openPendingScreen(AppCompatActivity appCompatActivity, Promise.Response promise) {
-        Intent intent = new Intent(appCompatActivity, PendingPromiseActivity.class);
+    private static void openPromiseDetailPastScreen(AppCompatActivity appCompatActivity, Appointment promise) {
+        Intent intent = new Intent(appCompatActivity, DetailPastActivity.class);
         intent.putExtra("promise", promise);
         appCompatActivity.startActivity(intent);
+
     }
+
 }

@@ -1,6 +1,5 @@
 package com.simsimhan.promissu;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -15,7 +14,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,8 +26,9 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.kakao.auth.Session;
 import com.simsimhan.promissu.network.AuthAPI;
+import com.simsimhan.promissu.network.model.Appointment;
 import com.simsimhan.promissu.network.model.FcmToken;
-import com.simsimhan.promissu.promise.PromiseFragment;
+import com.simsimhan.promissu.ui.promise.PromiseFragment;
 import com.simsimhan.promissu.util.DialogUtil;
 import com.simsimhan.promissu.util.NavigationUtil;
 
@@ -97,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         disposables.add( //TODO : fcm 토큰 업데이트. 조건 다시 생각 ( Main -> FirebaseMSG -> Main) . 현재는 실행시 무조건 적어도 한번 호출.
                 PromissuApplication.Companion.getRetrofit()
                         .create(AuthAPI.class)
-                        .updateFcmToken("Bearer " + PromissuApplication.Companion.getDiskCache().getUserToken(), new FcmToken(PromissuApplication.Companion.getDiskCache().getFcmToken()))
+                        .updateFcmToken(PromissuApplication.Companion.getVersionInfo(), "Bearer " + PromissuApplication.Companion.getDiskCache().getUserToken(), new FcmToken(PromissuApplication.Companion.getDiskCache().getFcmToken()))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(onNext -> Timber.d("Success:: Fcm Token registered "),
@@ -304,12 +303,12 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         disposables.add(
                 PromissuApplication.Companion.getRetrofit()
                         .create(AuthAPI.class)
-                        .enterPromise("Bearer " + PromissuApplication.Companion.getDiskCache().getUserToken(), roomId)
+                        .enterPromise(PromissuApplication.Companion.getVersionInfo(), "Bearer " + PromissuApplication.Companion.getDiskCache().getUserToken(), roomId)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(onNext -> {
                             // save token
-                            NavigationUtil.enterRoom(this, onNext);
+                            NavigationUtil.enterRoom(this, new Appointment(onNext, 0), onNext.getStatus() == 2);
                         }, onError -> {
                             if (BuildConfig.DEBUG) {
                                 Toast.makeText(this, "이미 시작했거나, 끝난 모임입니다.", Toast.LENGTH_SHORT).show();
@@ -415,51 +414,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         }
     }
 
-    public void buildDeleteDialog(int room_id){
-        Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_request);
-        TextView text1 = dialog.findViewById(R.id.dialog_text1);
-        TextView text2 = dialog.findViewById(R.id.dialog_text2);
-        Button btnCancel = dialog.findViewById(R.id.dialog_button_cancel);
-        Button btnAccept = dialog.findViewById(R.id.dialog_button_accept);
-        text1.setText("정말 약속을");
-        text2.setText("삭제 하시겠습니까?");
-        btnAccept.setText("삭제");
-        btnCancel.setText("취소");
-        btnAccept.setOnClickListener(v->{
-            // successfully delete room
-            disposables.add(
-                    PromissuApplication.Companion.getRetrofit()
-                            .create(AuthAPI.class)
-                            .deleteAppointment("Bearer " + PromissuApplication.Companion.getDiskCache().getUserToken(), room_id)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(onNext -> {
-                                if(onNext.code()==200){
-                                    //
-                                    if(!BuildConfig.DEBUG) {
-                                        Bundle eventParams = new Bundle();
-                                        eventParams.putInt("room_id", room_id);
-                                        eventParams.putLong("user_id", PromissuApplication.Companion.getDiskCache().getUserId());
-                                        PromissuApplication.Companion.getFirebaseAnalytics().logEvent("appointment_delete", eventParams);
-                                    }
-                                } else if(onNext.code()==401){
-                                    Toast.makeText(this, "삭제 권한이 없습니다.", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(this, "삭제에 실패 했습니다. 잠시후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
-                                }
-                            }, onError -> {
-                                if (BuildConfig.DEBUG) {
-                                    Toast.makeText(this, "삭제 에러", Toast.LENGTH_SHORT).show();
-                                }
-                            }, dialog::dismiss));
-        });
-        btnCancel.setOnClickListener(v-> dialog.dismiss());
-        dialog.show();
-    }
-
-
     public View getCustomTabView(int index) {
         View customView = LayoutInflater.from(MainActivity.this).inflate(R.layout.view_custom_tab, null);
         TextView text = customView.findViewById(R.id.custom_tab_textView);
@@ -512,9 +466,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return PromiseFragment.newInstance(position, "약속", false);
+                    return PromiseFragment.Companion.newInstance(position, "약속", false);
                 case 1:
-                    return PromiseFragment.newInstance(position, "지난 약속", true);
+                    return PromiseFragment.Companion.newInstance(position, "지난 약속", true);
                 default:
                     return null;
             }
