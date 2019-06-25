@@ -11,6 +11,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import retrofit2.HttpException
 import timber.log.Timber
+import java.net.ConnectException
 
 class LoginViewModel : BaseViewModel() {
 
@@ -40,19 +41,23 @@ class LoginViewModel : BaseViewModel() {
                     // save token
                     _onSuccess.postValue(true)
                 }, { onError ->
-                    when ((onError as HttpException).code()) {
-                        420 -> {
-                            Timber.e("require update: %s", onError.toString())
-                            _toastMsg.postValue("최신 버전의 업데이트가 필요합니다.")
+                    try {
+                        when ((onError as HttpException).code()) {
+                            420 -> {
+                                Timber.e("require update: %s", onError.toString())
+                                _toastMsg.postValue("최신 버전의 업데이트가 필요합니다.")
+                            }
+                            500 -> {
+                                Timber.e("Server Error(): %s", onError.toString())
+                                _toastMsg.postValue("서버 점검중입니다. 잠시후 다시 시도해주세요.")
+                            }
+                            else -> {
+                                Timber.e("onSessionClosed(): %s", onError.toString())
+                                _toastMsg.postValue("네트워크 상태를 확인 후, 로그인을 재시도 해주세요.")
+                            }
                         }
-                        500 -> {
-                            Timber.e("Server Error(): %s", onError.toString())
-                            _toastMsg.postValue("서버 점검중입니다. 잠시후 다시 시도해주세요.")
-                        }
-                        else -> {
-                            Timber.e("onSessionClosed(): %s", onError.toString())
-                            _toastMsg.postValue("네트워크 상태를 확인 후, 로그인을 재시도 해주세요.")
-                        }
+                    }catch (e:Throwable){
+                        _toastMsg.postValue("서버 접속이 원활하지 않습니다. 잠시후 다시 시도해주세요.")
                     }
                 }))
     }
