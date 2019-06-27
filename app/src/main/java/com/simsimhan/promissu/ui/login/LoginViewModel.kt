@@ -43,6 +43,10 @@ class LoginViewModel : BaseViewModel() {
                 }, { onError ->
                     try {
                         when ((onError as HttpException).code()) {
+                            400 -> {
+                                Timber.e("Server Error(): %s", onError.toString())
+                                _toastMsg.postValue("서버 점검중입니다. 잠시후 다시 시도해주세요.")
+                            }
                             420 -> {
                                 Timber.e("require update: %s", onError.toString())
                                 _toastMsg.postValue("최신 버전의 업데이트가 필요합니다.")
