@@ -407,10 +407,9 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     }
 
     override fun onClickInviteButton(view: View) {
-        Timber.d("@@@@invite clicked")
         val promiseDate = DateTime(promise.start_datetime)
 
-        val params = LocationTemplate.newBuilder(promise.location + " 좌표: (" + promise.location_lat + ", " + promise.location_lon + ")",
+        val params = LocationTemplate.newBuilder(promise.location_name,
                 ContentObject.newBuilder(promise.title,
                         "https://i.pinimg.com/originals/92/e4/43/92e443862a7ae5db7cf74b41db2f5e37.jpg",
                         LinkObject.newBuilder()
@@ -418,12 +417,14 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                                 .setMobileWebUrl("https://developers.kakao.com")
                                 .build())
                         .setDescrption(
-                                "" + promiseDate.getYear() + "년 "
-                                        + promiseDate.getMonthOfYear() + "월 "
-                                        + promiseDate.getDayOfMonth() + "일 "
-                                        + promise.description)
+                                "" + promiseDate.year + "년 "
+                                        + promiseDate.monthOfYear + "월 "
+                                        + promiseDate.dayOfMonth + "일 "
+                                        + StringUtil.addPaddingIfSingleDigit(promiseDate.hourOfDay)+"시 "
+                                        + promiseDate.minuteOfHour + "분"
+                                       )
                         .build())
-                .setAddressTitle(promise.location + " 좌표: (" + promise.location_lat + ", " + promise.location_lon + ")")
+                .setAddressTitle(promise.location + "\n위,경도: (" + promise.location_lat + ", " + promise.location_lon + ")")
                 .addButton(ButtonObject("앱에서 보기", LinkObject.newBuilder()
                         .setWebUrl("'https://developers.kakao.com")
                         .setMobileWebUrl("'https://developers.kakao.com")
