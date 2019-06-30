@@ -19,8 +19,8 @@ android {
         applicationId "com.simsimhan.promissu"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 5
-        versionName "1.0.3"
+        versionCode 6
+        versionName "1.0.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -43,7 +43,7 @@ android {
 
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField 'String', 'SERVER_URL', '"http://api.promissu.com"'
+            buildConfigField 'String', 'SERVER_URL', keystoreProperties.getProperty("serverURL")
             buildConfigField 'String', 'SOCKET_URL', keystoreProperties.getProperty("socketServerURL")
             buildConfigField "String", "NaverClientId", keystoreProperties.getProperty("naverClientId")
             buildConfigField "String", "NaverClientSecret", keystoreProperties.getProperty("naverClientSecret")
@@ -53,7 +53,7 @@ android {
 //            for test server
             minifyEnabled false
             debuggable true
-            buildConfigField 'String', 'SERVER_URL', '"http://api.promissu.com"'
+            buildConfigField 'String', 'SERVER_URL', keystoreProperties.getProperty("serverURL")
             buildConfigField 'String', 'SOCKET_URL', keystoreProperties.getProperty("socketServerURL")
             buildConfigField 'String', 'LOCAL_URL', keystoreProperties.getProperty("localServerURL")
             buildConfigField "String", "NaverClientId", keystoreProperties.getProperty("naverClientId")
@@ -175,4 +175,5 @@ dependencies {
 
     //showcaseView
     implementation 'com.github.amlcurran.showcaseview:library:5.4.3'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
 }
