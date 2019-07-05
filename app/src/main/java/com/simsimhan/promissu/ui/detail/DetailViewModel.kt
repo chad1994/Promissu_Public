@@ -375,23 +375,14 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
 
             override fun onTick(millisUntilFinished: Long) {
                 remainSeconds -= 1
+                if (remainSeconds % 60 < 10) {
+                    _timerString.postValue("" + remainSeconds / 60 + "분 0" + remainSeconds % 60 + "초 남았어요!")
+                } else {
+                    _timerString.postValue("" + remainSeconds / 60 + "분 " + remainSeconds % 60 + "초 남았어요!")
+                }
                 //
                 if (remainSeconds < 0) {
-                    if (_myLocationEvent.value!!.status == 2 || _myLocationEvent.value!!.status == 3) {
-                        if (remainSeconds % 60 < 10) {
-                            _timerString.postValue("" + remainSeconds / 60 + "분 0" + remainSeconds % 60 + "초 남았어요!")
-                        } else {
-                            _timerString.postValue("" + remainSeconds / 60 + "분 " + remainSeconds % 60 + "초 남았어요!")
-                        }
-                    } else {
-                        _timerString.postValue("지각이에요!")
-                    }
-                } else {
-                    if (remainSeconds % 60 < 10) {
-                        _timerString.postValue("" + remainSeconds / 60 + "분 0" + remainSeconds % 60 + "초 남았어요!")
-                    } else {
-                        _timerString.postValue("" + remainSeconds / 60 + "분 " + remainSeconds % 60 + "초 남았어요!")
-                    }
+                    _timerString.postValue("지각 시간이에요!")
                 }
             }
         }
