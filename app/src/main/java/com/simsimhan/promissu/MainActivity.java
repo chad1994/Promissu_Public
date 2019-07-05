@@ -119,10 +119,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
 
                 getFcmToken());
         if (uri != null) {
-            String execparamkey1 = uri.getQueryParameter("roomID");
-
+            String execparamkey1 = uri.getQueryParameter("roomid");
             if (execparamkey1 != null) {
-                Timber.d("onCreate() param=roomID, key=%s", execparamkey1);
+                Timber.d("onCreate() param=roomid, key=%s", execparamkey1);
 
                 enterPromiseRoom(execparamkey1);
                 intent.replaceExtras(new Bundle());
@@ -401,10 +400,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         Uri uri = intent.getData();
 
         if (uri != null) {
-            String execparamkey1 = uri.getQueryParameter("roomID");
-
+            String execparamkey1 = uri.getQueryParameter("roomid");
             if (execparamkey1 != null) {
-                Timber.d("onCreate() param=roomID, key=%s", execparamkey1);
+                Timber.d("onCreate() param=roomid, key=%s", execparamkey1);
                 enterPromiseRoom(execparamkey1);
                 intent.replaceExtras(new Bundle());
                 intent.setAction("");
