@@ -46,7 +46,7 @@ class PromiseViewModel : BaseViewModel(), PromiseItemEventListener {
     fun fetch(isPastPromise: Boolean) {
         addDisposable(PromissuApplication.retrofit!!
                 .create(AuthAPI::class.java)
-                .getMyPromise(PromissuApplication.getVersionInfo(), "Bearer $token", 0, 9, if (isPastPromise) "past" else "future")
+                .getMyPromise(PromissuApplication.getVersionInfo(), "Bearer $token", 0, 99, if (isPastPromise) "past" else "future")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ onNext ->
