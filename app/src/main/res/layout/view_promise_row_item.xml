@@ -46,10 +46,13 @@
         android:paddingTop="5dp"
         android:textColor="@color/black"
         android:textSize="14sp"
+        android:maxLines="1"
+        android:ellipsize="end"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintLeft_toRightOf="@id/item_admin_icon"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/item_time"
         app:layout_constraintVertical_chainStyle="packed"
         android:text="@{response.promise.title}" />
 
