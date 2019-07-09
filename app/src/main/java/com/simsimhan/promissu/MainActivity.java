@@ -55,6 +55,7 @@ import io.branch.referral.BranchError;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.HttpException;
 import timber.log.Timber;
 
 import static com.simsimhan.promissu.util.NavigationUtil.REQUEST_CREATE_PROMISE;
@@ -310,12 +311,17 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
                             // save token
                             NavigationUtil.enterRoom(this, new Appointment(onNext, 0), onNext.getStatus() == 2);
                         }, onError -> {
-                            if (BuildConfig.DEBUG) {
-                                Toast.makeText(this, "이미 시작했거나, 끝난 모임입니다.", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(this, "이미 시작했거나, 끝난 모임입니다.", Toast.LENGTH_SHORT).show();
+                            switch (((HttpException) onError).code()) {
+                                case 403:
+                                    Toast.makeText(this, "이미 시작했거나, 끝난 모임입니다.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case 409:
+                                    Toast.makeText(this, "해당 시간에 이미 약속이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                default:
+                                    Toast.makeText(this, "접속이 원활하지 않습니다.", Toast.LENGTH_SHORT).show();
+                                    break;
                             }
-
                             Timber.e("enterPromiseRoom(): %s", onError.toString());
                         }, () -> {
                             Timber.d("enterPromiseRoom(): on complete");
