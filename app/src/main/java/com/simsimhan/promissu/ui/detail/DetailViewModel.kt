@@ -415,7 +415,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                 promiseDate.monthOfYear + "월 " +
                 promiseDate.dayOfMonth + "일 " +
                 StringUtil.addPaddingIfSingleDigit(promiseDate.hourOfDay) + "시 " +
-                promiseDate.minuteOfHour + "분"
+                StringUtil.addPaddingIfSingleDigit(promiseDate.minuteOfHour) + "분"
         templateArgs["roomid"] = "roomid=" + promise.id
 
         val serverCallbackArgs = HashMap<String, String>()

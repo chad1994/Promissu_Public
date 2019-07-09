@@ -252,7 +252,7 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
                 viewModel.setCreateInfo(y, x, location, locationName)
                 setPromisePlace(location)
             } else {
-                Toast.makeText(context, "약속 장소를 선택해주세요.", Toast.LENGTH_LONG).show()
+//                Toast.makeText(context, "약속 장소를 선택해주세요.", Toast.LENGTH_LONG).show()
             }
         }
     }
