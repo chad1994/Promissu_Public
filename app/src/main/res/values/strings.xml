@@ -4,6 +4,7 @@
     <string name="kakao_scheme">kakao72f849d440d10fb40e679b28a7057f36</string>
     <string name="kakao_app_key">72f849d440d10fb40e679b28a7057f36</string>
     <string name="kakaolink_host">kakaolink</string>
+    <string name="kakaolink_template_id">16933</string>
     <string name="rest_key">KakaoAK b8b6711f4210de0410c2dfafea2dfe25</string>
 
     <string name="my_points">내 포인트</string>

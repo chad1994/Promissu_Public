@@ -19,6 +19,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -36,24 +50,12 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.HttpException;
 import timber.log.Timber;
 
 import static com.simsimhan.promissu.util.NavigationUtil.REQUEST_CREATE_PROMISE;
@@ -119,10 +121,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
 
                 getFcmToken());
         if (uri != null) {
-            String execparamkey1 = uri.getQueryParameter("roomID");
-
+            String execparamkey1 = uri.getQueryParameter("roomid");
             if (execparamkey1 != null) {
-                Timber.d("onCreate() param=roomID, key=%s", execparamkey1);
+                Timber.d("onCreate() param=roomid, key=%s", execparamkey1);
 
                 enterPromiseRoom(execparamkey1);
                 intent.replaceExtras(new Bundle());
@@ -310,12 +311,17 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
                             // save token
                             NavigationUtil.enterRoom(this, new Appointment(onNext, 0), onNext.getStatus() == 2);
                         }, onError -> {
-                            if (BuildConfig.DEBUG) {
-                                Toast.makeText(this, "이미 시작했거나, 끝난 모임입니다.", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(this, "이미 시작했거나, 끝난 모임입니다.", Toast.LENGTH_SHORT).show();
+                            switch (((HttpException) onError).code()) {
+                                case 403:
+                                    Toast.makeText(this, "이미 시작했거나, 끝난 모임입니다.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case 409:
+                                    Toast.makeText(this, "해당 시간에 이미 약속이 존재합니다.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                default:
+                                    Toast.makeText(this, "접속이 원활하지 않습니다.", Toast.LENGTH_SHORT).show();
+                                    break;
                             }
-
                             Timber.e("enterPromiseRoom(): %s", onError.toString());
                         }, () -> {
                             Timber.d("enterPromiseRoom(): on complete");
@@ -401,10 +407,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.BaseOnT
         Uri uri = intent.getData();
 
         if (uri != null) {
-            String execparamkey1 = uri.getQueryParameter("roomID");
-
+            String execparamkey1 = uri.getQueryParameter("roomid");
             if (execparamkey1 != null) {
-                Timber.d("onCreate() param=roomID, key=%s", execparamkey1);
+                Timber.d("onCreate() param=roomid, key=%s", execparamkey1);
                 enterPromiseRoom(execparamkey1);
                 intent.replaceExtras(new Bundle());
                 intent.setAction("");

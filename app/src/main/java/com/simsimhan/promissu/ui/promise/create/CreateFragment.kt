@@ -1,12 +1,15 @@
 package com.simsimhan.promissu.ui.promise.create
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
@@ -76,6 +79,7 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         if (arguments != null) {
             // get arguments and set here
@@ -86,6 +90,11 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
 
         username = PromissuApplication.diskCache!!.userName
         now = DateTime()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activity!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -100,6 +109,9 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
     }
 
     private fun setupTitleView(inflater: LayoutInflater, container: ViewGroup?) {
+        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+
         binding = FragmentCreatePromise1Binding.inflate(inflater, container, false).apply {
             lifecycleOwner = this@CreateFragment
             viewModel = this@CreateFragment.viewModel
@@ -240,7 +252,7 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
                 viewModel.setCreateInfo(y, x, location, locationName)
                 setPromisePlace(location)
             } else {
-                Toast.makeText(context, "약속 장소를 선택해주세요.", Toast.LENGTH_LONG).show()
+//                Toast.makeText(context, "약속 장소를 선택해주세요.", Toast.LENGTH_LONG).show()
             }
         }
     }

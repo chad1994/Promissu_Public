@@ -11,10 +11,6 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.kakao.kakaolink.v2.KakaoLinkResponse
 import com.kakao.kakaolink.v2.KakaoLinkService
-import com.kakao.message.template.ButtonObject
-import com.kakao.message.template.ContentObject
-import com.kakao.message.template.LinkObject
-import com.kakao.message.template.LocationTemplate
 import com.kakao.network.ErrorResult
 import com.kakao.network.callback.ResponseCallback
 import com.naver.maps.geometry.LatLng
@@ -23,6 +19,7 @@ import com.naver.maps.map.overlay.Marker
 import com.simsimhan.promissu.BaseViewModel
 import com.simsimhan.promissu.BuildConfig
 import com.simsimhan.promissu.PromissuApplication
+import com.simsimhan.promissu.R
 import com.simsimhan.promissu.network.AuthAPI
 import com.simsimhan.promissu.network.model.LocationEvent
 import com.simsimhan.promissu.network.model.Participant
@@ -385,7 +382,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                 }
                 //
                 if (remainSeconds < 0) {
-                    _timerString.postValue("지각이에요!")
+                    _timerString.postValue("지각 시간이에요!")
                 }
             }
         }
@@ -409,41 +406,28 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     override fun onClickInviteButton(view: View) {
         val promiseDate = DateTime(promise.start_datetime)
 
-        val params = LocationTemplate.newBuilder(promise.location_name,
-                ContentObject.newBuilder(promise.title,
-                        "https://i.pinimg.com/originals/92/e4/43/92e443862a7ae5db7cf74b41db2f5e37.jpg",
-                        LinkObject.newBuilder()
-                                .setWebUrl("https://developers.kakao.com")
-                                .setMobileWebUrl("https://developers.kakao.com")
-                                .build())
-                        .setDescrption(
-                                "" + promiseDate.year + "년 "
-                                        + promiseDate.monthOfYear + "월 "
-                                        + promiseDate.dayOfMonth + "일 "
-                                        + StringUtil.addPaddingIfSingleDigit(promiseDate.hourOfDay)+"시 "
-                                        + promiseDate.minuteOfHour + "분"
-                                       )
-                        .build())
-                .setAddressTitle(promise.location + "\n위,경도: (" + promise.location_lat + ", " + promise.location_lon + ")")
-                .addButton(ButtonObject("앱에서 보기", LinkObject.newBuilder()
-                        .setWebUrl("'https://developers.kakao.com")
-                        .setMobileWebUrl("'https://developers.kakao.com")
-                        .setAndroidExecutionParams("roomID=" + promise.id)
-                        .setIosExecutionParams("roomID=" + promise.id)
-                        .build()))
-                .build()
+        val templateId = view.context.getString(R.string.kakaolink_template_id)
+
+        val templateArgs = HashMap<String, String>()
+        templateArgs["title"] = promise.title
+        templateArgs["address"] = promise.location_name
+        templateArgs["date"] = "" + promiseDate.year + "년 " +
+                promiseDate.monthOfYear + "월 " +
+                promiseDate.dayOfMonth + "일 " +
+                StringUtil.addPaddingIfSingleDigit(promiseDate.hourOfDay) + "시 " +
+                StringUtil.addPaddingIfSingleDigit(promiseDate.minuteOfHour) + "분"
+        templateArgs["roomid"] = "roomid=" + promise.id
 
         val serverCallbackArgs = HashMap<String, String>()
         serverCallbackArgs["user_id"] = "\${current_user_id}"
         serverCallbackArgs["product_id"] = "\${shared_product_id}"
 
-        KakaoLinkService.getInstance().sendDefault(view.context, params, serverCallbackArgs, object : ResponseCallback<KakaoLinkResponse>() {
-            override fun onFailure(errorResult: ErrorResult) {
-                Timber.e(errorResult.exception)
+        KakaoLinkService.getInstance().sendCustom(view.context, templateId, templateArgs, serverCallbackArgs, object : ResponseCallback<KakaoLinkResponse>() {
+            override fun onFailure(errorResult: ErrorResult?) {
+                Timber.e(errorResult!!.exception)
             }
 
-            override fun onSuccess(result: KakaoLinkResponse) {
-                // 템플릿 밸리데이션과 쿼터 체크가 성공적으로 끝남. 톡에서 정상적으로 보내졌는지 보장은 할 수 없다. 전송 성공 유무는 서버콜백 기능을 이용하여야 한다.
+            override fun onSuccess(result: KakaoLinkResponse?) {
                 Timber.d("onSuccess(): $result")
             }
         })
