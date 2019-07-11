@@ -41,7 +41,7 @@
          />
     <TextView
         android:id="@+id/item_name"
-        android:layout_width="wrap_content"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:paddingTop="5dp"
         android:textColor="@color/black"
@@ -52,7 +52,6 @@
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintLeft_toRightOf="@id/item_admin_icon"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/item_time"
         app:layout_constraintVertical_chainStyle="packed"
         android:text="@{response.promise.title}" />
 

@@ -188,14 +188,11 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             if (it) {
                 viewModel.startTimer()
                 attendanceMarker.isVisible = true
-//                if (viewModel.participants.value!!.isNotEmpty()) {
-//                    ShowcaseView.Builder(this)
-//                            .setTarget(ActionViewTarget(this, ActionViewTarget.Type.HOME))
-//                            .setContentTitle("ShowcaseView")
-//                            .setContentText("This is highlighting the Home button")
-//                            .hideOnTouchOutside()
-//                            .build()
-//                }
+
+                if(!PromissuApplication.diskCache!!.isEnteredDetailBefore){
+                    openOnBoardingFragment()
+                    PromissuApplication.diskCache!!.isEnteredDetailBefore = true
+                }
             } else {
                 viewModel.removeTimer()
             }
@@ -249,6 +246,21 @@ class PromiseDetailActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         })
 
+    }
+
+    private fun openOnBoardingFragment(){
+        val onBoardingFragment = DetailOnBoardingFragment.newInstance()
+        val manager = supportFragmentManager
+        val transaction = manager.beginTransaction()
+//                .setCustomAnimations(
+//                        R.anim.slide_in_top,
+//                        R.anim.slide_out_top,
+//                        R.anim.slide_in_bottom,
+//                        R.anim.slide_out_bottom
+//                )
+        transaction.add(binding.detailActivityContainer.id, onBoardingFragment, "OnBoardingFragment")
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
 
