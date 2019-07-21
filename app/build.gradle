@@ -182,4 +182,7 @@ dependencies {
     //showcaseView
     implementation 'com.github.amlcurran.showcaseview:library:5.4.3'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+
+    //timepicker
+    implementation 'com.contrarywind:Android-PickerView:4.1.8'
 }
