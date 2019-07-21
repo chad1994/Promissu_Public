@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.NumberPicker
 import android.widget.Toast
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
@@ -18,6 +19,7 @@ import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.FragmentCreatePromise1Binding
 import com.simsimhan.promissu.databinding.FragmentCreatePromise2Binding
+import com.simsimhan.promissu.databinding.FragmentCreatePromise2TempBinding
 import com.simsimhan.promissu.databinding.FragmentCreatePromise3Binding
 import com.simsimhan.promissu.network.model.Promise
 import com.simsimhan.promissu.ui.map.LocationSearchActivity
@@ -27,6 +29,7 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import kotlinx.android.synthetic.main.fragment_create_promise_1.view.*
 import kotlinx.android.synthetic.main.fragment_create_promise_2.view.*
+import kotlinx.android.synthetic.main.fragment_create_promise_2_temp.view.*
 import kotlinx.android.synthetic.main.fragment_create_promise_3.view.*
 import org.joda.time.DateTime
 import org.joda.time.Minutes
@@ -35,7 +38,7 @@ import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, NumberPicker.OnValueChangeListener {
 
 
     private var pageKey: Int? = null
@@ -101,7 +104,7 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
 
         when (pageKey) {
             0 -> setupTitleView(inflater, container)
-            1 -> setupWhenView(inflater, container)
+            1 -> setupWhenView2(inflater, container)
             2 -> setupLocationView(inflater, container)
         }
 
@@ -123,6 +126,21 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
             binding.root.promise_title_edit_text.setText(response!!.title)
             viewModel.setTitle(response!!.title)
         }
+    }
+
+    private fun setupWhenView2(inflater: LayoutInflater, container: ViewGroup?) {
+        binding = FragmentCreatePromise2TempBinding.inflate(inflater, container, false).apply {
+            lifecycleOwner = this@CreateFragment
+            viewModel = this@CreateFragment.viewModel
+            eventListener = this@CreateFragment.viewModel
+        }
+
+        binding.root.create_start_visibility_temp.apply {
+            setOnClickListener {
+                showNumberPicker(this@CreateFragment.view!!, "약속시간을 설정해주세요", "0~60분", 60, 0, 1, 30, "분")
+            }
+        }
+
     }
 
     private fun setupWhenView(inflater: LayoutInflater, container: ViewGroup?) {
@@ -327,4 +345,23 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, TimePicke
         }
     }
 
+    override fun onValueChange(picker: NumberPicker?, oldVal: Int, newVal: Int) {
+        Toast.makeText(context, "" + picker!!.value, Toast.LENGTH_SHORT).show()
+    }
+
+    fun showNumberPicker(view: View, title: String, subtitle: String, maxvalue: Int, minvalue: Int, step: Int, defValue: Int, unit: String) {
+        val newFragment = NumberPickerFragment()
+        val bundle = Bundle(6)
+        bundle.putString("title", title)
+        bundle.putString("subtitle", subtitle)
+        bundle.putInt("maxvalue", maxvalue)
+        bundle.putInt("minvalue", minvalue)
+        bundle.putInt("step", step)
+        bundle.putInt("defValue", defValue)
+        bundle.putString("unit", unit)
+        newFragment.arguments = bundle
+
+        newFragment.setValueChangeListener(this)
+        newFragment.show(fragmentManager!!, "number picker")
+    }
 }
