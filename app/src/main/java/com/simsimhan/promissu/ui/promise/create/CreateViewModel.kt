@@ -124,6 +124,8 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
         _endTime.postValue(date)
     }
 
+    // TODO: 지각 시간 세팅 함수 추가.
+
     private fun createValidation() {
         if (title.value.isNullOrEmpty() || !_titleValidate.value!!) {
             _toastMessage.postValue("방 제목을 확인해주세요")

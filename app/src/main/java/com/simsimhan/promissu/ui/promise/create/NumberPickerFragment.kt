@@ -5,7 +5,6 @@ import android.app.Dialog
 import android.os.Bundle
 import android.widget.NumberPicker
 import androidx.fragment.app.DialogFragment
-import com.simsimhan.promissu.R
 
 
 class NumberPickerFragment : DialogFragment() {
@@ -16,7 +15,7 @@ class NumberPickerFragment : DialogFragment() {
     var maxvalue: Int = 0  //입력가능 최대값
     var step: Int = 0   //선택가능 값들의 간격
     var defvalue: Int = 0 //dialog 시작 숫자 (현재값)
-    var unit : String = " "
+    var unit: String = " "
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val numberPicker = NumberPicker(activity)
@@ -42,8 +41,15 @@ class NumberPickerFragment : DialogFragment() {
         builder.setTitle(title)
         builder.setMessage(subtitle)
         builder.setPositiveButton("OK") { _, _ ->
-            valueChangeListener.onValueChange(numberPicker,
-                    numberPicker.value, numberPicker.value)
+            if (unit == "시")
+                valueChangeListener.onValueChange(numberPicker,
+                        0, numberPicker.value) //oldval 0 = 시, 1 = 분
+            else if(unit== "분")
+                valueChangeListener.onValueChange(numberPicker,
+                        1, numberPicker.value)
+            else
+                valueChangeListener.onValueChange(numberPicker,
+                        2, numberPicker.value*step)
             dismiss()
         }
         builder.setNegativeButton("CANCEL") { _, _ ->
@@ -63,7 +69,7 @@ class NumberPickerFragment : DialogFragment() {
     }
 
 
-    private fun getArrayWithSteps(min: Int, max: Int, step: Int,unit:String): Array<String?> {
+    private fun getArrayWithSteps(min: Int, max: Int, step: Int, unit: String): Array<String?> {
         val number_of_array = (max - min) / step + 1
 
         val result = arrayOfNulls<String>(number_of_array)
