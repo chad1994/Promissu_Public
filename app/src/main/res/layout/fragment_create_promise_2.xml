@@ -55,6 +55,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="33dp"
                     android:hint="@string/promise_date"
+
                     app:layout_constraintLeft_toRightOf="@id/create_start_text"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent">

@@ -154,23 +154,23 @@ public class Promise {
     public static class Request {
         private String title;
         private String description;
-        private String start_datetime;
-        private String end_datetime;
+        private String datetime;
         private String location;
         private String location_name;
         private Double location_lat;
         private Double location_lon;
+        private int late_range;
 
 
-        public Request(String title, String description, String start_datetime, String end_datetime, String location, String location_name, Double location_lat, Double location_lon) {
+        public Request(String title, String description, String datetime, String location, String location_name, Double location_lat, Double location_lon, int late_range) {
             this.title = title;
             this.description = description;
-            this.start_datetime = start_datetime;
-            this.end_datetime = end_datetime;
+            this.datetime = datetime;
             this.location = location;
             this.location_name = location_name;
             this.location_lat = location_lat;
             this.location_lon = location_lon;
+            this.late_range = late_range;
         }
 
         public String getTitle() {
@@ -187,22 +187,6 @@ public class Promise {
 
         public void setDescription(String description) {
             this.description = description;
-        }
-
-        public String getStart_datetime() {
-            return start_datetime;
-        }
-
-        public void setStart_datetime(String start_datetime) {
-            this.start_datetime = start_datetime;
-        }
-
-        public String getEnd_datetime() {
-            return end_datetime;
-        }
-
-        public void setEnd_datetime(String end_datetime) {
-            this.end_datetime = end_datetime;
         }
 
         public String getLocation() {
@@ -235,6 +219,22 @@ public class Promise {
 
         public void setLocation_lon(Double location_lon) {
             this.location_lon = location_lon;
+        }
+
+        public String getDatetime() {
+            return datetime;
+        }
+
+        public void setDatetime(String datetime) {
+            this.datetime = datetime;
+        }
+
+        public int getLate_range() {
+            return late_range;
+        }
+
+        public void setLate_range(int late_range) {
+            this.late_range = late_range;
         }
     }
 }
