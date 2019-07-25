@@ -74,9 +74,16 @@ class NumberPickerFragment : DialogFragment() {
 
         val result = arrayOfNulls<String>(number_of_array)
 
-        for (i in 0 until number_of_array) {
-            result[i] = (min + step * i).toString() + unit
+        if(unit == "지각"){
+            for (i in 0 until number_of_array) {
+                result[i] = "+" + (min + step * i).toString() + "분"
+            }
+        }else {
+            for (i in 0 until number_of_array) {
+                result[i] = (min + step * i).toString() + unit
+            }
         }
+
         return result
     }
 
