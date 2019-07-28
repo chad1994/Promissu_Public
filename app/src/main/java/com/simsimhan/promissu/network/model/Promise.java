@@ -10,6 +10,7 @@ public class Promise {
     public static class Response implements Parcelable {
         private final int status;
         private final int id;
+        private final int deposit;
         private final String title;
         private final String description;
         private final Date start_datetime;
@@ -22,9 +23,10 @@ public class Promise {
         private final Date updatedAt;
         private final Date createdAt;
 
-        public Response(int status, int id, String title, String description, Date start_datetime, Date end_datetime, String location, String location_name, Double location_lat, Double location_lon, long admin_id, Date updatedAt, Date createdAt) {
+        public Response(int status, int id, int deposit, String title, String description, Date start_datetime, Date end_datetime, String location, String location_name, Double location_lat, Double location_lon, long admin_id, Date updatedAt, Date createdAt) {
             this.status = status;
             this.id = id;
+            this.deposit = deposit;
             this.title = title;
             this.description = description;
             this.start_datetime = start_datetime;
@@ -41,6 +43,7 @@ public class Promise {
         protected Response(Parcel in) {
             status = in.readInt();
             id = in.readInt();
+            deposit = in.readInt();
             title = in.readString();
             description = in.readString();
             start_datetime = new Date(in.readLong());
@@ -58,6 +61,7 @@ public class Promise {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(status);
             dest.writeInt(id);
+            dest.writeInt(deposit);
             dest.writeString(title);
             dest.writeString(description);
             dest.writeLong(start_datetime.getTime());
@@ -94,6 +98,10 @@ public class Promise {
 
         public int getId() {
             return id;
+        }
+
+        public int getDeposit() {
+            return deposit;
         }
 
         public String getTitle() {
