@@ -383,7 +383,7 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, NumberPic
                 if (selectedDate!!.isEqual(now) && (now!!.hourOfDay > newVal)) {
                     Toast.makeText(requireContext(), "지난 시간은 불가능합니다.", Toast.LENGTH_SHORT).show()
                 } else {
-                    selectedDateTime = now!!.withHourOfDay(newVal)
+                    selectedDateTime = selectedDate!!.withHourOfDay(newVal)
                     val requestStartDateTime = selectedDate!!.withHourOfDay(selectedDateTime!!.hourOfDay).withMinuteOfHour(selectedDateTime!!.minuteOfHour).withSecondOfMinute(0).toDate()
                     val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.KOREA)
                     val formattedDate = sdf.format(requestStartDateTime)
@@ -395,9 +395,12 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, NumberPic
                     } else {
                         hourEditText!!.setText(StringUtil.addPaddingIfSingleDigit(newVal) + "시")
                     }
+
+                    if(viewModel.lateRange.value!=null){
+                        refreshLateEditText(viewModel.lateRange.value!!)
+                    }
                 }
             }
-            //TODO : 지각시간 갱신
 
         } else if (oldVal == 1) {
             Toast.makeText(context, "분!" + newVal, Toast.LENGTH_SHORT).show()
@@ -408,7 +411,7 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, NumberPic
                 if ((selectedDate!!.isEqual(now)) && ((now!!.hourOfDay >= selectedDateTime!!.hourOfDay) && (now!!.minuteOfHour >= newVal))) {
                     Toast.makeText(requireContext(), "지난 시간은 불가능합니다.", Toast.LENGTH_SHORT).show()
                 } else {
-                    selectedDateTime = now!!.withMinuteOfHour(newVal)
+                    selectedDateTime = selectedDateTime!!.withMinuteOfHour(newVal)
                     val requestStartDateTime = selectedDate!!.withHourOfDay(selectedDateTime!!.hourOfDay).withMinuteOfHour(selectedDateTime!!.minuteOfHour).withSecondOfMinute(0).toDate()
                     val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.KOREA)
                     val formattedDate = sdf.format(requestStartDateTime)
@@ -417,19 +420,30 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, NumberPic
                     if (minuteEditText != null) {
                         minuteEditText!!.setText(StringUtil.addPaddingIfSingleDigit(newVal) + "분")
                     }
+
+                    if(viewModel.lateRange.value!=null){
+                        refreshLateEditText(viewModel.lateRange.value!!)
+                    }
                 }
             }
-            //TODO : 지각시간 갱신
 
         } else {
             Toast.makeText(context, "지각!" + newVal, Toast.LENGTH_SHORT).show()
 
-            if(selectedDate == null || selectedDateTime == null){
+            if (selectedDate == null || selectedDateTime == null) {
                 Toast.makeText(context, "날짜와 시간을 먼저 선택해주세요.", Toast.LENGTH_SHORT).show()
-            }else{
+            } else {
                 viewModel.setLateRange(newVal)
-                latenessEditText!!.setText(""+newVal+" 분 지각")
+                refreshLateEditText(newVal)
             }
+        }
+    }
+
+    private fun refreshLateEditText(lateness : Int){
+        if (lateness + selectedDateTime!!.minuteOfHour >= 60) {
+            latenessEditText!!.setText("" + StringUtil.addPaddingIfSingleDigit((selectedDateTime!!.hourOfDay+1)) +"시 "+StringUtil.addPaddingIfSingleDigit((selectedDateTime!!.minuteOfHour+lateness-60))+ "분")
+        } else {
+            latenessEditText!!.setText("" + StringUtil.addPaddingIfSingleDigit(selectedDateTime!!.hourOfDay) +"시 "+StringUtil.addPaddingIfSingleDigit((selectedDateTime!!.minuteOfHour+lateness))+ "분")
         }
     }
 
