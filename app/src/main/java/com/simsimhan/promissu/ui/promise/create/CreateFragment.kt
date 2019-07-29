@@ -10,7 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.NumberPicker
+import android.widget.TextView
 import android.widget.Toast
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
@@ -44,7 +46,8 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, NumberPic
     private var dateEditText: TextInputEditText? = null
     private var hourEditText: TextInputEditText? = null
     private var minuteEditText: TextInputEditText? = null
-    private var latenessEditText: TextInputEditText? = null
+    private var latenessText: TextView? = null
+    private var latenessBtn: Button? = null
     //    private var endDateEditText: TextInputEditText? = null
 //    private var endTimeEditText: TextInputEditText? = null
     private var promisePlace: TextInputEditText? = null
@@ -171,7 +174,8 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, NumberPic
             }
         }
 
-        latenessEditText = binding.root.promise_start_lateness.apply {
+        latenessText = binding.root.create_promise2_lateness_text2
+        latenessBtn = binding.root.create_promise2_lateness_btn.apply {
             setOnClickListener {
                 showNumberPicker(this@CreateFragment.view!!, "약속시간을 설정해주세요", "0~60분", 60, 0, 5, 30, "지각")
             }
@@ -327,10 +331,11 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, NumberPic
         }
         hourEditText!!.text = null
         minuteEditText!!.text = null
-        latenessEditText!!.text = null
+        latenessText!!.text = "OO분"
         selectedDateTime = null
         selectedLatenessTime = null
         viewModel.setStartDateTime(null)
+        viewModel.setLateRange(null)
     }
 
 //    override fun onTimeSet(view: TimePickerDialog?, hourOfDay: Int, minute: Int, second: Int) {
@@ -440,11 +445,7 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, NumberPic
     }
 
     private fun refreshLateEditText(lateness : Int){
-        if (lateness + selectedDateTime!!.minuteOfHour >= 60) {
-            latenessEditText!!.setText("" + StringUtil.addPaddingIfSingleDigit((selectedDateTime!!.hourOfDay+1)) +"시 "+StringUtil.addPaddingIfSingleDigit((selectedDateTime!!.minuteOfHour+lateness-60))+ "분")
-        } else {
-            latenessEditText!!.setText("" + StringUtil.addPaddingIfSingleDigit(selectedDateTime!!.hourOfDay) +"시 "+StringUtil.addPaddingIfSingleDigit((selectedDateTime!!.minuteOfHour+lateness))+ "분")
-        }
+        latenessText!!.text = "${lateness}분"
     }
 
     private fun showNumberPicker(view: View, title: String, subtitle: String, maxvalue: Int, minvalue: Int, step: Int, defValue: Int, unit: String) {
