@@ -6,22 +6,27 @@ import androidx.lifecycle.MutableLiveData
 import com.simsimhan.promissu.BaseViewModel
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.network.AuthAPI
-import com.simsimhan.promissu.network.model.Appointment
+import com.simsimhan.promissu.network.model.PromiseResponse
 import com.simsimhan.promissu.network.model.Participant
+import com.simsimhan.promissu.util.SingleLiveEvent
 import com.simsimhan.promissu.util.StringUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
-class DetailPastViewModel(val promise: Appointment) : BaseViewModel() {
+class DetailPastViewModel(val promise: PromiseResponse) : BaseViewModel() {
 
-    private val _response = MutableLiveData<Appointment>() // 전체 데이터 리스트
-    val response: LiveData<Appointment>
+    private val _response = MutableLiveData<PromiseResponse>() // 전체 데이터 리스트
+    val response: LiveData<PromiseResponse>
         get() = _response
 
     private val _participants = MutableLiveData<List<Participant.Response>>() //참여자 랭킹
     val participants: LiveData<List<Participant.Response>>
         get() = _participants
+
+    private val _openLocationMap = SingleLiveEvent<Any>()
+    val openLocationMap: LiveData<Any>
+        get() = _openLocationMap
 
     val title = ObservableField<String>()
     val startDate = ObservableField<String>()
@@ -37,7 +42,7 @@ class DetailPastViewModel(val promise: Appointment) : BaseViewModel() {
 
     private fun initRoomInfo() {
         title.set(_response.value!!.promise.title)
-        startDate.set("" + (_response.value!!.promise.start_datetime.month + 1) + "월 " + _response.value!!.promise.start_datetime.date + "일 " + _response.value!!.promise.start_datetime.hours + "시 " + StringUtil.addPaddingIfSingleDigit(_response.value!!.promise.start_datetime.minutes) + "분")
+        startDate.set("" + (_response.value!!.promise.datetime.month + 1) + "월 " + _response.value!!.promise.datetime.date + "일 " + _response.value!!.promise.datetime.hours + "시 " + StringUtil.addPaddingIfSingleDigit(_response.value!!.promise.datetime.minutes) + "분")
         locationName.set(_response.value!!.promise.location_name)
         locationDetail.set(_response.value!!.promise.location)
     }
@@ -58,5 +63,9 @@ class DetailPastViewModel(val promise: Appointment) : BaseViewModel() {
                             Timber.e(onError)
                         }
                 ))
+    }
+
+    fun onClickLocationOnMap(){
+        _openLocationMap.call()
     }
 }

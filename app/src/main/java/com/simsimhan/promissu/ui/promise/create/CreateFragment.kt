@@ -24,7 +24,7 @@ import com.simsimhan.promissu.databinding.FragmentCreatePromise2TempBinding
 import com.simsimhan.promissu.databinding.FragmentCreatePromise3Binding
 import com.simsimhan.promissu.network.model.Promise
 import com.simsimhan.promissu.ui.map.LocationSearchActivity
-import com.simsimhan.promissu.util.NavigationUtil
+import com.simsimhan.promissu.util.NavigationUtilk
 import com.simsimhan.promissu.util.StringUtil
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import kotlinx.android.synthetic.main.fragment_create_promise_1.view.*
@@ -182,113 +182,20 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, NumberPic
         }
     }
 
-//    private fun setupWhenView(inflater: LayoutInflater, container: ViewGroup?) {
-//        binding = FragmentCreatePromise2Binding.inflate(inflater, container, false).apply {
-//            lifecycleOwner = this@CreateFragment
-//            viewModel = this@CreateFragment.viewModel
-//            eventListener = this@CreateFragment.viewModel
-//        }
-//
-//        val question = binding.root.create_question2_text
-//        question.text = Html.fromHtml(getString(R.string.create_question_2))
-//        dateEditText = binding.root.promise_start_date.apply {
-//            setOnClickListener {
-//                val now = Calendar.getInstance()
-//                val datePickerDialog = DatePickerDialog.newInstance(
-//                        this@CreateFragment,
-//                        now.get(Calendar.YEAR),
-//                        now.get(Calendar.MONTH),
-//                        now.get(Calendar.DAY_OF_MONTH))
-//                now.set(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH))
-//                datePickerDialog.minDate = now
-//                datePickerDialog.showYearPickerFirst(false)
-//                datePickerDialog.show(fragmentManager!!, "StartDatePickerDialog")
-//            }
-//        }
-//
-//        startTimeEditText = binding.root.promise_start_time_edit_text.apply {
-//            setOnClickListener {
-//                if (selectedDate == null) {
-//                    Toast.makeText(requireContext(), "시작 일자를 먼저 선택 해주세요", Toast.LENGTH_SHORT).show()
-//                } else {
-//                    val timePickerDialog = TimePickerDialog.newInstance(this@CreateFragment,
-//                            now!!.hourOfDay,
-//                            now!!.minuteOfHour,
-//                            true
-//                    )
-//                    timePickerDialog.show(fragmentManager!!, "StartTimePickerDialog")
-//                }
-//            }
-//        }
-//
-//        endDateEditText = binding.root.promise_end_date.apply {
-//            setOnClickListener {
-//                if (selectedDateTime == null) {
-//                    Toast.makeText(requireContext(), "약속 시작시간을 먼저 선택 해주세요", Toast.LENGTH_SHORT).show()
-//                } else {
-//                    val now = Calendar.getInstance()
-//                    val datePickerDialog = DatePickerDialog.newInstance(
-//                            this@CreateFragment,
-//                            now.get(Calendar.YEAR),
-//                            now.get(Calendar.MONTH),
-//                            now.get(Calendar.DAY_OF_MONTH))
-//
-//                    val startCalendar = Calendar.getInstance()
-//                    startCalendar.set(selectedDate!!.year, selectedDate!!.monthOfYear - 1, selectedDate!!.dayOfMonth)
-//                    datePickerDialog.minDate = startCalendar
-//                    datePickerDialog.showYearPickerFirst(true)
-//                    datePickerDialog.show(fragmentManager!!, "EndDatePickerDialog")
-//                }
-//            }
-//        }
-//
-//        endTimeEditText = binding.root.promise_end_time_edit_text.apply {
-//            setOnClickListener {
-//                if (endSelectedDate == null) {
-//                    Toast.makeText(requireContext(), "종료 일자를 먼저 선택 해주세요", Toast.LENGTH_SHORT).show()
-//                } else {
-//                    val timePickerDialog = TimePickerDialog.newInstance(this@CreateFragment,
-//                            now!!.hourOfDay,
-//                            now!!.minuteOfHour,
-//                            true
-//                    )
-//                    timePickerDialog.show(fragmentManager!!, "EndTimePickerDialog")
-//                }
-//            }
-//        }
-//
-//        if (response != null) {
-//            dateEditText!!.setText("${response!!.start_datetime.year + 1900}년 ${response!!.start_datetime.month + 1}월 ${response!!.start_datetime.date}일")
-//            startTimeEditText!!.setText("${StringUtil.addPaddingIfSingleDigit(response!!.start_datetime.hours)}:${StringUtil.addPaddingIfSingleDigit(response!!.start_datetime.minutes)}")
-//            endDateEditText!!.setText("${response!!.end_datetime.year + 1900}년 ${response!!.end_datetime.month + 1}월 ${response!!.end_datetime.date}일")
-//            endTimeEditText!!.setText("${StringUtil.addPaddingIfSingleDigit(response!!.end_datetime.hours)}:${StringUtil.addPaddingIfSingleDigit(response!!.end_datetime.minutes)}")
-//            val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.KOREA)
-//            val formattedstartDate = sdf.format(response!!.start_datetime)
-//            val formattedendDate = sdf.format(response!!.end_datetime)
-//            viewModel.setStartDateTime(formattedstartDate)
-//            viewModel.setEndDateTime(formattedendDate)
-//            selectedDate = now!!.withYear(response!!.start_datetime.year + 1900).withMonthOfYear(response!!.start_datetime.month + 1).withDayOfMonth(response!!.start_datetime.date)
-//            selectedDateTime = DateTime(response!!.start_datetime)
-//            endSelectedDate = now!!.withYear(response!!.end_datetime.year + 1900).withMonthOfYear(response!!.end_datetime.month + 1).withDayOfMonth(response!!.end_datetime.date)
-//            endSelectedDateTime = DateTime(response!!.end_datetime)
-//
-//        }
-//
-//    }
-
     private fun setupLocationView(inflater: LayoutInflater, container: ViewGroup?) {
         binding = FragmentCreatePromise3Binding.inflate(inflater, container, false).apply {
             lifecycleOwner = this@CreateFragment
             viewModel = this@CreateFragment.viewModel
             eventListener = this@CreateFragment.viewModel
         }
+
         val question = binding.root.create_question3_text
         question.text = Html.fromHtml(getString(R.string.create_question_3))
 
         promisePlace = binding.root.promise_location_edit_text.apply {
             setOnClickListener {
                 val intent = Intent(activity, LocationSearchActivity::class.java)
-                startActivityForResult(intent, NavigationUtil.REQUEST_MAP_SEARCH)
+                startActivityForResult(intent, NavigationUtilk.REQUEST_MAP_SEARCH)
             }
         }
 
@@ -300,7 +207,7 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, NumberPic
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == NavigationUtil.REQUEST_MAP_SEARCH) {
+        if (requestCode == NavigationUtilk.REQUEST_MAP_SEARCH) {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 val location = data.getStringExtra("location")
                 val locationName = data.getStringExtra("locationName")
@@ -309,7 +216,7 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, NumberPic
                 viewModel.setCreateInfo(y, x, location, locationName)
                 setPromisePlace(location)
             } else {
-//                Toast.makeText(context, "약속 장소를 선택해주세요.", Toast.LENGTH_LONG).show()
+
             }
         }
     }
@@ -380,7 +287,6 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, NumberPic
 
     override fun onValueChange(picker: NumberPicker?, oldVal: Int, newVal: Int) {
         if (oldVal == 0) {
-            Toast.makeText(context, "시!" + newVal, Toast.LENGTH_SHORT).show()
 
             if (selectedDate == null) {
                 Toast.makeText(context, "날짜를 먼저 선택해주세요.", Toast.LENGTH_SHORT).show()
@@ -408,7 +314,6 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, NumberPic
             }
 
         } else if (oldVal == 1) {
-            Toast.makeText(context, "분!" + newVal, Toast.LENGTH_SHORT).show()
 
             if (selectedDate == null || selectedDateTime == null) {
                 Toast.makeText(context, "날짜와 시간을 먼저 선택해주세요.", Toast.LENGTH_SHORT).show()
@@ -433,7 +338,6 @@ class CreateFragment : Fragment(), DatePickerDialog.OnDateSetListener, NumberPic
             }
 
         } else {
-            Toast.makeText(context, "지각!" + newVal, Toast.LENGTH_SHORT).show()
 
             if (selectedDate == null || selectedDateTime == null) {
                 Toast.makeText(context, "날짜와 시간을 먼저 선택해주세요.", Toast.LENGTH_SHORT).show()

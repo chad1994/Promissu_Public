@@ -26,6 +26,19 @@
             />
 
         <ImageView
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            app:layout_constraintBottom_toTopOf="@id/on_boarding_arrow"
+            app:layout_constraintTop_toBottomOf="@id/detail_onboarding_close_btn"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:src="@drawable/ic_detail_guide_text"
+            >
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/on_boarding_arrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"

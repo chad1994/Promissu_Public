@@ -161,7 +161,7 @@ class PromissuApplication : MultiDexApplication() {
         var firebaseAnalytics: FirebaseAnalytics? = null
             private set
 
-        private var instance: PromissuApplication? = null
+        var instance: PromissuApplication? = null
         private val DAUM_API_URL = "https://dapi.kakao.com/v2/"
         private val NAVER_API_URL = "https://naveropenapi.apigw.ntruss.com/map-place/v1/"
 

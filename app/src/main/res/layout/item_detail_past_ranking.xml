@@ -66,7 +66,7 @@
             android:gravity="center_horizontal"
             setRankingTime="@{participant.status}"
             setRankingTime2="@{participant.updatedAt}"
-            setRankingTime3="@{viewModel.response.promise.start_datetime}"
+            setRankingTime3="@{viewModel.response.promise.datetime}"
             app:layout_constraintLeft_toLeftOf="@id/item_detail_past_rank_attendance"
             app:layout_constraintRight_toRightOf="@id/item_detail_past_rank_attendance"
             app:layout_constraintTop_toTopOf="parent"

@@ -17,7 +17,7 @@ import com.simsimhan.promissu.BuildConfig
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityLoginBinding
-import com.simsimhan.promissu.util.NavigationUtil
+import com.simsimhan.promissu.util.NavigationUtilk
 import com.simsimhan.promissu.util.StringUtil
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -47,7 +47,7 @@ class LoginActivity : AppCompatActivity(), ISessionCallback {
 
         viewModel.onSuccess.observe(this, Observer {
             if (it) {
-                NavigationUtil.replaceWithMainView(this)
+                NavigationUtilk.replaceWithMainView(this)
             }
         })
     }
@@ -73,14 +73,12 @@ class LoginActivity : AppCompatActivity(), ISessionCallback {
     override fun onSessionOpened() {
         UserManagement.getInstance().me(object : MeV2ResponseCallback() {
             override fun onSuccess(result: MeV2Response) {
-                PromissuApplication.diskCache!!.setUserData(result.nickname, result.id, result.thumbnailImagePath)
+                PromissuApplication.diskCache?.setUserData(result.nickname, result.id, result.thumbnailImagePath)
                 val userSessionToken = Session.getCurrentSession().tokenInfo.accessToken
                 if (BuildConfig.DEBUG) {
                     toastMessage("[DEV] onSuccess() user token: $userSessionToken")
                 }
-
-                viewModel.login(userSessionToken, result)
-
+                viewModel.login(userSessionToken)
             }
 
             override fun onSessionClosed(errorResult: ErrorResult) {

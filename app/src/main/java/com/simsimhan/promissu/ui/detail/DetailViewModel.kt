@@ -123,11 +123,16 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     val deleteAppointmentClicked: LiveData<Promise.Response>
         get() = _deleteAppointmentClicked
 
+    private val _cameraMoveToTarget = MutableLiveData<LatLng>()
+    val cameraMoveToTarget : LiveData<LatLng>
+        get() = _cameraMoveToTarget
+
 
     val title = ObservableField<String>()
     val startDate = ObservableField<String>()
     val locationName = ObservableField<String>()
     val participantNum = ObservableField<String>()
+    val lateTimeGuideOnLayout = ObservableField<String>()
     val myParticipation = ObservableField<Int>()
     val requestMillis = ObservableField<Long>()
     lateinit var countDownTimer: CountDownTimer
@@ -141,7 +146,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
         _participants.value = emptyList()
         _attendedParticipants.value = emptyList()
         _myLocationEvent.value = null
-        val meetingLatLng = LatLng(promise.location_lat.toDouble(), promise.location_lon.toDouble())
+        val meetingLatLng = LatLng(promise.location_lat, promise.location_lon)
         _meetingLocation.postValue(meetingLatLng)
         initRoomInfo()
 //        fetchParticipants()
@@ -160,8 +165,9 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
 
     private fun initRoomInfo() {
         title.set(_response.value!!.title)
-        startDate.set("" + (_response.value!!.start_datetime.month + 1) + "월 " + _response.value!!.start_datetime.date + "일 " + _response.value!!.start_datetime.hours + "시 " + StringUtil.addPaddingIfSingleDigit(_response.value!!.start_datetime.minutes) + "분")
+        startDate.set("" + (_response.value!!.datetime.month + 1) + "월 " + _response.value!!.datetime.date + "일 " + _response.value!!.datetime.hours + "시 " + StringUtil.addPaddingIfSingleDigit(_response.value!!.datetime.minutes) + "분")
         locationName.set((_response.value!!.location_name))
+        lateTimeGuideOnLayout.set(String.format(PromissuApplication.instance?.getString(R.string.inviting_late_time_guide)!!, _response.value?.late_range)) //
     }
 
     fun onClickedCurrentLocation() {
@@ -171,6 +177,10 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
             trackingMode.value == 2 -> _trackingMode.postValue(3)
             trackingMode.value == 3 -> _trackingMode.postValue(1)
         }
+    }
+
+    fun onClickedTargetLocation(){
+        _cameraMoveToTarget.postValue(LatLng(promise.location_lat,promise.location_lon))
     }
 
     fun onClickedBackButton() {
@@ -195,7 +205,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
                                     myParticipation.set(it.participation)
                                 }
                             }
-                            _participants.value = onNext.filterNot { it.participation == myParticipation.get() }.sortedWith(comparator = Participant.CompareByStatus())
+                                _participants.value = onNext.filterNot { it.participation == myParticipation.get() }.sortedWith(comparator = Participant.CompareByStatus())
                         },
                         { onError ->
                             Timber.e(onError)
@@ -292,10 +302,10 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     private fun checkAttendedParticipants() {
         val list = ArrayList<Participant.Response>()
         var partList = _participants.value
-        list.add(Participant.Response(0, "empty", 0, _response.value!!.start_datetime, 0))
+        list.add(Participant.Response(0, "empty", 0, _response.value!!.datetime, 0,""))
         _locationEvents.value!!.forEach {
             if (it.value.status == 4 || it.value.status == 5) {
-                val tmpPart = Participant.Response(it.value.id, it.value.nickname, it.value.partId, it.value.timestamp, it.value.status)
+                val tmpPart = Participant.Response(it.value.id, it.value.nickname, it.value.partId, it.value.timestamp, it.value.status,"")
                 list.add(tmpPart)
 
                 partList = partList!!.filterNot { o -> o.participation == it.value.partId }
@@ -366,7 +376,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
 
     private fun setupTimer() {
         val now = DateTime()
-        val start = DateTime(promise.start_datetime)
+        val start = DateTime(promise.datetime)
         val betweenSeconds = Seconds.secondsBetween(now, start)
         var remainSeconds = betweenSeconds.seconds
         countDownTimer = object : CountDownTimer(3600000, 1000) {
@@ -404,7 +414,7 @@ class DetailViewModel(val promise: Promise.Response) : BaseViewModel(), DetailEv
     }
 
     override fun onClickInviteButton(view: View) {
-        val promiseDate = DateTime(promise.start_datetime)
+        val promiseDate = DateTime(promise.datetime)
 
         val templateId = view.context.getString(R.string.kakaolink_template_id)
 

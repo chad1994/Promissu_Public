@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <data>
+        <variable
+            name="promise"
+            type="com.simsimhan.promissu.network.model.PromiseResponse" />
+        <variable
+            name="listener"
+            type="com.simsimhan.promissu.ui.main.MainEventListener" />
+        <variable
+            name="viewModel"
+            type="com.simsimhan.promissu.ui.main.MainViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:background="@drawable/bg_item_appointment_today"
+        android:onClick="@{()->listener.onClickTodayItem(promise)}"
+        android:paddingTop="30dp"
+        android:paddingBottom="15dp">
+
+        <TextView
+            android:id="@+id/appointment_today_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="-7sp"
+            android:text="@{viewModel.firstItemTimer}"
+            android:textColor="@color/main_03"
+            android:textSize="30sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            />
+
+        <TextView
+            android:id="@+id/appointment_today_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:lineSpacingExtra="7.5sp"
+            android:text="@{promise.promise.title}"
+            android:textColor="@color/black"
+            android:textSize="15.5sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appointment_today_timer" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/appointment_today_button"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="24dp"
+            android:background="@drawable/bg_item_appointment_today_button"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appointment_today_title"
+            >
+
+            <TextView
+                android:id="@+id/appointment_today_button_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="11sp"
+                android:text="출석하러 가기"
+                android:textColor="@color/white"
+                android:textSize="15.5sp"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                android:layout_marginRight="10dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/appointment_today_button_image"/>
+
+            <ImageView
+                android:id="@+id/appointment_today_button_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_right"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/appointment_today_button_text"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
