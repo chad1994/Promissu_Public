@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Appointment(
+data class PromiseResponse(
         @SerializedName("appointment") val promise: Promise.Response,
-        val status: Int
+        @SerializedName("participation") val participation: Participation
 ) : Parcelable

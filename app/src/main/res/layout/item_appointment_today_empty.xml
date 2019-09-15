@@ -1,0 +1,39 @@
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:background="@drawable/bg_item_appointment_today"
+        android:paddingTop="10dp"
+        android:paddingBottom="15dp">
+
+        <ImageView
+            android:id="@+id/item_appointment_today_image"
+            android:layout_width="150dp"
+            android:layout_height="110dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:src="@drawable/no_appointment_blue"
+            />
+
+        <TextView
+            android:id="@+id/item_appointment_today_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15.5sp"
+            android:textColor="#5f6ccc"
+            android:lineSpacingExtra="7.5sp"
+            android:includeFontPadding="false"
+            android:text="오늘은 약속이 없습니다!"
+            android:layout_marginTop="5dp"
+            app:layout_constraintTop_toBottomOf="@id/item_appointment_today_image"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

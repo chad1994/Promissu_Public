@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:textColor="@color/black_1"
-                android:textSize="22dp"
+                android:textSize="22sp"
                 tools:text="@string/create_question_2" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -45,7 +45,7 @@
                     android:layout_height="wrap_content"
                     android:text="시작"
                     android:textColor="#333333"
-                    android:textSize="22dp"
+                    android:textSize="22sp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -55,6 +55,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="33dp"
                     android:hint="@string/promise_date"
+
                     app:layout_constraintLeft_toRightOf="@id/create_start_text"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -66,7 +67,7 @@
                         android:clickable="true"
                         android:focusable="false"
                         android:textColor="@color/black_1"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -87,7 +88,7 @@
                         android:clickable="true"
                         android:focusable="false"
                         android:textColor="@color/black_1"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,7 +109,7 @@
                     android:layout_marginTop="130dp"
                     android:text="종료"
                     android:textColor="#333333"
-                    android:textSize="22dp"
+                    android:textSize="22sp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/create_start_text" />
 
@@ -129,7 +130,7 @@
                         android:clickable="true"
                         android:focusable="false"
                         android:textColor="@color/black_1"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -150,7 +151,7 @@
                         android:clickable="true"
                         android:focusable="false"
                         android:textColor="@color/black_1"
-                        android:textSize="14dp" />
+                        android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -165,8 +166,8 @@
 
             <Button
                 android:id="@+id/create_promise2_previous_button"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
+                android:layout_width="55sp"
+                android:layout_height="55sp"
                 android:layout_gravity="start"
                 android:layout_marginStart="24dp"
                 android:layout_marginLeft="24dp"
@@ -176,11 +177,11 @@
                 android:onClick="@{()->eventListener.onDirectionButtonClicked(-1)}"
                 android:text="이전"
                 android:textColor="@color/white"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
             <Button
                 android:id="@+id/create_promise2_next_button"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
+                android:layout_width="55sp"
+                android:layout_height="55sp"
                 android:layout_gravity="end"
                 android:layout_marginEnd="24dp"
                 android:layout_marginRight="24dp"
@@ -190,7 +191,7 @@
                 android:onClick="@{()->eventListener.onDirectionButtonClicked(1)}"
                 android:text="다음"
                 android:textColor="@color/white"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
         </FrameLayout>
     </LinearLayout>

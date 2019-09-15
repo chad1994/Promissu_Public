@@ -4,11 +4,14 @@
     <string name="kakao_scheme">kakao72f849d440d10fb40e679b28a7057f36</string>
     <string name="kakao_app_key">72f849d440d10fb40e679b28a7057f36</string>
     <string name="kakaolink_host">kakaolink</string>
+    <string name="kakaolink_template_id">16933</string>
     <string name="rest_key">KakaoAK b8b6711f4210de0410c2dfafea2dfe25</string>
 
     <string name="my_points">내 포인트</string>
     <string name="my_promise_credit">내 신용등급</string>
     <string name="logout">로그아웃</string>
+    <string name="nav_past_appointments">지난약속</string>
+
 
     <string name="will_you_logout">진짜 로그인 </string>
     <string name="okay">확인</string>
@@ -25,4 +28,11 @@
     <string name="my_promise_name">내 약속 이름</string>
     <string name="go_search">장소를 검색하세요</string>
     <string name="user_list">친구목록</string>
+
+    <string name="inviting_late_time_guide">약속시간 이후 %1$s분까지 지각입니다.</string>
+    <string name="inviting_list_not_empty_text">참여자를 기다리는 중입니다.</string>
+    <string name="inviting_list_empty_text">초대중 목록이 없습니다.</string>
+
+    <string name="inviting_confirm_button_text_not_admin">방장이 참여자를 확인해야 시작됩니다.</string>
+    <string name="inviting_confirm_button_text_admin">참여자 확인 완료</string>
 </resources>

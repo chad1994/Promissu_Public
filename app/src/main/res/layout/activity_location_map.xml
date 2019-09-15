@@ -1,0 +1,87 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/location_map_cdl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/location_map_coordinator"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/detail_ll_height"
+            android:background="@color/white">
+
+            <com.naver.maps.map.MapView
+                android:id="@+id/location_map_mapview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </com.naver.maps.map.MapView>
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/location_map_back_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginLeft="23dp"
+                android:layout_marginTop="10dp"
+                android:elevation="8dp"
+                android:background="@drawable/round_button"
+                android:src="@drawable/ic_icon_back"/>
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/location_map_current_location_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="end"
+                android:elevation="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="24dp"
+                android:src="@drawable/ic_icon_mylocation"
+                android:background="@drawable/round_button"/>
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/location_map_coordinator"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+
+            <TextView
+                android:id="@+id/location_map_location_name"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:includeFontPadding="false"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/location_map_location"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginLeft="24dp"
+                tools:text="강남 마이캠퍼스"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/location_map_location"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:includeFontPadding="false"
+                app:layout_constraintTop_toBottomOf="@id/location_map_location_name"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="@id/location_map_location_name"
+                tools:text="서울시 강남구 112-152"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

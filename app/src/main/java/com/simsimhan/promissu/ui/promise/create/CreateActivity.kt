@@ -20,9 +20,10 @@ import com.simsimhan.promissu.BuildConfig
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityCreatePromiseBinding
-import com.simsimhan.promissu.network.model.Appointment
+import com.simsimhan.promissu.network.model.Participation
 import com.simsimhan.promissu.network.model.Promise
-import com.simsimhan.promissu.util.NavigationUtil
+import com.simsimhan.promissu.network.model.PromiseResponse
+import com.simsimhan.promissu.util.NavigationUtilk
 import com.simsimhan.promissu.util.keyboardHide
 import com.simsimhan.promissu.util.keyboardShow
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -93,8 +94,7 @@ class CreateActivity : AppCompatActivity() {
         })
 
         viewModel.response.observe(this, Observer {
-            NavigationUtil.enterRoom(this, Appointment(it, 0), it.status == 2)
-            finish()
+            NavigationUtilk.enterInvitingRoomAfterCreateRoom(this,it)
         })
 
         viewModel.modifyResponse.observe(this, Observer {
@@ -109,6 +109,7 @@ class CreateActivity : AppCompatActivity() {
         when (item!!.itemId) {
             android.R.id.home -> {
                 onBackPressed()
+                keyboardHide()
                 return true
             }
         }

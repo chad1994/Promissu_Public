@@ -15,6 +15,7 @@ public class DiskCache {
     private String USER_NAME_LONG_ID = TAG + ".id";
     private String USER_PROFILE_THUMBNAIL = TAG + ".userProfileThumbnail";
     private String USER_IS_UPLOADED_BEFORE_TAG = TAG + ".isUploadedBefore";
+    private String USER_IS_ENTERED_DETAIL_BEFORE_TAG = TAG + "isEnteredBefore";
     private SharedPreferences pref;
 
 
@@ -54,9 +55,19 @@ public class DiskCache {
         return this.pref.getBoolean(USER_IS_UPLOADED_BEFORE_TAG, false);
     }
 
+    public boolean isEnteredDetailBefore(){
+        return this.pref.getBoolean(USER_IS_ENTERED_DETAIL_BEFORE_TAG, false);
+    }
+
     public boolean setUploadedPromiseBefore(boolean isUploadedPromise) {
         return this.pref.edit()
                 .putBoolean(USER_IS_UPLOADED_BEFORE_TAG, isUploadedPromise)
+                .commit();
+    }
+
+    public boolean setEnteredDetailBefore(boolean isEnteredBefore){
+        return this.pref.edit()
+                .putBoolean(USER_IS_ENTERED_DETAIL_BEFORE_TAG,isEnteredBefore)
                 .commit();
     }
 

@@ -40,10 +40,6 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
     val startTime: LiveData<String>
         get() = _startTime
 
-    private val _endTime = MutableLiveData<String>()
-    val endTime: LiveData<String>
-        get() = _endTime
-
     private val _lat = MutableLiveData<Double>()
     val lat: LiveData<Double>
         get() = _lat
@@ -59,6 +55,10 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
     private val _locationName = MutableLiveData<String>()
     val locationName: LiveData<String>
         get() = _locationName
+
+    private val _lateRange = MutableLiveData<Int>()
+    val lateRange : LiveData<Int>
+        get() = _lateRange
 
     private val _onClickedCreateButton = SingleLiveEvent<Any>()
     val onClickedCreateButton: LiveData<Any>
@@ -120,19 +120,23 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
         _startTime.postValue(date)
     }
 
-    fun setEndDateTime(date: String?) {
-        _endTime.postValue(date)
+    fun setLateRange( lateRange : Int?){
+        _lateRange.postValue(lateRange)
     }
+
+    // TODO: 지각 시간 세팅 함수 추가.
 
     private fun createValidation() {
         if (title.value.isNullOrEmpty() || !_titleValidate.value!!) {
             _toastMessage.postValue("방 제목을 확인해주세요")
-        } else if (startTime.value == null || endTime.value == null) {
+        } else if (startTime.value == null ) {
             _toastMessage.postValue("약속 시간을 확인해주세요")
+        } else if (lateRange.value == null){
+            _toastMessage.postValue("지각 시간을 설정해주세요")
         } else if (location.value.isNullOrEmpty() || locationName.value.isNullOrEmpty()) {
             _toastMessage.postValue("약속장소를 확인해주세요")
-        } else {
-            val request = Promise.Request(title.value, description.value, startTime.value, endTime.value, location.value, locationName.value, lat.value, lon.value)
+        } else{
+            val request = Promise.Request(title.value!!,"", startTime.value!!, location.value!!, locationName.value!!, lat.value!!, lon.value!!, lateRange.value!!)
             if (_isModify.value!!) {
                 modifyRoom(request)
             } else {

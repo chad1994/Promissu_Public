@@ -28,5 +28,6 @@
     <color name="main_01">#989ADE</color>
     <color name="main_02">#7d7ed2</color>
     <color name="main_03">#5f6ccc</color>
+    <color name="main_04">#eff0fa</color>
     <color name="dark_hot_pink">#ef006d</color>
 </resources>

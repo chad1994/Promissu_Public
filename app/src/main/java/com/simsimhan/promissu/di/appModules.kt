@@ -2,7 +2,12 @@ package com.simsimhan.promissu.di
 
 
 val appModules = arrayListOf(
+        apiModule,
+        mainModule,
         createModule,
         loginModules,
-        promiseModules
+        invitingModule,
+        invitingListModule,
+        pendingModule,
+        pastListModule
 )

@@ -10,8 +10,11 @@
         android:layout_marginTop="@dimen/column_separate_margin"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        tools:src="@drawable/ic_search"
+        android:src="@drawable/ic_icon_emptyimg"
         android:id="@+id/profile_image"
+        android:scaleType="centerInside"
+        android:background="@drawable/round_shape_bg"
+        android:backgroundTint="#d8dbf3"
         android:layout_width="48dp"
         android:layout_height="48dp" />
 

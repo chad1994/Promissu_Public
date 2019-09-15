@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.simsimhan.promissu.ui.promise.create.CreateViewModel" />
+
+        <variable
+            name="eventListener"
+            type="com.simsimhan.promissu.ui.promise.create.CreateEventListener" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/create_question2_text_temp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/black_1"
+                android:textSize="22dp"
+                tools:text="@string/create_question_2" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp">
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/promise_start_date_layout"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:hint="날짜"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:text="asd">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/promise_start_date_temp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="false"
+
+                        android:textColor="@color/black_1"
+                        android:textSize="14dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/promise_start_hour_layout"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:hint="시"
+                    app:layout_constraintLeft_toRightOf="@id/promise_start_date_layout"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:text="asd">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/promise_start_hour"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:textColor="@color/black_1"
+                        android:textSize="14dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/promise_start_minute_layout"
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:hint="분"
+                    app:layout_constraintLeft_toRightOf="@id/promise_start_hour_layout"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:text="asd">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/promise_start_minute"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:textColor="@color/black_1"
+                        android:textSize="14dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                    android:id="@+id/create_promise2_lateness_btn"
+                    android:layout_marginTop="50dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/promise_start_date_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:textSize="16sp"
+                    android:paddingLeft="22dp"
+                    android:paddingRight="22dp"
+                    android:textColor="@color/colorStrong"
+                    android:background="@drawable/bg_create_lateness_btn_round"
+                    android:text="지각시간 설정하기" />
+
+
+                <TextView
+                    android:id="@+id/create_promise2_lateness_text1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/black"
+                    android:lineSpacingExtra="6sp"
+                    android:text="약속시간 이후 "
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/create_promise2_lateness_btn" />
+
+                <TextView
+                    android:id="@+id/create_promise2_lateness_text2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/colorStrong"
+                    android:lineSpacingExtra="6sp"
+                    android:text="OO분"
+                    app:layout_constraintLeft_toRightOf="@id/create_promise2_lateness_text1"
+                    app:layout_constraintTop_toBottomOf="@id/create_promise2_lateness_btn" />
+
+                <TextView
+                    android:id="@+id/create_promise2_lateness_text3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/black"
+                    android:lineSpacingExtra="6sp"
+                    android:text=" 까지는 지각처리 됩니다."
+                    app:layout_constraintLeft_toRightOf="@id/create_promise2_lateness_text2"
+                    app:layout_constraintTop_toBottomOf="@id/create_promise2_lateness_btn" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/create_promise2_previous_button_temp"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_gravity="start"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/round_shape_bg"
+                android:backgroundTint="@color/main_03"
+                android:onClick="@{()->eventListener.onDirectionButtonClicked(-1)}"
+                android:text="이전"
+                android:textColor="@color/white"
+                android:textSize="16dp" />
+
+            <Button
+                android:id="@+id/create_promise2_next_button_temp"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/round_shape_bg"
+                android:backgroundTint="@color/main_03"
+                android:onClick="@{()->eventListener.onDirectionButtonClicked(1)}"
+                android:text="다음"
+                android:textColor="@color/white"
+                android:textSize="16dp" />
+
+        </FrameLayout>
+    </LinearLayout>
+</layout>

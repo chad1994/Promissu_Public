@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="promise"
+            type="com.simsimhan.promissu.network.model.PromiseResponse" />
+        <variable
+            name="listener"
+            type="com.simsimhan.promissu.ui.pastList.PastListEventListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="12dp"
+        android:onClick="@{()->listener.onClickPastItem(promise)}"
+        setPastListItemBg="@{promise.participation.status}"
+        android:background="@drawable/bg_item_appointment_today">
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/item_past_list_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintGuide_begin="24dp"
+            android:orientation="horizontal"/>
+
+        <TextView
+            android:id="@+id/item_past_list_deposit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:lineSpacingExtra="11sp"
+            android:includeFontPadding="false"
+            android:text="디파짓"
+            setDepositVisibility="@{promise.promise.deposit}"
+            app:layout_constraintTop_toTopOf="@id/item_past_list_guideline"
+            app:layout_constraintBottom_toBottomOf="@id/item_past_list_guideline"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginBottom="3dp"
+            android:paddingLeft="13dp"
+            android:paddingRight="13dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="3dp"
+            android:background="@drawable/bg_deposit_tag"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@+id/item_past_list_participant_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#5f6ccc"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="11sp"
+            android:text="12/23명"
+            app:layout_constraintTop_toTopOf="@id/item_past_list_guideline"
+            app:layout_constraintBottom_toBottomOf="@id/item_past_list_guideline"
+            app:layout_constraintLeft_toRightOf="@id/item_past_list_deposit"
+            android:layout_marginLeft="9dp"
+            app:layout_goneMarginLeft="0dp"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@+id/item_past_list_datetime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:includeFontPadding="false"
+            android:textColor="#969696"
+            android:lineSpacingExtra="11sp"
+            app:layout_constraintTop_toTopOf="@id/item_past_list_guideline"
+            app:layout_constraintBottom_toBottomOf="@id/item_past_list_guideline"
+            app:layout_constraintLeft_toRightOf="@id/item_past_list_participant_num"
+            android:layout_marginLeft="9dp"
+            app:layout_goneMarginLeft="0dp"
+            setPastListItemDateTime="@{promise.promise.datetime}"
+            android:text="8.28.수"
+            />
+
+
+        <TextView
+            android:id="@+id/item_past_list_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15.5sp"
+            android:textColor="@color/black"
+            android:includeFontPadding="false"
+            app:layout_constraintTop_toBottomOf="@id/item_past_list_guideline"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="15dp"
+            android:lineSpacingExtra="7.5sp"
+            android:text="@{promise.promise.title}"
+            tools:text="asdfasdfasdf"
+            />
+
+        <Button
+            android:id="@+id/item_past_list_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            setPastListItemButtonBg="@{promise.participation.status}"
+            android:onClick="@{()->listener.onClickPastItem(promise)}"
+            android:text="출석"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:background="@drawable/round_shape_bg_strong_color"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
