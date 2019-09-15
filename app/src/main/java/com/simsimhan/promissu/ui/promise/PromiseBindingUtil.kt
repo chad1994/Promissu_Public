@@ -7,7 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
-import com.simsimhan.promissu.network.model.Appointment
+import com.simsimhan.promissu.network.model.PromiseResponse
 import com.simsimhan.promissu.network.model.Promise
 import org.joda.time.DateTime
 import org.joda.time.Days
@@ -21,7 +21,7 @@ fun setItemLeftTime(text: TextView, isPast: Boolean, response: Promise.Response)
     } else {
         text.visibility = View.VISIBLE
         val now = DateTime()
-        val promiseStartDate = DateTime(response.start_datetime)
+        val promiseStartDate = DateTime(response.datetime)
         val daysDifference = Days.daysBetween(now, promiseStartDate)
 
         if (daysDifference.days == 0) {
@@ -43,9 +43,9 @@ fun setItemLeftTime(text: TextView, isPast: Boolean, response: Promise.Response)
 }
 
 @BindingAdapter("setItemLeftLabel1", "setItemLeftLabel2")
-fun setItemLeftLabel(text: TextView, isPast: Boolean, response: Appointment) {
+fun setItemLeftLabel(text: TextView, isPast: Boolean, response: PromiseResponse) {
     if (isPast) {
-        when (response.status) {
+        when (response.participation.status) {
             2 -> {
                 text.setTextColor(ContextCompat.getColor(text.context, R.color.sub_color))
                 text.text = "출석"
@@ -66,7 +66,7 @@ fun setItemLeftLabel(text: TextView, isPast: Boolean, response: Appointment) {
 
     } else {
         val now = DateTime()
-        val promiseStartDate = DateTime(response.promise.start_datetime)
+        val promiseStartDate = DateTime(response.promise.datetime)
         val daysDifference = Days.daysBetween(now, promiseStartDate)
 
         if (daysDifference.days == 0) {

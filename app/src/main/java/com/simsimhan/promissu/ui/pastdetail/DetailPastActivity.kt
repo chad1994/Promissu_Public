@@ -8,19 +8,21 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.databinding.ActivityDetailPastPromiseBinding
-import com.simsimhan.promissu.network.model.Appointment
+import com.simsimhan.promissu.network.model.PromiseResponse
 import com.simsimhan.promissu.ui.pastdetail.adapter.DetailPastAdapter
+import com.simsimhan.promissu.util.NavigationUtilk
 
 class DetailPastActivity : AppCompatActivity() {
 
     private lateinit var viewModel: DetailPastViewModel
     private lateinit var binding: ActivityDetailPastPromiseBinding
-    private lateinit var promise: Appointment
+    private lateinit var promise: PromiseResponse
     private lateinit var factory: DetailPastViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +51,8 @@ class DetailPastActivity : AppCompatActivity() {
             actionBar.setDisplayShowTitleEnabled(false)
         }
 
+        setupObserves()
+
     }
 
     private fun changeStatusBarColor() {
@@ -73,4 +77,11 @@ class DetailPastActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
+    private fun setupObserves(){
+        viewModel.openLocationMap.observe(this, Observer {
+            NavigationUtilk.openLocationMap(this,promise.promise)
+        })
+    }
+
 }

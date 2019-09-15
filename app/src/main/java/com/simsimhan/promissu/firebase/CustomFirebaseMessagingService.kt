@@ -8,11 +8,12 @@ import android.media.RingtoneManager
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.simsimhan.promissu.MainActivity
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.R
 import com.simsimhan.promissu.network.AuthAPI
 import com.simsimhan.promissu.network.model.FcmToken
+import com.simsimhan.promissu.network.model.UserInfo
+import com.simsimhan.promissu.ui.main.MainActivityk
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -38,7 +39,7 @@ class CustomFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private fun sendNotification(body: String?) {
-        val intent = Intent(this, MainActivity::class.java).apply {
+        val intent = Intent(this, MainActivityk::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             putExtra("Notification", body)
         }
@@ -62,11 +63,11 @@ class CustomFirebaseMessagingService : FirebaseMessagingService() {
         disposable.add(
                 PromissuApplication.retrofit!!
                         .create(AuthAPI::class.java)
-                        .updateFcmToken(PromissuApplication.getVersionInfo(), "Bearer ${PromissuApplication.diskCache!!.userToken}", FcmToken(fcmToken))
+                        .updateUserInfo(PromissuApplication.getVersionInfo(), "Bearer ${PromissuApplication.diskCache!!.userToken}",
+                                UserInfo(fcmToken,PromissuApplication.diskCache?.profileThumbnail))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
-                            PromissuApplication.diskCache!!.fcmToken = fcmToken
                             Timber.d("Success:: Fcm Token registered ")
                             disposable.clear()
                             // save token

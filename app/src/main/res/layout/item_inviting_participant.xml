@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="participant"
+            type="com.simsimhan.promissu.network.model.Participant.Response" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@drawable/bg_circle_detail_past_item_purple"
+        setBackgroundColor="@{participant.kakao_id}"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/item_inviting_participant_profile_image"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginLeft="12dp"
+            android:gravity="center"
+            android:lineSpacingExtra="16sp"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            setInvitingParticipantImage="@{participant.profile_url}"
+            android:src="@drawable/ic_icon_emptyimg"
+            android:scaleType="centerInside"
+            android:background="@drawable/round_shape_bg"
+            android:backgroundTint="#d8dbf3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/item_inviting_participant_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="13dp"
+            android:includeFontPadding="false"
+            android:lineSpacingExtra="7.5sp"
+            android:text="@{participant.nickname}"
+            tools:text ="asdifasejf"
+            android:textColor="@color/black"
+            android:textSize="15.5sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/item_inviting_participant_profile_image"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

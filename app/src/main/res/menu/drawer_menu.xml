@@ -10,6 +10,9 @@
             <!--android:icon="@drawable/ic_credit"-->
             <!--android:title="@string/my_promise_credit" />-->
         <item
+            android:id="@+id/nav_past_appointments"
+            android:title="@string/nav_past_appointments"/>
+        <item
             android:id="@+id/nav_logout"
             android:title="@string/logout" />
     </group>

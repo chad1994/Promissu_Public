@@ -7,6 +7,7 @@ import com.simsimhan.promissu.BaseViewModel
 import com.simsimhan.promissu.PromissuApplication
 import com.simsimhan.promissu.network.AuthAPI
 import com.simsimhan.promissu.network.Login
+import com.simsimhan.promissu.network.model.UserInfo
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import retrofit2.HttpException
@@ -27,19 +28,55 @@ class LoginViewModel : BaseViewModel() {
         _onSuccess.value = false
     }
 
-    fun login(userSessionToken: String, result: MeV2Response) {
+    private fun updateUserInfoToServer(){
+        addDisposable(PromissuApplication.retrofit!!
+                .create(AuthAPI::class.java)
+                .updateUserInfo(PromissuApplication.getVersionInfo(),
+                        "Bearer ${PromissuApplication.diskCache?.userToken}",
+                        UserInfo(PromissuApplication.diskCache?.fcmToken,PromissuApplication.diskCache?.profileThumbnail))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    _onSuccess.postValue(true)
+                },{
+                    onError ->
+                    try {
+                        when ((onError as HttpException).code()) {
+                            400 -> {
+                                Timber.e("Server Error(): %s", onError.toString())
+                                _toastMsg.postValue("서버 점검중입니다. 잠시후 다시 시도해주세요.")
+                            }
+                            420 -> {
+                                Timber.e("require update: %s", onError.toString())
+                                _toastMsg.postValue("최신 버전의 업데이트가 필요합니다.")
+                            }
+                            500 -> {
+                                Timber.e("Server Error(): %s", onError.toString())
+                                _toastMsg.postValue("서버 점검중입니다. 잠시후 다시 시도해주세요.")
+                            }
+                            else -> {
+                                Timber.e("onSessionClosed(): %s", onError.toString())
+                                _toastMsg.postValue("네트워크 상태를 확인 후, 로그인을 재시도 해주세요.")
+                            }
+                        }
+                    }catch (e:Throwable){
+                        _toastMsg.postValue("서버 접속이 원활하지 않습니다. 잠시후 다시 시도해주세요.")
+                    }
+                }))
+    }
+
+    fun login(userSessionToken: String) {
         addDisposable(PromissuApplication.retrofit!!
                 .create(AuthAPI::class.java)
                 .loginKakao(PromissuApplication.getVersionInfo(), Login.Request(userSessionToken))
                 .doOnNext { next ->
-                    PromissuApplication.diskCache!!.setUserData(result.nickname, result.id, result.thumbnailImagePath)
                     PromissuApplication.diskCache!!.userToken = next.token
                 }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     // save token
-                    _onSuccess.postValue(true)
+                    updateUserInfoToServer()
                 }, { onError ->
                     try {
                         when ((onError as HttpException).code()) {

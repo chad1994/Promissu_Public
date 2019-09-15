@@ -45,16 +45,17 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:hint="날짜"
-                    app:text="asd"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    >
+                    app:text="asd">
+
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/promise_start_date_temp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clickable="true"
                         android:focusable="false"
+
                         android:textColor="@color/black_1"
                         android:textSize="14dp" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -63,12 +64,12 @@
                     android:id="@+id/promise_start_hour_layout"
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
-                    android:hint="시"
-                    app:text="asd"
-                    app:layout_constraintLeft_toRightOf="@id/promise_start_date_layout"
                     android:layout_marginLeft="20dp"
+                    android:hint="시"
+                    app:layout_constraintLeft_toRightOf="@id/promise_start_date_layout"
                     app:layout_constraintTop_toTopOf="parent"
-                    >
+                    app:text="asd">
+
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/promise_start_hour"
                         android:layout_width="match_parent"
@@ -83,12 +84,12 @@
                     android:id="@+id/promise_start_minute_layout"
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
-                    android:hint="분"
-                    app:text="asd"
-                    app:layout_constraintLeft_toRightOf="@id/promise_start_hour_layout"
                     android:layout_marginLeft="20dp"
+                    android:hint="분"
+                    app:layout_constraintLeft_toRightOf="@id/promise_start_hour_layout"
                     app:layout_constraintTop_toTopOf="parent"
-                    >
+                    app:text="asd">
+
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/promise_start_minute"
                         android:layout_width="match_parent"
@@ -99,46 +100,57 @@
                         android:textSize="14dp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <TextView
-                    android:id="@+id/create_promise2_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <Button
+                    android:id="@+id/create_promise2_lateness_btn"
+                    android:layout_marginTop="50dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/promise_start_date_layout"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginTop="20dp"
-                    android:textSize="24sp"
-                    android:text="13시 30분 에서"/>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/promise_start_lateness_layout"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:hint="13시 40분"
-                    app:text="asd"
-                    android:layout_marginTop="20dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/create_promise2_text"
-                    >
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/promise_start_lateness"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="false"
-                        android:textColor="@color/black_1"
-                        android:textSize="14dp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <TextView
-                    android:id="@+id/create_promise2_text2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="@id/promise_start_lateness_layout"
-                    app:layout_constraintLeft_toRightOf="@id/promise_start_lateness_layout"
-                    android:textSize="24sp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:text="까지는 지각입니다"/>
+                    android:includeFontPadding="false"
+                    android:textSize="16sp"
+                    android:paddingLeft="22dp"
+                    android:paddingRight="22dp"
+                    android:textColor="@color/colorStrong"
+                    android:background="@drawable/bg_create_lateness_btn_round"
+                    android:text="지각시간 설정하기" />
+
+
+                <TextView
+                    android:id="@+id/create_promise2_lateness_text1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/black"
+                    android:lineSpacingExtra="6sp"
+                    android:text="약속시간 이후 "
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/create_promise2_lateness_btn" />
+
+                <TextView
+                    android:id="@+id/create_promise2_lateness_text2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/colorStrong"
+                    android:lineSpacingExtra="6sp"
+                    android:text="OO분"
+                    app:layout_constraintLeft_toRightOf="@id/create_promise2_lateness_text1"
+                    app:layout_constraintTop_toBottomOf="@id/create_promise2_lateness_btn" />
+
+                <TextView
+                    android:id="@+id/create_promise2_lateness_text3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/black"
+                    android:lineSpacingExtra="6sp"
+                    android:text=" 까지는 지각처리 됩니다."
+                    app:layout_constraintLeft_toRightOf="@id/create_promise2_lateness_text2"
+                    app:layout_constraintTop_toBottomOf="@id/create_promise2_lateness_btn" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

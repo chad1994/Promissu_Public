@@ -17,10 +17,8 @@ import com.simsimhan.promissu.ui.detail.adapter.DetailUserStatusAdapter
 
 @BindingAdapter("setRvItems")
 fun setRvItems(recyclerView: RecyclerView, itemList: List<Participant.Response>?) {
-    if (itemList != null) {
-        (recyclerView.adapter as DetailUserStatusAdapter).setData(itemList)
-    } else {
-        // TODO 데이터 정보 없음 처리.
+    itemList?.let {
+        (recyclerView.adapter as DetailUserStatusAdapter).setData(it)
     }
 }
 

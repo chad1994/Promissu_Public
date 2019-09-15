@@ -136,7 +136,7 @@ class CreateViewModel : BaseViewModel(), CreateEventListener {
         } else if (location.value.isNullOrEmpty() || locationName.value.isNullOrEmpty()) {
             _toastMessage.postValue("약속장소를 확인해주세요")
         } else{
-            val request = Promise.Request(title.value, description.value, startTime.value, location.value, locationName.value, lat.value, lon.value, lateRange.value!!)
+            val request = Promise.Request(title.value!!,"", startTime.value!!, location.value!!, locationName.value!!, lat.value!!, lon.value!!, lateRange.value!!)
             if (_isModify.value!!) {
                 modifyRoom(request)
             } else {
