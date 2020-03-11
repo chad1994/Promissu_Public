@@ -4,9 +4,6 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 
-def keystorePropertiesFile = rootProject.file("keystore.properties")
-def keystoreProperties = new Properties()
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -43,28 +40,27 @@ android {
 
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField 'String', 'SERVER_URL', keystoreProperties.getProperty("serverURL")
-            buildConfigField 'String', 'SOCKET_URL', keystoreProperties.getProperty("socketServerURL")
-            buildConfigField "String", "NaverClientId", keystoreProperties.getProperty("naverClientId")
-            buildConfigField "String", "NaverClientSecret", keystoreProperties.getProperty("naverClientSecret")
+//            buildConfigField 'String', 'SERVER_URL', keystoreProperties.getProperty("serverURL")
+//            buildConfigField 'String', 'SOCKET_URL', keystoreProperties.getProperty("socketServerURL")
+//            buildConfigField "String", "NaverClientId", keystoreProperties.getProperty("naverClientId")
+//            buildConfigField "String", "NaverClientSecret", keystoreProperties.getProperty("naverClientSecret")
         }
 
         debug {
 //            for test server
             minifyEnabled false
             debuggable true
-            buildConfigField 'String', 'SERVER_URL', keystoreProperties.getProperty("serverURL")
-            buildConfigField 'String', 'SOCKET_URL', keystoreProperties.getProperty("socketServerURL")
-            buildConfigField 'String', 'LOCAL_URL', keystoreProperties.getProperty("localServerURL")
-            buildConfigField "String", "NaverClientId", keystoreProperties.getProperty("naverClientId")
-            buildConfigField "String", "NaverClientSecret", keystoreProperties.getProperty("naverClientSecret")
+//            buildConfigField 'String', 'SERVER_URL', keystoreProperties.getProperty("serverURL")
+//            buildConfigField 'String', 'SOCKET_URL', keystoreProperties.getProperty("socketServerURL")
+//            buildConfigField 'String', 'LOCAL_URL', keystoreProperties.getProperty("localServerURL")
+//            buildConfigField "String", "NaverClientId", keystoreProperties.getProperty("naverClientId")
+//            buildConfigField "String", "NaverClientSecret", keystoreProperties.getProperty("naverClientSecret")
         }
 
         staging {
             debuggable true
             minifyEnabled false
             signingConfig signingConfigs.release
-            buildConfigField 'String', 'SERVER_URL', '"http://api.promissu.com"'
             matchingFallbacks = ['release', 'debug']
         }
     }
